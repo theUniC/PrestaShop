@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class ManufacturerControllerCore extends FrontController
+class ManufacturerController extends FrontController
 {
 	public $php_self = 'manufacturer';
 	protected $manufacturer;

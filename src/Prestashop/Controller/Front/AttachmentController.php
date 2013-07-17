@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AttachmentControllerCore extends FrontController
+class AttachmentController extends FrontController
 {
 	public function postProcess()
 	{

@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class OrderControllerCore extends ParentOrderController
+class OrderController extends ParentOrderController
 {
 	public $step;
 

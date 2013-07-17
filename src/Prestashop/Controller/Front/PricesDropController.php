@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class PricesDropControllerCore extends FrontController
+class PricesDropController extends FrontController
 {
 	public $php_self = 'prices-drop';
 

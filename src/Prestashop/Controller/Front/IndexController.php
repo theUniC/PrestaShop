@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class IndexControllerCore extends FrontController
+class IndexController extends FrontController
 {
 	public $php_self = 'index';
 

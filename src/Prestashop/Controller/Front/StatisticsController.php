@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class StatisticsControllerCore extends FrontController
+class StatisticsController extends FrontController
 {
 	public $display_header = false;
 	public $display_footer = false;

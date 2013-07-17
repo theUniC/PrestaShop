@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class OrderSlipControllerCore extends FrontController
+class OrderSlipController extends FrontController
 {
 	public $auth = true;
 	public $php_self = 'order-slip';

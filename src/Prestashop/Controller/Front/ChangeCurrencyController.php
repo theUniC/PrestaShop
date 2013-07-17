@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class ChangeCurrencyControllerCore extends FrontController
+class ChangeCurrencyController extends FrontController
 {
 	/**
 	 * Assign template vars related to page content

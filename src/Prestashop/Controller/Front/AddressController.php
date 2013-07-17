@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AddressControllerCore extends FrontController
+class AddressController extends FrontController
 {
 	public $auth = true;
 	public $guestAllowed = true;

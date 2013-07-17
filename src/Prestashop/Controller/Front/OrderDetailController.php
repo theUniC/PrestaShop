@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class OrderDetailControllerCore extends FrontController
+class OrderDetailController extends FrontController
 {
 	public $auth = true;
 	public $authRedirection = 'history';

@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class CmsControllerCore extends FrontController
+class CmsController extends FrontController
 {
 	public $php_self = 'cms';
 	public $assignCase;

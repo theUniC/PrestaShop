@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class OrderConfirmationControllerCore extends FrontController
+class OrderConfirmationController extends FrontController
 {
 	public $php_self = 'order-confirmation';
 

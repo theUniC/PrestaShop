@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class HistoryControllerCore extends FrontController
+class HistoryController extends FrontController
 {
 	public $auth = true;
 	public $php_self = 'history';

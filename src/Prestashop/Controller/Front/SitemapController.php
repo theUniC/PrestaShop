@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class SitemapControllerCore extends FrontController
+class SitemapController extends FrontController
 {
 	public $php_self = 'sitemap';
 

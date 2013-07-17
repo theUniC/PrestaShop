@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class PageNotFoundControllerCore extends FrontController
+class PageNotFoundController extends FrontController
 {
 	public $php_self = '404';
 	public $page_name = 'pagenotfound';

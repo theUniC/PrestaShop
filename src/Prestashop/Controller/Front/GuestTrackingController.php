@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class GuestTrackingControllerCore extends FrontController
+class GuestTrackingController extends FrontController
 {
 	public $ssl = true;
 	public $php_self = 'guest-tracking';

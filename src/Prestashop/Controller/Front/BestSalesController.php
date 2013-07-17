@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class BestSalesControllerCore extends FrontController
+class BestSalesController extends FrontController
 {
 	public $php_self = 'best-sales';
 

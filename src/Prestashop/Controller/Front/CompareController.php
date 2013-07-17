@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class CompareControllerCore extends FrontController
+class CompareController extends FrontController
 {
 	public $php_self = 'products-comparison';
 

@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class PasswordControllerCore extends FrontController
+class PasswordController extends FrontController
 {
 	public $php_self = 'password';
 

@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class ContactControllerCore extends FrontController
+class ContactController extends FrontController
 {
 	public $php_self = 'contact';
 	public $ssl = true;

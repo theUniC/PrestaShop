@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class OrderOpcControllerCore extends ParentOrderController
+class OrderOpcController extends ParentOrderController
 {
 	public $php_self = 'order-opc';
 	public $isLogged;

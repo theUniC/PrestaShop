@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class PdfOrderSlipControllerCore extends FrontController
+class PdfOrderSlipController extends FrontController
 {
 	protected $display_header = false;
 	protected $display_footer = false;

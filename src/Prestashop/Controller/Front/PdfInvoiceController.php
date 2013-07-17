@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class PdfInvoiceControllerCore extends FrontController
+class PdfInvoiceController extends FrontController
 {
 	protected $display_header = false;
 	protected $display_footer = false;

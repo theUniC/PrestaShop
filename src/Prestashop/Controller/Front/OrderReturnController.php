@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class OrderReturnControllerCore extends FrontController
+class OrderReturnController extends FrontController
 {
 	public $auth = true;
 	public $php_self = 'order-return';

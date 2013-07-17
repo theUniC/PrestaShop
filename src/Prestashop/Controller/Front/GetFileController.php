@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class GetFileControllerCore extends FrontController
+class GetFileController extends FrontController
 {
 	protected $display_header = false;
 	protected $display_footer = false;

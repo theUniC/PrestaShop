@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class StoresControllerCore extends FrontController
+class StoresController extends FrontController
 {
 	public $php_self = 'stores';
 

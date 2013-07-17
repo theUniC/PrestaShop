@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class SearchControllerCore extends FrontController
+class SearchController extends FrontController
 {
 	public $php_self = 'search';
 	public $instant_search;

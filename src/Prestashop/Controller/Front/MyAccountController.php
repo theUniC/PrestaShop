@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class MyAccountControllerCore extends FrontController
+class MyAccountController extends FrontController
 {
 	public $auth = true;
 	public $php_self = 'my-account';

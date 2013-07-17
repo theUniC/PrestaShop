@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Front;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class CategoryControllerCore extends FrontController
+class CategoryController extends FrontController
 {
 	public $php_self = 'category';
 	protected $category;
