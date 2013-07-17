@@ -1,0 +1,14 @@
+{
+    "name": "theUniC/presta-shop",
+    "require": {
+        "symfony/console": "2.3.1",
+        "symfony/finder": "~2.3.1"
+    },
+    "authors": [
+        {
+            "name": "Christian Soronellas",
+            "email": "theunic@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable"
+}

@@ -1,10 +1,4 @@
-.buildpath
 .htaccess
-.project
-.settings
-.idea
-.svn
-.DS_Store
 robots.txt
 sitemap.xml
 cache/cachefs/*
@@ -105,3 +99,5 @@ modules/uspscarrier
 modules/wexpay
 modules/yotpo
 modules/zingaya
+/vendor/
+/composer.phar
