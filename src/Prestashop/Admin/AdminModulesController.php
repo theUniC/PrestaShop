@@ -1,6 +1,6 @@
 <?php
 
-namespace Prestashop\\Admin;
+namespace Prestashop\Admin;
 
 /*
 * 2007-2013 PrestaShop

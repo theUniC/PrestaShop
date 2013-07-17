@@ -1,6 +1,6 @@
 <?php
 
-namespace Prestashop\\Admin;
+namespace Prestashop\Admin;
 
 /*
 * 2007-2013 PrestaShop
@@ -312,7 +312,7 @@ class AdminTranslationsControllerCore extends AdminController
 			$tab = $translation_informations['var'];
 			fwrite($fd, "<?php
 
-namespace Prestashop\\Admin;
+namespace Prestashop\Admin;
 \n\nglobal \$".$tab.";\n\$".$tab." = array();\n");
 			foreach ($to_insert as $key => $value)
 				fwrite($fd, '$'.$tab.'[\''.pSQL($key, true).'\'] = \''.pSQL($value, true).'\';'."\n");
@@ -408,7 +408,7 @@ namespace Prestashop\\Admin;
 		// Create content
 		$content = "<?php
 
-namespace Prestashop\\Admin;
+namespace Prestashop\Admin;
 \n\n\$tabs = array();";
 		if (!empty($tabs))
 			foreach ($tabs as $tab)
@@ -618,7 +618,7 @@ namespace Prestashop\\Admin;
 			// PHP tags
 			if (in_array($line, array('<?php
 
-namespace Prestashop\\Admin;
+namespace Prestashop\Admin;
 ', '?>', '')))
 				continue;
 			
@@ -815,7 +815,7 @@ namespace Prestashop\\Admin;
 			// this string is initialized one time for a file
 			$str_write .= "<?php
 
-namespace Prestashop\\Admin;
+namespace Prestashop\Admin;
 \n\nglobal \$_MODULE;\n\$_MODULE = array();\n";
 			$array_check_duplicate = array();
 		}
@@ -861,7 +861,7 @@ namespace Prestashop\\Admin;
 
 		if (isset($cache_file[$theme_name.'-'.$file_name]) && $str_write != "<?php
 
-namespace Prestashop\\Admin;
+namespace Prestashop\Admin;
 \n\nglobal \$_MODULE;\n\$_MODULE = array();\n")
 			file_put_contents($file_name, $str_write);
 	}
@@ -1519,7 +1519,7 @@ namespace Prestashop\\Admin;
 		if (!Tools::file_exists_cache($dir.DIRECTORY_SEPARATOR.$file))
 			if (!file_put_contents($dir.'/'.$file, "<?php
 
-namespace Prestashop\\Admin;
+namespace Prestashop\Admin;
 \n\nglobal \$".$var.";\n\$".$var." = array();\n\n?>"))
 				throw new PrestaShopException('File "'.$file.'" doesn\'t exists and cannot be created in '.$dir);
 		if (!is_writable($dir.DIRECTORY_SEPARATOR.$file))
@@ -2494,7 +2494,7 @@ namespace Prestashop\\Admin;
 			$tab = 'LANGMAIL';
 			fwrite($fd, "<?php
 
-namespace Prestashop\\Admin;
+namespace Prestashop\Admin;
 \n\nglobal \$_".$tab.";\n\$_".$tab." = array();\n");
 
 			foreach ($sub as $key => $value)
