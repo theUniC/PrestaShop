@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminMaintenanceControllerCore extends AdminController
+class AdminMaintenanceController extends AdminController
 {
 	public function __construct()
 	{

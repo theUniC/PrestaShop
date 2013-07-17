@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-abstract class AdminStatsTabControllerCore extends AdminPreferencesControllerCore
+abstract class AdminStatsTabControllerCore extends AdminPreferencesController
 {
 	public function init()
 	{

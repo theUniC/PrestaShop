@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminBackupControllerCore extends AdminController
+class AdminBackupController extends AdminController
 {
 	/** @var string The field we are sorting on */
 	protected $sort_by = 'date';

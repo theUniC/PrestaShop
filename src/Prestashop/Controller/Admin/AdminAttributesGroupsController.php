@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminAttributesGroupsControllerCore extends AdminController
+class AdminAttributesGroupsController extends AdminController
 {
 	protected $id_attribute;
 	protected $position_identifier = 'id_attribute_group';

@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminImagesControllerCore extends AdminController
+class AdminImagesController extends AdminController
 {
 	protected $start_time = 0;
 	protected $max_execution_time = 7200;

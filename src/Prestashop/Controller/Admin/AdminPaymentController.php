@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminPaymentControllerCore extends AdminController
+class AdminPaymentController extends AdminController
 {
 	public $payment_modules = array();
 

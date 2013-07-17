@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminHomeControllerCore extends AdminController
+class AdminHomeController extends AdminController
 {
 	const TIPS_TIMEOUT = 5;
 

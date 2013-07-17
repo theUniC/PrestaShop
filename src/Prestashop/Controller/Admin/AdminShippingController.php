@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminShippingControllerCore extends AdminController
+class AdminShippingController extends AdminController
 {
 	protected $_fieldsHandling;
 

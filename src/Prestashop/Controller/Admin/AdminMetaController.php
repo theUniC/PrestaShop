@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminMetaControllerCore extends AdminController
+class AdminMetaController extends AdminController
 {
 	public $table = 'meta';
 	public $className = 'Meta';

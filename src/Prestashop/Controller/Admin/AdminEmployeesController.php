@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminEmployeesControllerCore extends AdminController
+class AdminEmployeesController extends AdminController
 {
  	/** @var array profiles list */
 	protected $profiles_array = array();

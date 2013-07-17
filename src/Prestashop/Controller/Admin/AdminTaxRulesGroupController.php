@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminTaxRulesGroupControllerCore extends AdminController
+class AdminTaxRulesGroupController extends AdminController
 {
 	public $tax_rule;
 	public $selected_countries = array();

@@ -29,7 +29,7 @@ namespace Prestashop\Controller\Admin;
 
 define ('TEXTAREA_SIZED', 70);
 
-class AdminTranslationsControllerCore extends AdminController
+class AdminTranslationsController extends AdminController
 {
 	/** Name of theme by default */
 	const DEFAULT_THEME_NAME = 'default';

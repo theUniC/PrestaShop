@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminProductsControllerCore extends AdminController
+class AdminProductsController extends AdminController
 {
 	/** @var integer Max image size for upload
 	 * As of 1.5 it is recommended to not set a limit to max image size

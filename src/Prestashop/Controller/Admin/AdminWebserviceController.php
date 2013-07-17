@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminWebserviceControllerCore extends AdminController
+class AdminWebserviceController extends AdminController
 {
 	/** this will be filled later */
 	public $fields_form = array('webservice form');

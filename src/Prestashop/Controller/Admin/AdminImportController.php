@@ -40,7 +40,7 @@ define('MAX_COLUMNS', 6);
 /** correct Mac error on eof */
 @ini_set('auto_detect_line_endings', '1');
 
-class AdminImportControllerCore extends AdminController
+class AdminImportController extends AdminController
 {
 	public static $column_mask;
 

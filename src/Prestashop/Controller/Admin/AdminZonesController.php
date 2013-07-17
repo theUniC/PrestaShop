@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminZonesControllerCore extends AdminController
+class AdminZonesController extends AdminController
 {
 	public $asso_type = 'shop';
 

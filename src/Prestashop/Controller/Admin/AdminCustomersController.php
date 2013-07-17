@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminCustomersControllerCore extends AdminController
+class AdminCustomersController extends AdminController
 {
 	protected $delete_mode;
 

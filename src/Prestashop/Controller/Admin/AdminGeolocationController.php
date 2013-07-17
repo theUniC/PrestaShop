@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminGeolocationControllerCore extends AdminController
+class AdminGeolocationController extends AdminController
 {
 	public function __construct()
 	{

@@ -30,7 +30,7 @@ namespace Prestashop\Controller\Admin;
 /**
  * @since 1.5.0
  */
-class AdminStockCoverControllerCore extends AdminController
+class AdminStockCoverController extends AdminController
 {
 	protected $stock_cover_warehouses;
 	protected $stock_cover_periods;

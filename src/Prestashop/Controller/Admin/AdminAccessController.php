@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminAccessControllerCore extends AdminController
+class AdminAccessController extends AdminController
 {
 	/* @var array : Black list of id_tab that do not have access */
 	public $accesses_black_list = array();

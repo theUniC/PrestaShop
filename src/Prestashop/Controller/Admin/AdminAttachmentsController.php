@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminAttachmentsControllerCore extends AdminController
+class AdminAttachmentsController extends AdminController
 {
 
 	protected $product_attachements = array();

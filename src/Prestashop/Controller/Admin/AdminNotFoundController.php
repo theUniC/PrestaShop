@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminNotFoundControllerCore extends AdminController
+class AdminNotFoundController extends AdminController
 {
 	public function checkAccess()
 	{

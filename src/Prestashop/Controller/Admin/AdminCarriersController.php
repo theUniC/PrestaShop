@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminCarriersControllerCore extends AdminController
+class AdminCarriersController extends AdminController
 {
 	protected $position_identifier = 'id_carrier';
 

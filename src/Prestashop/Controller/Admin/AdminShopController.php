@@ -28,7 +28,7 @@ namespace Prestashop\Controller\Admin;
 */
 
 
-class AdminShopControllerCore extends AdminController
+class AdminShopController extends AdminController
 {
 	public function __construct()
 	{

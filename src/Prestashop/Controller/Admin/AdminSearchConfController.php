@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminSearchConfControllerCore extends AdminController
+class AdminSearchConfController extends AdminController
 {
 	protected $toolbar_scroll = false;
 

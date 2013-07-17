@@ -30,7 +30,7 @@ namespace Prestashop\Controller\Admin;
 /**
  * @since 1.5.0
  */
-class AdminWarehousesControllerCore extends AdminController
+class AdminWarehousesController extends AdminController
 {
 	public function __construct()
 	{

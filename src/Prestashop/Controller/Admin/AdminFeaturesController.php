@@ -26,7 +26,7 @@ namespace Prestashop\Controller\Admin;
 *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-class AdminFeaturesControllerCore extends AdminController
+class AdminFeaturesController extends AdminController
 {
 	protected $position_identifier = 'id_feature';
 

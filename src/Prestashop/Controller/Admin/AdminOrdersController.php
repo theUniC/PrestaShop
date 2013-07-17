@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminOrdersControllerCore extends AdminController
+class AdminOrdersController extends AdminController
 {
 	public $toolbar_title;
 

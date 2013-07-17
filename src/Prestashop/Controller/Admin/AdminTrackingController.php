@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminTrackingControllerCore extends AdminController
+class AdminTrackingController extends AdminController
 {
 	protected $_helper_list;
 	

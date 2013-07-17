@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminModulesPositionsControllerCore extends AdminController
+class AdminModulesPositionsController extends AdminController
 {
 	protected $display_key = 0;
 

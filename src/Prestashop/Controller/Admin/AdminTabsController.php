@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminTabsControllerCore extends AdminController
+class AdminTabsController extends AdminController
 {
 	protected $position_identifier = 'id_tab';
 

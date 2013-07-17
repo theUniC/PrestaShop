@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminCmsControllerCore extends AdminController
+class AdminCmsController extends AdminController
 {
 	protected $category;
 

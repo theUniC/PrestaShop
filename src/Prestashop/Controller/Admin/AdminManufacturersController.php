@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminManufacturersControllerCore extends AdminController
+class AdminManufacturersController extends AdminController
 {
 	/** @var array countries list */
 	protected $countries_array = array();

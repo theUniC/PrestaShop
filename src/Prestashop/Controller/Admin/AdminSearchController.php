@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminSearchControllerCore extends AdminController
+class AdminSearchController extends AdminController
 {
 	public function postProcess()
 	{

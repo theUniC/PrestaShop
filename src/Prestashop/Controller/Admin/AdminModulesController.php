@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminModulesControllerCore extends AdminController
+class AdminModulesController extends AdminController
 {
 	/*
 	** @var array map with $_GET keywords and their callback

@@ -30,7 +30,7 @@ namespace Prestashop\Controller\Admin;
 /**
  * @since 1.5.0
  */
-class AdminSupplyOrdersControllerCore extends AdminController
+class AdminSupplyOrdersController extends AdminController
 {
 
 	/*

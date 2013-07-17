@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminRequestSqlControllerCore extends AdminController
+class AdminRequestSqlController extends AdminController
 {
 	/**
 	 * @var array : List of encoding type for a file

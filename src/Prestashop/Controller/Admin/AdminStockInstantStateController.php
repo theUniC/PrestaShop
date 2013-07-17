@@ -30,7 +30,7 @@ namespace Prestashop\Controller\Admin;
 /**
  * @since 1.5.0
  */
-class AdminStockInstantStateControllerCore extends AdminController
+class AdminStockInstantStateController extends AdminController
 {
 	protected $stock_instant_state_warehouses = array();
 

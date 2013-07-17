@@ -30,7 +30,7 @@ namespace Prestashop\Controller\Admin;
 /**
  * @since 1.5.0
  */
-class AdminStockConfigurationControllerCore extends AdminController
+class AdminStockConfigurationController extends AdminController
 {
 	/*
 	 * By default, we use StockMvtReason as the table / className

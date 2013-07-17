@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminCategoriesControllerCore extends AdminController
+class AdminCategoriesController extends AdminController
 {
 	/**
 	 *  @var object Category() instance for navigation

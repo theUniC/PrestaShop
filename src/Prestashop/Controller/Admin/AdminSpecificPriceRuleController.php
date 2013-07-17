@@ -27,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class AdminSpecificPriceRuleControllerCore extends AdminController
+class AdminSpecificPriceRuleController extends AdminController
 {
 	public $list_reduction_type;
 
