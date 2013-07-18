@@ -48,24 +48,25 @@ class AdminInvoicesController extends AdminController
         $this->fields_value = array('date_from' => date('Y-m-d'), 'date_to' => date('Y-m-d'));
         $this->table = 'invoice_date';
         $this->toolbar_title = $this->l('Print PDF invoices');
+
         return parent::renderForm();
     }
     public function initFormByStatus()
     {
         $this->fields_form = array('legend' => array('title' => $this->l('By order status'), 'image' => '../img/admin/pdf.gif'), 'input' => array(array('type' => 'checkboxStatuses', 'label' => $this->l('Statuses:'), 'name' => 'id_order_state', 'values' => array('query' => OrderState::getOrderStates($this->context->language->id), 'id' => 'id_order_state', 'name' => 'name'), 'desc' => $this->l('You can also export orders which have not been charged yet.') . ' (<img src="../img/admin/charged_ko.gif" alt="" />).')), 'submit' => array('title' => $this->l('Generate PDF file by status.'), 'class' => 'button', 'id' => 'submitPrint2'));
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
-			SELECT COUNT(o.id_order) as nbOrders, (
-				SELECT oh.id_order_state
-				FROM ' . _DB_PREFIX_ . 'order_history oh
-				WHERE oh.id_order = oi.id_order
-				ORDER BY oh.date_add DESC, oh.id_order_history DESC
-				LIMIT 1
-			) id_order_state
-			FROM ' . _DB_PREFIX_ . 'order_invoice oi
-			LEFT JOIN ' . _DB_PREFIX_ . 'orders o ON (oi.id_order = o.id_order)
-			WHERE o.id_shop IN(' . implode(', ', Shop::getContextListShopID()) . ')
-			GROUP BY id_order_state
-		');
+            SELECT COUNT(o.id_order) as nbOrders, (
+                SELECT oh.id_order_state
+                FROM ' . _DB_PREFIX_ . 'order_history oh
+                WHERE oh.id_order = oi.id_order
+                ORDER BY oh.date_add DESC, oh.id_order_history DESC
+                LIMIT 1
+            ) id_order_state
+            FROM ' . _DB_PREFIX_ . 'order_invoice oi
+            LEFT JOIN ' . _DB_PREFIX_ . 'orders o ON (oi.id_order = o.id_order)
+            WHERE o.id_shop IN(' . implode(', ', Shop::getContextListShopID()) . ')
+            GROUP BY id_order_state
+        ');
         $status_stats = array();
         foreach ($result as $row) {
             $status_stats[$row['id_order_state']] = $row['nbOrders'];
@@ -73,6 +74,7 @@ class AdminInvoicesController extends AdminController
         $this->tpl_form_vars = array('statusStats' => $status_stats, 'style' => '');
         $this->table = 'invoice_status';
         $this->show_toolbar = false;
+
         return parent::renderForm();
     }
     public function initContent()
@@ -137,6 +139,7 @@ class AdminInvoicesController extends AdminController
             $template_name = basename($template, '.tpl');
             $models[] = array('value' => $template_name, 'name' => $template_name);
         }
+
         return $models;
     }
     protected function getInvoicesModelsFromDir($directory)
@@ -148,6 +151,7 @@ class AdminInvoicesController extends AdminController
         if (!$templates) {
             $templates = array();
         }
+
         return $templates;
     }
 }

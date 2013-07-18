@@ -61,6 +61,7 @@ class ShopUrl extends ObjectModel
         if ($this->virtual_uri) {
             $this->virtual_uri = preg_replace('#/+#', '/', trim($this->virtual_uri, '/')) . '/';
         }
+
         return parent::getFields();
     }
     public function getBaseURI()
@@ -73,12 +74,13 @@ class ShopUrl extends ObjectModel
             return;
         }
         $url = $ssl ? 'https://' . $this->domain_ssl : 'http://' . $this->domain;
+
         return $url . $this->getBaseUri();
     }
     /**
      * Get list of shop urls
      *
-     * @param bool $id_shop
+     * @param  bool       $id_shop
      * @return Collection
      */
     public static function getShopUrls($id_shop = false)
@@ -87,6 +89,7 @@ class ShopUrl extends ObjectModel
         if ($id_shop) {
             $urls->where('id_shop', '=', $id_shop);
         }
+
         return $urls;
     }
     public function setMain()
@@ -96,15 +99,16 @@ class ShopUrl extends ObjectModel
         $this->main = true;
         // Reset main URL for all shops to prevent problems
         $sql = 'SELECT s1.id_shop_url FROM ' . _DB_PREFIX_ . 'shop_url s1
-				WHERE (
-					SELECT COUNT(*) FROM ' . _DB_PREFIX_ . 'shop_url s2
-					WHERE s2.main = 1
-					AND s2.id_shop = s1.id_shop
-				) = 0
-				GROUP BY s1.id_shop';
+                WHERE (
+                    SELECT COUNT(*) FROM ' . _DB_PREFIX_ . 'shop_url s2
+                    WHERE s2.main = 1
+                    AND s2.id_shop = s1.id_shop
+                ) = 0
+                GROUP BY s1.id_shop';
         foreach (Db::getInstance()->executeS($sql) as $row) {
             Db::getInstance()->update('shop_url', array('main' => 1), 'id_shop_url = ' . $row['id_shop_url']);
         }
+
         return $res;
     }
     public function canAddThisUrl($domain, $domain_ssl, $physical_uri, $virtual_uri)
@@ -120,19 +124,21 @@ class ShopUrl extends ObjectModel
             $virtual_uri = preg_replace('#/+#', '/', trim($virtual_uri, '/')) . '/';
         }
         $sql = 'SELECT id_shop_url
-				FROM ' . _DB_PREFIX_ . 'shop_url
-				WHERE physical_uri = \'' . pSQL($physical_uri) . '\'
-					AND virtual_uri = \'' . pSQL($virtual_uri) . '\'
-					AND (domain = \'' . pSQL($domain) . '\' ' . ($domain_ssl ? ' OR domain_ssl = \'' . pSQL($domain_ssl) . '\'' : '') . ')' . ($this->id ? ' AND id_shop_url != ' . (int) $this->id : '');
+                FROM ' . _DB_PREFIX_ . 'shop_url
+                WHERE physical_uri = \'' . pSQL($physical_uri) . '\'
+                    AND virtual_uri = \'' . pSQL($virtual_uri) . '\'
+                    AND (domain = \'' . pSQL($domain) . '\' ' . ($domain_ssl ? ' OR domain_ssl = \'' . pSQL($domain_ssl) . '\'' : '') . ')' . ($this->id ? ' AND id_shop_url != ' . (int) $this->id : '');
+
         return Db::getInstance()->getValue($sql);
     }
     public static function getMainShopDomain($id_shop = null)
     {
         if (!self::$main_domain || $id_shop !== null) {
             self::$main_domain = Db::getInstance()->getValue('SELECT domain
-															FROM ' . _DB_PREFIX_ . 'shop_url
-															WHERE main=1 AND id_shop = ' . ($id_shop !== null ? (int) $id_shop : Context::getContext()->shop->id));
+                                                            FROM ' . _DB_PREFIX_ . 'shop_url
+                                                            WHERE main=1 AND id_shop = ' . ($id_shop !== null ? (int) $id_shop : Context::getContext()->shop->id));
         }
+
         return self::$main_domain;
     }
     public static function cacheMainDomainForShop($id_shop)
@@ -152,11 +158,12 @@ class ShopUrl extends ObjectModel
     {
         if (!self::$main_domain_ssl || $id_shop !== null) {
             $sql = 'SELECT domain_ssl
-					FROM ' . _DB_PREFIX_ . 'shop_url
-					WHERE main = 1
-						AND id_shop = ' . ($id_shop !== null ? (int) $id_shop : Context::getContext()->shop->id);
+                    FROM ' . _DB_PREFIX_ . 'shop_url
+                    WHERE main = 1
+                        AND id_shop = ' . ($id_shop !== null ? (int) $id_shop : Context::getContext()->shop->id);
             self::$main_domain_ssl = Db::getInstance()->getValue($sql);
         }
+
         return self::$main_domain_ssl;
     }
 }

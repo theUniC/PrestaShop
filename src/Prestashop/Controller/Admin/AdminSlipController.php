@@ -47,6 +47,7 @@ class AdminSlipController extends AdminController
         $this->fields_form = array('legend' => array('title' => $this->l('Print a PDF'), 'image' => '../img/admin/pdf.gif'), 'input' => array(array('type' => 'date', 'label' => $this->l('From:'), 'name' => 'date_from', 'size' => 20, 'maxlength' => 10, 'required' => true, 'desc' => $this->l('Format: 2011-12-31 (inclusive)')), array('type' => 'date', 'label' => $this->l('To:'), 'name' => 'date_to', 'size' => 20, 'maxlength' => 10, 'required' => true, 'desc' => $this->l('Format: 2012-12-31 (inclusive)'))), 'submit' => array('title' => $this->l('Generate PDF file'), 'class' => 'button', 'id' => 'submitPrint'));
         $this->fields_value = array('date_from' => date('Y-m-d'), 'date_to' => date('Y-m-d'));
         $this->show_toolbar = false;
+
         return parent::renderForm();
     }
     public function postProcess()
@@ -88,6 +89,7 @@ class AdminSlipController extends AdminController
             return '';
         }
         $this->context->smarty->assign(array('order_slip' => $order_slip, 'tr' => $tr));
+
         return $this->createTemplate('_print_pdf_icon.tpl')->fetch();
     }
 }

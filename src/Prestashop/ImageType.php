@@ -77,12 +77,13 @@ class ImageType extends ObjectModel
             $query = 'SELECT * FROM `' . _DB_PREFIX_ . 'image_type`' . $where . ' ORDER BY `name` ASC';
             self::$images_types_cache[$type] = Db::getInstance()->executeS($query);
         }
+
         return self::$images_types_cache[$type];
     }
     /**
      * Check if type already is already registered in database
      *
-     * @param string $typeName Name
+     * @param  string  $typeName Name
      * @return integer Number of results found
      */
     public static function typeAlreadyExists($typeName)
@@ -91,9 +92,10 @@ class ImageType extends ObjectModel
             die(Tools::displayError());
         }
         Db::getInstance()->executeS('
-			SELECT `id_image_type`
-			FROM `' . _DB_PREFIX_ . 'image_type`
-			WHERE `name` = \'' . pSQL($typeName) . '\'');
+            SELECT `id_image_type`
+            FROM `' . _DB_PREFIX_ . 'image_type`
+            WHERE `name` = \'' . pSQL($typeName) . '\'');
+
         return Db::getInstance()->NumRows();
     }
     /**
@@ -105,10 +107,11 @@ class ImageType extends ObjectModel
     {
         if (!isset(self::$images_types_name_cache[$name . '_' . $type])) {
             self::$images_types_name_cache[$name . '_' . $type] = Db::getInstance()->getRow('
-				SELECT `id_image_type`, `name`, `width`, `height`, `products`, `categories`, `manufacturers`, `suppliers`, `scenes` 
-				FROM `' . _DB_PREFIX_ . 'image_type` 
-				WHERE `name` = \'' . pSQL($name) . '\' ' . (!is_null($type) ? 'AND `' . pSQL($type) . '` = 1' : ''));
+                SELECT `id_image_type`, `name`, `width`, `height`, `products`, `categories`, `manufacturers`, `suppliers`, `scenes`
+                FROM `' . _DB_PREFIX_ . 'image_type`
+                WHERE `name` = \'' . pSQL($name) . '\' ' . (!is_null($type) ? 'AND `' . pSQL($type) . '` = 1' : ''));
         }
+
         return self::$images_types_name_cache[$name . '_' . $type];
     }
     public static function getFormatedName($name)

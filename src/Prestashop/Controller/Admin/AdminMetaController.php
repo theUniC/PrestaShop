@@ -135,6 +135,7 @@ class AdminMetaController extends AdminController
             $pages[$k]['query'][] = array('id' => $file, 'page' => $name);
         }
         $this->fields_form = array('legend' => array('title' => $this->l('Meta tags'), 'image' => '../img/admin/metatags.gif'), 'input' => array(array('type' => 'hidden', 'name' => 'id_meta'), array('type' => 'select', 'label' => $this->l('Page:'), 'name' => 'page', 'options' => array('optiongroup' => array('label' => 'name', 'query' => $pages), 'options' => array('id' => 'id', 'name' => 'page', 'query' => 'query')), 'desc' => $this->l('Name of the related page'), 'required' => true, 'empty_message' => '<p>' . $this->l('There is no page available!') . '</p>'), array('type' => 'text', 'label' => $this->l('Page title:'), 'name' => 'title', 'lang' => true, 'hint' => $this->l('Invalid characters:') . ' <>;=#{}', 'desc' => $this->l('Title of this page'), 'size' => 30), array('type' => 'text', 'label' => $this->l('Meta description:'), 'name' => 'description', 'lang' => true, 'hint' => $this->l('Invalid characters:') . ' <>;=#{}', 'desc' => $this->l('A short description of your shop'), 'size' => 50), array('type' => 'tags', 'label' => $this->l('Meta keywords:'), 'name' => 'keywords', 'lang' => true, 'hint' => $this->l('Invalid characters:') . ' <>;=#{}', 'desc' => $this->l('List of keywords for search engines') . ' ' . $this->l('To add "tags," click in the field, write something, and then press "Enter."'), 'size' => 50), array('type' => 'text', 'label' => $this->l('Rewritten URL:'), 'name' => 'url_rewrite', 'lang' => true, 'required' => true, 'hint' => $this->l('Only letters and hyphens are allowed'), 'desc' => $this->l('e.g. "contacts" for http://mysite.com/shop/contacts to redirect to http://mysite.com/shop/contact-form.php'), 'size' => 50)), 'submit' => array('title' => $this->l('   Save   '), 'class' => 'button'));
+
         return parent::renderForm();
     }
     public function postProcess()
@@ -152,6 +153,7 @@ class AdminMetaController extends AdminController
             }
             if (!$defaultLangIsValidated && !$englishLangIsValidated) {
                 $this->errors[] = Tools::displayError('The URL rewrite field must be filled in either the default or English language.');
+
                 return false;
             }
             foreach ($langs as $lang) {
@@ -171,6 +173,7 @@ class AdminMetaController extends AdminController
                 $this->generateRobotsFile();
             }
         }
+
         return parent::postProcess();
     }
     public function generateRobotsFile()
@@ -267,6 +270,7 @@ class AdminMetaController extends AdminController
         } else {
             if (!$rule || $rule == $default_routes[$route_id]['rule']) {
                 Configuration::updateValue('PS_ROUTE_' . $route_id, '');
+
                 return;
             }
             $errors = array();
@@ -375,6 +379,7 @@ class AdminMetaController extends AdminController
             $helper->id = $this->id;
             $helper->tpl_vars = $this->tpl_option_vars;
             $options = $helper->generateOptions($this->fields_options);
+
             return $options;
         }
     }
@@ -395,7 +400,7 @@ class AdminMetaController extends AdminController
     /**
      * Check if a file is writable
      *
-     * @param string $file
+     * @param  string $file
      * @return bool
      */
     public function checkConfiguration($file)
@@ -403,6 +408,7 @@ class AdminMetaController extends AdminController
         if (file_exists($file)) {
             return is_writable($file);
         }
+
         return is_writable(dirname($file));
     }
     public function getRobotsContent()
@@ -416,10 +422,10 @@ class AdminMetaController extends AdminController
         $tab['Files'] = array();
         if (Configuration::get('PS_REWRITING_SETTINGS')) {
             $sql = 'SELECT ml.url_rewrite, l.iso_code
-					FROM ' . _DB_PREFIX_ . 'meta m
-					INNER JOIN ' . _DB_PREFIX_ . 'meta_lang ml ON ml.id_meta = m.id_meta
-					INNER JOIN ' . _DB_PREFIX_ . 'lang l ON l.id_lang = ml.id_lang
-					WHERE l.active = 1 AND m.page IN (\'' . implode('\', \'', $disallow_controllers) . '\')';
+                    FROM ' . _DB_PREFIX_ . 'meta m
+                    INNER JOIN ' . _DB_PREFIX_ . 'meta_lang ml ON ml.id_meta = m.id_meta
+                    INNER JOIN ' . _DB_PREFIX_ . 'lang l ON l.id_lang = ml.id_lang
+                    WHERE l.active = 1 AND m.page IN (\'' . implode('\', \'', $disallow_controllers) . '\')';
             if ($results = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql)) {
                 foreach ($results as $row) {
                     $tab['Files'][$row['iso_code']][] = $row['url_rewrite'];
@@ -430,6 +436,7 @@ class AdminMetaController extends AdminController
         foreach ($disallow_controllers as $controller) {
             $tab['GB'][] = 'controller=' . $controller;
         }
+
         return $tab;
     }
 }

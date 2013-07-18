@@ -47,11 +47,11 @@ if (Tools::getValue('token') == Tools::getAdminToken('AdminReferrers' . (int) Ta
         if (Tools::isSubmit('ajaxFillProducts')) {
             $json_array = array();
             $result = Db::getInstance()->executeS('
-			SELECT p.id_product, pl.name
-			FROM ' . _DB_PREFIX_ . 'product p
-			LEFT JOIN ' . _DB_PREFIX_ . 'product_lang pl
-				ON (p.id_product = pl.id_product AND pl.id_lang = ' . (int) Tools::getValue('id_lang') . ')
-			' . (Tools::getValue('filter') != 'undefined' ? 'WHERE name LIKE "%' . pSQL(Tools::getValue('filter')) . '%"' : ''));
+            SELECT p.id_product, pl.name
+            FROM ' . _DB_PREFIX_ . 'product p
+            LEFT JOIN ' . _DB_PREFIX_ . 'product_lang pl
+                ON (p.id_product = pl.id_product AND pl.id_lang = ' . (int) Tools::getValue('id_lang') . ')
+            ' . (Tools::getValue('filter') != 'undefined' ? 'WHERE name LIKE "%' . pSQL(Tools::getValue('filter')) . '%"' : ''));
             foreach ($result as $row) {
                 $json_array[] = '{id_product:' . (int) $row['id_product'] . ',name:\'' . addslashes($row['name']) . '\'}';
             }
@@ -81,14 +81,15 @@ class AdminReferrersController extends AdminController
         $this->addRowAction('edit');
         $this->addRowAction('delete');
         $this->_select = 'SUM(sa.cache_visitors) AS cache_visitors, SUM(sa.cache_visits) AS cache_visits, SUM(sa.cache_pages) AS cache_pages,
-							SUM(sa.cache_registrations) AS cache_registrations, SUM(sa.cache_orders) AS cache_orders, SUM(sa.cache_sales) AS cache_sales,
-							IF(sa.cache_orders > 0, ROUND(sa.cache_sales/sa.cache_orders, 2), 0) as cart, (sa.cache_visits*click_fee) as fee0,
-							(sa.cache_orders*base_fee) as fee1, (sa.cache_sales*percent_fee/100) as fee2';
+                            SUM(sa.cache_registrations) AS cache_registrations, SUM(sa.cache_orders) AS cache_orders, SUM(sa.cache_sales) AS cache_sales,
+                            IF(sa.cache_orders > 0, ROUND(sa.cache_sales/sa.cache_orders, 2), 0) as cart, (sa.cache_visits*click_fee) as fee0,
+                            (sa.cache_orders*base_fee) as fee1, (sa.cache_sales*percent_fee/100) as fee2';
         $this->_join = '
-			LEFT JOIN `' . _DB_PREFIX_ . 'referrer_shop` sa
-				ON (sa.' . $this->identifier . ' = a.' . $this->identifier . ' AND sa.id_shop IN (' . implode(', ', Shop::getContextListShopID()) . '))';
+            LEFT JOIN `' . _DB_PREFIX_ . 'referrer_shop` sa
+                ON (sa.' . $this->identifier . ' = a.' . $this->identifier . ' AND sa.id_shop IN (' . implode(', ', Shop::getContextListShopID()) . '))';
         $this->_group = 'GROUP BY sa.id_referrer';
         $this->tpl_list_vars = array('enable_calendar' => $this->enableCalendar(), 'calendar_form' => $this->displayCalendar(), 'settings_form' => $this->displaySettings());
+
         return parent::renderList();
     }
     public function renderForm()
@@ -99,8 +100,8 @@ class AdminReferrersController extends AdminController
         if (Shop::isFeatureActive()) {
             $this->fields_form[1]['form']['input'][] = array('type' => 'shop', 'label' => $this->l('Shop association:'), 'name' => 'checkBoxShopAsso');
         }
-        $this->fields_form[2] = array('form' => array('legend' => array('title' => $this->l('Technical information -- Simple mode.'), 'image' => '../img/admin/affiliation.png'), 'help' => true, 'input' => array(array('type' => 'textarea', 'label' => $this->l('Include:'), 'name' => 'http_referer_like', 'cols' => 40, 'rows' => 1, 'h3' => $this->l('HTTP referrer')), array('type' => 'textarea', 'label' => $this->l('Exclude:'), 'name' => 'http_referer_like_not', 'cols' => 40, 'rows' => 1), array('type' => 'textarea', 'label' => $this->l('Include:'), 'name' => 'request_uri_like', 'cols' => 40, 'rows' => 1, 'h3' => $this->l('Request URI')), array('type' => 'textarea', 'label' => $this->l('Exclude:'), 'name' => 'request_uri_like_not', 'cols' => 40, 'rows' => 1)), 'desc' => $this->l('If you know how to use MySQL regular expressions, you can use the') . ' 
-					<a style="cursor: pointer; font-weight: bold;" onclick="$(\'#tracking_expert\').slideToggle();">' . $this->l('expert mode') . '.</a>', 'submit' => array('title' => $this->l('   Save   '), 'class' => 'button')));
+        $this->fields_form[2] = array('form' => array('legend' => array('title' => $this->l('Technical information -- Simple mode.'), 'image' => '../img/admin/affiliation.png'), 'help' => true, 'input' => array(array('type' => 'textarea', 'label' => $this->l('Include:'), 'name' => 'http_referer_like', 'cols' => 40, 'rows' => 1, 'h3' => $this->l('HTTP referrer')), array('type' => 'textarea', 'label' => $this->l('Exclude:'), 'name' => 'http_referer_like_not', 'cols' => 40, 'rows' => 1), array('type' => 'textarea', 'label' => $this->l('Include:'), 'name' => 'request_uri_like', 'cols' => 40, 'rows' => 1, 'h3' => $this->l('Request URI')), array('type' => 'textarea', 'label' => $this->l('Exclude:'), 'name' => 'request_uri_like_not', 'cols' => 40, 'rows' => 1)), 'desc' => $this->l('If you know how to use MySQL regular expressions, you can use the') . '
+                    <a style="cursor: pointer; font-weight: bold;" onclick="$(\'#tracking_expert\').slideToggle();">' . $this->l('expert mode') . '.</a>', 'submit' => array('title' => $this->l('   Save   '), 'class' => 'button')));
         $this->fields_form[3] = array('form' => array('legend' => array('title' => $this->l('Technical information -- Expert mode'), 'image' => '../img/admin/affiliation.png'), 'input' => array(array('type' => 'textarea', 'label' => $this->l('Include:'), 'name' => 'http_referer_regexp', 'cols' => 40, 'rows' => 1, 'h3' => $this->l('HTTP referrer')), array('type' => 'textarea', 'label' => $this->l('Exclude:'), 'name' => 'http_referer_regexp_not', 'cols' => 40, 'rows' => 1), array('type' => 'textarea', 'label' => $this->l('Include:'), 'name' => 'request_uri_regexp', 'cols' => 40, 'rows' => 1, 'h3' => $this->l('Request URI')), array('type' => 'textarea', 'label' => $this->l('Exclude:'), 'name' => 'request_uri_regexp_not', 'cols' => 40, 'rows' => 1))));
         $this->multiple_fieldsets = true;
         if (!($obj = $this->loadObject(true))) {
@@ -108,6 +109,7 @@ class AdminReferrersController extends AdminController
         }
         $this->fields_value = array('click_fee' => number_format((double) $this->getFieldValue($obj, 'click_fee'), 2), 'base_fee' => number_format((double) $this->getFieldValue($obj, 'base_fee'), 2), 'percent_fee' => number_format((double) $this->getFieldValue($obj, 'percent_fee'), 2), 'http_referer_like' => str_replace('\\', '\\\\', htmlentities($this->getFieldValue($obj, 'http_referer_like'), ENT_COMPAT, 'UTF-8')), 'http_referer_like_not' => str_replace('\\', '\\\\', htmlentities($this->getFieldValue($obj, 'http_referer_like_not'), ENT_COMPAT, 'UTF-8')), 'request_uri_like' => str_replace('\\', '\\\\', htmlentities($this->getFieldValue($obj, 'request_uri_like'), ENT_COMPAT, 'UTF-8')), 'request_uri_like_not' => str_replace('\\', '\\\\', htmlentities($this->getFieldValue($obj, 'request_uri_like_not'), ENT_COMPAT, 'UTF-8')));
         $this->tpl_form_vars = array('uri' => $uri);
+
         return parent::renderForm();
     }
     public function displayCalendar($action = null, $table = null, $identifier = null, $id = null)
@@ -120,6 +122,7 @@ class AdminReferrersController extends AdminController
         $tpl = $context->controller->createTemplate('calendar.tpl');
         $context->controller->addJqueryUI('ui.datepicker');
         $tpl->assign(array('current' => self::$currentIndex, 'token' => $token, 'action' => $action, 'table' => $table, 'identifier' => $identifier, 'id' => $id, 'translations' => $translations, 'datepickerFrom' => Tools::getValue('datepickerFrom', $context->employee->stats_date_from), 'datepickerTo' => Tools::getValue('datepickerTo', $context->employee->stats_date_to)));
+
         return $tpl->fetch();
     }
     public function displaySettings()
@@ -127,6 +130,7 @@ class AdminReferrersController extends AdminController
         if (!Tools::isSubmit('viewreferrer')) {
             $tpl = $this->createTemplate('form_settings.tpl');
             $tpl->assign(array('current' => self::$currentIndex, 'token' => $this->token, 'tracking_dt' => (int) Tools::getValue('tracking_dt', Configuration::get('TRACKING_DIRECT_TRAFFIC'))));
+
             return $tpl->fetch();
         }
     }
@@ -153,6 +157,7 @@ class AdminReferrersController extends AdminController
         if (Tools::isSubmit('submitRefreshIndex')) {
             Referrer::refreshIndex();
         }
+
         return parent::postProcess();
     }
     public function renderView()
@@ -160,6 +165,7 @@ class AdminReferrersController extends AdminController
         $referrer = new Referrer((int) Tools::getValue('id_referrer'));
         $display_tab = array('uniqs' => $this->l('Unique visitors'), 'visitors' => $this->l('Visitors'), 'visits' => $this->l('Visits'), 'pages' => $this->l('Pages viewed'), 'registrations' => $this->l('Registrations'), 'orders' => $this->l('Orders'), 'sales' => $this->l('Sales'), 'reg_rate' => $this->l('Registration rate'), 'order_rate' => $this->l('Order rate'), 'click_fee' => $this->l('Click fee'), 'base_fee' => $this->l('Base fee'), 'percent_fee' => $this->l('Percent fee'));
         $this->tpl_view_vars = array('enable_calendar' => $this->enableCalendar(), 'calendar_form' => $this->displayCalendar($this->action, $this->table, $this->identifier, (int) Tools::getValue($this->identifier)), 'referrer' => new Referrer((int) Tools::getValue('id_referrer')), 'display_tab' => $display_tab, 'id_employee' => (int) $this->context->employee->id, 'id_lang' => (int) $this->context->language->id);
+
         return parent::renderView();
     }
 }

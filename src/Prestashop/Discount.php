@@ -87,6 +87,7 @@ class Discount extends CartRule
         if ($key == 'cart_display') {
             return true;
         }
+
         return $this->{$key};
     }
     public function __set($key, $value)
@@ -141,6 +142,7 @@ class Discount extends CartRule
         if (in_array($method, array('add', 'update', 'getIdByName', 'getCustomerDiscounts', 'getValue', 'discountExists', 'createOrderDiscount', 'getVouchersToCartDisplay', 'display'))) {
             $obj = $this;
         }
+
         return call_user_func_array(array($obj, $method), $args);
     }
     /**
@@ -197,6 +199,7 @@ class Discount extends CartRule
         if (Validate::isLoadedObject($shop)) {
             $context->shop = $shop;
         }
+
         return parent::getContextualValue($useTax, $context);
     }
     /**
@@ -256,6 +259,7 @@ class Discount extends CartRule
         if (!$voucher->update()) {
             return false;
         }
+
         return $voucher;
     }
     /**
@@ -270,6 +274,7 @@ class Discount extends CartRule
                 return Tools::displayPrice($value, $currency);
             }
         }
+
         return '';
     }
 }

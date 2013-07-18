@@ -51,7 +51,7 @@ abstract class ModuleGrid extends Module
     protected $_direction = null;
     /** @var ModuleGridEngine grid engine */
     protected $_render;
-    protected abstract function getData();
+    abstract protected function getData();
     public function setEmployee($id_employee)
     {
         $this->_employee = new Employee($id_employee);
@@ -133,6 +133,7 @@ abstract class ModuleGrid extends Module
             $grider .= '&dir=' . $params['dir'];
         }
         require_once _PS_ROOT_DIR_ . '/modules/' . $render . '/' . $render . '.php';
+
         return call_user_func(array($render, 'hookGridEngine'), $params, $grider);
     }
     protected function csvExport($datas)

@@ -32,6 +32,7 @@ class AdminMarketingController extends AdminController
     public function initContent()
     {
         $this->display = 'view';
+
         return parent::initContent();
     }
     public function initToolbarTitle()
@@ -45,6 +46,7 @@ class AdminMarketingController extends AdminController
     public function renderView()
     {
         $this->tpl_view_vars = array('modules_list' => $this->renderModulesList());
+
         return parent::renderView();
     }
 }

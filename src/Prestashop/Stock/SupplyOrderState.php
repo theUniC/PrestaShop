@@ -74,8 +74,8 @@ class SupplyOrderState extends ObjectModel
     /**
      * Gets the list of supply order states
      *
-     * @param int $id_state_referrer Optional, used to know what state is available after this one
-     * @param int $id_lang Optional Id Language
+     * @param  int   $id_state_referrer Optional, used to know what state is available after this one
+     * @param  int   $id_lang           Optional Id Language
      * @return array States
      */
     public static function getSupplyOrderStates($id_state_referrer = null, $id_lang = null)
@@ -114,13 +114,14 @@ class SupplyOrderState extends ObjectModel
                 }
             }
         }
+
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
     }
     /**
      * Gets the list of supply order states
      *
-     * @param array $ids Optional Do not include these ids in the result
-     * @param int $id_lang Optional
+     * @param  array $ids     Optional Do not include these ids in the result
+     * @param  int   $id_lang Optional
      * @return array
      */
     public static function getStates($ids = null, $id_lang = null)
@@ -139,6 +140,7 @@ class SupplyOrderState extends ObjectModel
             $query->where('s.id_supply_order_state NOT IN(' . implode(',', array_map('intval', $ids)) . ')');
         }
         $query->orderBy('sl.name ASC');
+
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
     }
 }

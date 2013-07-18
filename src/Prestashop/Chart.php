@@ -46,6 +46,7 @@ class Chart
     {
         if (!self::$poolId) {
             ++self::$poolId;
+
             return true;
         }
     }
@@ -91,6 +92,7 @@ class Chart
         if (!array_key_exists($i, $this->curves)) {
             $this->curves[$i] = new Curve();
         }
+
         return $this->curves[$i];
     }
     /** @prototype void public function display() */
@@ -118,12 +120,12 @@ class Chart
         }
         if (count($jsCurves)) {
             return '
-			<div id="flot' . self::$poolId . '" style="width:' . $this->width . 'px;height:' . $this->height . 'px"></div>
-			<script type="text/javascript">
-				$(function () {
-					$.plot($(\'#flot' . self::$poolId . '\'), [' . implode(',', $jsCurves) . '], {' . $options . '});
-				});
-			</script>';
+            <div id="flot' . self::$poolId . '" style="width:' . $this->width . 'px;height:' . $this->height . 'px"></div>
+            <script type="text/javascript">
+                $(function () {
+                    $.plot($(\'#flot' . self::$poolId . '\'), [' . implode(',', $jsCurves) . '], {' . $options . '});
+                });
+            </script>';
         } else {
             return ErrorFacade::Display(PS_ERROR_UNDEFINED, 'No values for this chart.');
         }
@@ -146,6 +148,7 @@ class Curve
         foreach ($this->values as $key => $value) {
             $string .= '[' . addslashes((string) $key) . ($time_mode ? '000' : '') . ',' . (double) $value . '],';
         }
+
         return '{data:[' . rtrim($string, ',') . ']' . (!empty($this->label) ? ',label:"' . $this->label . '"' : '') . '' . (!empty($this->type) ? ',' . $this->type : '') . '}';
     }
     /** @prototype void public function setPoint(float $x, float $y) */

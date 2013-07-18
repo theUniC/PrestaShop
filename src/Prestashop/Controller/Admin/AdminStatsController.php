@@ -2,7 +2,6 @@
 
 namespace Prestashop\Controller\Admin;
 
-use Prestashop\Controller\AdminController;
 /*
 * 2007-2013 PrestaShop
 *
@@ -29,5 +28,5 @@ use Prestashop\Controller\AdminController;
 */
 class AdminStatsController extends AdminStatsTabController
 {
-    
+
 }

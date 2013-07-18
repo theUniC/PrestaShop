@@ -114,17 +114,18 @@ class AdminShopController extends AdminController
         $this->addRowAction('delete');
         $this->_select = 'gs.name shop_group_name, cl.name category_name, CONCAT(\'http://\', su.domain, su.physical_uri, su.virtual_uri) AS url';
         $this->_join = '
-			LEFT JOIN `' . _DB_PREFIX_ . 'shop_group` gs
-				ON (a.id_shop_group = gs.id_shop_group)
-			LEFT JOIN `' . _DB_PREFIX_ . 'category_lang` cl
-				ON (a.id_category = cl.id_category AND cl.id_lang=' . (int) $this->context->language->id . ')
-			LEFT JOIN ' . _DB_PREFIX_ . 'shop_url su
-				ON a.id_shop = su.id_shop AND su.main = 1
-		';
+            LEFT JOIN `' . _DB_PREFIX_ . 'shop_group` gs
+                ON (a.id_shop_group = gs.id_shop_group)
+            LEFT JOIN `' . _DB_PREFIX_ . 'category_lang` cl
+                ON (a.id_category = cl.id_category AND cl.id_lang=' . (int) $this->context->language->id . ')
+            LEFT JOIN ' . _DB_PREFIX_ . 'shop_url su
+                ON a.id_shop = su.id_shop AND su.main = 1
+        ';
         $this->_group = 'GROUP BY a.id_shop';
         if ($id_shop_group = (int) Tools::getValue('id_shop_group')) {
             $this->_where = 'AND a.id_shop_group = ' . $id_shop_group;
         }
+
         return parent::renderList();
     }
     public function displayAjaxGetCategoriesFromRootCategory()
@@ -148,15 +149,15 @@ class AdminShopController extends AdminController
             $_POST['id_category'] = Tools::getValue('id_category_default');
         }
         /*if ((Tools::isSubmit('status') ||
-                			Tools::isSubmit('status'.$this->table) ||
-                			(Tools::isSubmit('submitAdd'.$this->table) && Tools::getValue($this->identifier) && !Tools::getValue('active'))) &&
-                			$this->loadObject() && $this->loadObject()->active)
-                		{
-                			if (Tools::getValue('id_shop') == Configuration::get('PS_SHOP_DEFAULT'))
-                				$this->errors[] = Tools::displayError('You cannot disable the default shop.');
-                			else if (Shop::getTotalShops() == 1)
-                				$this->errors[] = Tools::displayError('You cannot disable the last shop.');
-                		}*/
+                            Tools::isSubmit('status'.$this->table) ||
+                            (Tools::isSubmit('submitAdd'.$this->table) && Tools::getValue($this->identifier) && !Tools::getValue('active'))) &&
+                            $this->loadObject() && $this->loadObject()->active)
+                        {
+                            if (Tools::getValue('id_shop') == Configuration::get('PS_SHOP_DEFAULT'))
+                                $this->errors[] = Tools::displayError('You cannot disable the default shop.');
+                            else if (Shop::getTotalShops() == 1)
+                                $this->errors[] = Tools::displayError('You cannot disable the last shop.');
+                        }*/
         if (Tools::isSubmit('submitAddshopAndStay') || Tools::isSubmit('submitAddshop')) {
             $shop_group = new ShopGroup((int) Tools::getValue('id_shop_group'));
             if ($shop_group->shopNameExists(Tools::getValue('name'), (int) Tools::getValue('id_shop'))) {
@@ -170,6 +171,7 @@ class AdminShopController extends AdminController
         if ($this->redirect_after) {
             $this->redirect_after .= '&id_shop_group=' . $this->id_shop_group;
         }
+
         return $result;
     }
     public function processDelete()
@@ -180,11 +182,13 @@ class AdminShopController extends AdminController
             if (!Shop::hasDependency($object->id)) {
                 $result = Category::deleteCategoriesFromShop($object->id) && parent::processDelete();
                 Tools::generateHtaccess();
+
                 return $result;
             } else {
                 $this->errors[] = Tools::displayError('You can\'t delete this shop (customer and/or order dependency).');
             }
         }
+
         return false;
     }
     protected function afterAdd($new_shop)
@@ -195,13 +199,14 @@ class AdminShopController extends AdminController
         // copy default data
         if (!Tools::getValue('useImportData') || is_array($import_data) && !isset($import_data['group'])) {
             $sql = 'INSERT INTO `' . _DB_PREFIX_ . 'group_shop` (`id_shop`, `id_group`)
-					VALUES
-					(' . (int) $new_shop->id . ', ' . (int) Configuration::get('PS_UNIDENTIFIED_GROUP') . '),
-					(' . (int) $new_shop->id . ', ' . (int) Configuration::get('PS_GUEST_GROUP') . '),
-					(' . (int) $new_shop->id . ', ' . (int) Configuration::get('PS_CUSTOMER_GROUP') . ')
-				';
+                    VALUES
+                    (' . (int) $new_shop->id . ', ' . (int) Configuration::get('PS_UNIDENTIFIED_GROUP') . '),
+                    (' . (int) $new_shop->id . ', ' . (int) Configuration::get('PS_GUEST_GROUP') . '),
+                    (' . (int) $new_shop->id . ', ' . (int) Configuration::get('PS_CUSTOMER_GROUP') . ')
+                ';
             Db::getInstance()->execute($sql);
         }
+
         return parent::afterAdd($new_shop);
     }
     protected function afterUpdate($new_shop)
@@ -212,6 +217,7 @@ class AdminShopController extends AdminController
         if (Tools::getValue('useImportData') && ($import_data = Tools::getValue('importData')) && is_array($import_data)) {
             $new_shop->copyShopData((int) Tools::getValue('importFromShop'), $import_data);
         }
+
         return parent::afterUpdate($new_shop);
     }
     public function getList($id_lang, $order_by = null, $order_way = null, $start = 0, $limit = null, $id_lang_shop = false)
@@ -270,26 +276,26 @@ class AdminShopController extends AdminController
         }
         $this->fields_form['input'][] = array('type' => 'categories_select', 'name' => 'categoryBox', 'label' => $this->l('Associated categories:'), 'category_tree' => $this->initCategoriesAssociation($parent), 'desc' => $this->l('By selecting associated categories, you are choosing to share the categories between shops. Once associated between shops, any alteration of this category will impact every shop.'));
         /*$this->fields_form['input'][] = array(
-                			'type' => 'radio',
-                			'label' => $this->l('Status:'),
-                			'name' => 'active',
-                			'required' => true,
-                			'class' => 't',
-                			'is_bool' => true,
-                			'values' => array(
-                				array(
-                					'id' => 'active_on',
-                					'value' => 1,
-                					'label' => $this->l('Enabled')
-                				),
-                				array(
-                					'id' => 'active_off',
-                					'value' => 0,
-                					'label' => $this->l('Disabled')
-                				)
-                			),
-                			'desc' => $this->l('Enable or disable your store?')
-                		);*/
+                            'type' => 'radio',
+                            'label' => $this->l('Status:'),
+                            'name' => 'active',
+                            'required' => true,
+                            'class' => 't',
+                            'is_bool' => true,
+                            'values' => array(
+                                array(
+                                    'id' => 'active_on',
+                                    'value' => 1,
+                                    'label' => $this->l('Enabled')
+                                ),
+                                array(
+                                    'id' => 'active_off',
+                                    'value' => 0,
+                                    'label' => $this->l('Disabled')
+                                )
+                            ),
+                            'desc' => $this->l('Enable or disable your store?')
+                        );*/
         $themes = Theme::getThemes();
         if (!isset($obj->id_theme)) {
             foreach ($themes as $theme) {
@@ -328,6 +334,7 @@ class AdminShopController extends AdminController
         if (isset($this->fields_import_form)) {
             $this->tpl_form_vars = array_merge($this->tpl_form_vars, array('form_import' => $this->fields_import_form));
         }
+
         return parent::renderForm();
     }
     /**
@@ -372,6 +379,7 @@ class AdminShopController extends AdminController
         $this->errors = array_unique($this->errors);
         if (count($this->errors) > 0) {
             $this->display = 'add';
+
             return;
         }
         // specific import for stock
@@ -383,6 +391,7 @@ class AdminShopController extends AdminController
         }
         Category::updateFromShop(Tools::getValue('categoryBox'), $object->id);
         Search::indexation(true);
+
         return $object;
     }
     public function initCategoriesAssociation($id_root = null)
@@ -410,16 +419,17 @@ class AdminShopController extends AdminController
         }
         $root_category = array('id_category' => $root_category->id, 'name' => $root_category->name[$this->context->language->id]);
         $helper = new Helper();
+
         return $helper->renderCategoryTree($root_category, $selected_cat, 'categoryBox', false, true);
     }
     public function ajaxProcessTree()
     {
         $tree = array();
         $sql = 'SELECT g.id_shop_group, g.name as group_name, s.id_shop, s.name as shop_name, u.id_shop_url, u.domain, u.physical_uri, u.virtual_uri
-				FROM ' . _DB_PREFIX_ . 'shop_group g
-				LEFT JOIN  ' . _DB_PREFIX_ . 'shop s ON g.id_shop_group = s.id_shop_group
-				LEFT JOIN  ' . _DB_PREFIX_ . 'shop_url u ON u.id_shop = s.id_shop
-				ORDER BY g.name, s.name, u.domain';
+                FROM ' . _DB_PREFIX_ . 'shop_group g
+                LEFT JOIN  ' . _DB_PREFIX_ . 'shop s ON g.id_shop_group = s.id_shop_group
+                LEFT JOIN  ' . _DB_PREFIX_ . 'shop_url u ON u.id_shop = s.id_shop
+                ORDER BY g.name, s.name, u.domain';
         $results = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
         foreach ($results as $row) {
             $id_shop_group = $row['id_shop_group'];

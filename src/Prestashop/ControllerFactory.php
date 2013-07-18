@@ -61,6 +61,7 @@ class ControllerFactory
     public static function getController($className, $auth = false, $ssl = false)
     {
         ControllerFactory::includeController($className);
+
         return new $className($auth, $ssl);
     }
 }

@@ -46,11 +46,12 @@ class AdminTagsController extends AdminController
         $this->addRowAction('delete');
         $this->_select = 'l.name as lang, COUNT(pt.id_product) as products';
         $this->_join = '
-			LEFT JOIN `' . _DB_PREFIX_ . 'product_tag` pt
-				ON (a.`id_tag` = pt.`id_tag`)
-			LEFT JOIN `' . _DB_PREFIX_ . 'lang` l
-				ON (l.`id_lang` = a.`id_lang`)';
+            LEFT JOIN `' . _DB_PREFIX_ . 'product_tag` pt
+                ON (a.`id_tag` = pt.`id_tag`)
+            LEFT JOIN `' . _DB_PREFIX_ . 'lang` l
+                ON (l.`id_lang` = a.`id_lang`)';
         $this->_group = 'GROUP BY a.name, a.id_lang';
+
         return parent::renderList();
     }
     public function postProcess()
@@ -60,6 +61,7 @@ class AdminTagsController extends AdminController
                 $obj->setProducts($_POST['products']);
             }
         }
+
         return parent::postProcess();
     }
     public function renderForm()
@@ -68,6 +70,7 @@ class AdminTagsController extends AdminController
             return;
         }
         $this->fields_form = array('legend' => array('title' => $this->l('Tag')), 'input' => array(array('type' => 'text', 'label' => $this->l('Name:'), 'name' => 'name', 'required' => true), array('type' => 'select', 'label' => $this->l('Language:'), 'name' => 'id_lang', 'required' => true, 'options' => array('query' => Language::getLanguages(false), 'id' => 'id_lang', 'name' => 'name'))), 'selects' => array('products' => $obj->getProducts(true), 'products_unselected' => $obj->getProducts(false)), 'submit' => array('title' => $this->l('Save   '), 'class' => 'button'));
+
         return parent::renderForm();
     }
 }

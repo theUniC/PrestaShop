@@ -51,9 +51,9 @@ class AdminWebserviceController extends AdminController
         $this->bulk_actions = array('delete' => array('text' => $this->l('Delete selected'), 'confirm' => $this->l('Delete selected items?')), 'enableSelection' => array('text' => $this->l('Enable selection')), 'disableSelection' => array('text' => $this->l('Disable selection')));
         $this->fields_list = array('key' => array('title' => $this->l('Key'), 'align' => 'center', 'width' => 32), 'active' => array('title' => $this->l('Enabled'), 'align' => 'center', 'active' => 'status', 'type' => 'bool', 'orderby' => false, 'width' => 32), 'description' => array('title' => $this->l('Key description'), 'align' => 'left', 'orderby' => false));
         $this->fields_options = array('general' => array('title' => $this->l('Configuration'), 'fields' => array('PS_WEBSERVICE' => array('title' => $this->l('Enable PrestaShop\'s webservice'), 'desc' => $this->l('Before activating the webservice, you must be sure to: ') . '<ol>
-													<li>' . $this->l('Check that URL rewriting is available on this server') . '</li>
-													<li>' . $this->l('Check that the five methods GET, POST, PUT, DELETE and HEAD are supported by this server.') . '</li>
-												</ol>', 'cast' => 'intval', 'type' => 'bool'), 'PS_WEBSERVICE_CGI_HOST' => array('title' => $this->l('Active mode CGI for PHP'), 'desc' => $this->l('Be sure PHP is not configured as an Apache module on your server.'), 'cast' => 'intval', 'type' => 'bool')), 'submit' => array()));
+                                                    <li>' . $this->l('Check that URL rewriting is available on this server') . '</li>
+                                                    <li>' . $this->l('Check that the five methods GET, POST, PUT, DELETE and HEAD are supported by this server.') . '</li>
+                                                </ol>', 'cast' => 'intval', 'type' => 'bool'), 'PS_WEBSERVICE_CGI_HOST' => array('title' => $this->l('Active mode CGI for PHP'), 'desc' => $this->l('Be sure PHP is not configured as an Apache module on your server.'), 'cast' => 'intval', 'type' => 'bool')), 'submit' => array()));
         parent::__construct();
     }
     protected function processUpdateOptions()
@@ -74,6 +74,7 @@ class AdminWebserviceController extends AdminController
         $ressources = WebserviceRequest::getResources();
         $permissions = WebserviceKey::getPermissionForAccount($obj->key);
         $this->tpl_form_vars = array('ressources' => $ressources, 'permissions' => $permissions);
+
         return parent::renderForm();
     }
     public function initContent()
@@ -96,6 +97,7 @@ class AdminWebserviceController extends AdminController
             $helper->id = $this->id;
             $helper->tpl_vars = $this->tpl_option_vars;
             $options = $helper->generateOptions($this->fields_options);
+
             return $options;
         }
     }
@@ -115,6 +117,7 @@ class AdminWebserviceController extends AdminController
         if (WebserviceKey::keyExists(Tools::getValue('key')) && !Tools::getValue('id_webservice_account')) {
             $this->errors[] = Tools::displayError($this->l('This key already exists.'));
         }
+
         return parent::postProcess();
     }
     protected function afterAdd($object)

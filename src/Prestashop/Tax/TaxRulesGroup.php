@@ -44,9 +44,9 @@ class TaxRulesGroup extends ObjectModel
     public static function getTaxRulesGroups($only_active = true)
     {
         return Db::getInstance()->executeS('
-		SELECT *
-		FROM `' . _DB_PREFIX_ . 'tax_rules_group` g' . ($only_active ? ' WHERE g.`active` = 1' : '') . '
-		ORDER BY name ASC');
+        SELECT *
+        FROM `' . _DB_PREFIX_ . 'tax_rules_group` g' . ($only_active ? ' WHERE g.`active` = 1' : '') . '
+        ORDER BY name ASC');
     }
     /**
      * @return array an array of tax rules group formatted as $id => $name
@@ -54,11 +54,13 @@ class TaxRulesGroup extends ObjectModel
     public static function getTaxRulesGroupsForOptions()
     {
         $tax_rules[] = array('id_tax_rules_group' => 0, 'name' => Tools::displayError('No tax'));
+
         return array_merge($tax_rules, TaxRulesGroup::getTaxRulesGroups());
     }
     public function delete()
     {
         $res = Db::getInstance()->execute('DELETE FROM `' . _DB_PREFIX_ . 'tax_rule` WHERE `id_tax_rules_group`=' . (int) $this->id);
+
         return parent::delete() && $res;
     }
     /**
@@ -67,17 +69,18 @@ class TaxRulesGroup extends ObjectModel
     public static function getAssociatedTaxRatesByIdCountry($id_country)
     {
         $rows = Db::getInstance()->executeS('
-	    SELECT rg.`id_tax_rules_group`, t.`rate`
-	    FROM `' . _DB_PREFIX_ . 'tax_rules_group` rg
-   	    LEFT JOIN `' . _DB_PREFIX_ . 'tax_rule` tr ON (tr.`id_tax_rules_group` = rg.`id_tax_rules_group`)
-	    LEFT JOIN `' . _DB_PREFIX_ . 'tax` t ON (t.`id_tax` = tr.`id_tax`)
-	    WHERE tr.`id_country` = ' . (int) $id_country . '
-	    AND tr.`id_state` = 0
-	    AND 0 between `zipcode_from` AND `zipcode_to`');
+        SELECT rg.`id_tax_rules_group`, t.`rate`
+        FROM `' . _DB_PREFIX_ . 'tax_rules_group` rg
+           LEFT JOIN `' . _DB_PREFIX_ . 'tax_rule` tr ON (tr.`id_tax_rules_group` = rg.`id_tax_rules_group`)
+        LEFT JOIN `' . _DB_PREFIX_ . 'tax` t ON (t.`id_tax` = tr.`id_tax`)
+        WHERE tr.`id_country` = ' . (int) $id_country . '
+        AND tr.`id_state` = 0
+        AND 0 between `zipcode_from` AND `zipcode_to`');
         $res = array();
         foreach ($rows as $row) {
             $res[$row['id_tax_rules_group']] = $row['rate'];
         }
+
         return $res;
     }
     /**
@@ -89,8 +92,8 @@ class TaxRulesGroup extends ObjectModel
     public static function getIdByName($name)
     {
         return Db::getInstance()->getValue('SELECT `id_tax_rules_group`
-	    FROM `' . _DB_PREFIX_ . 'tax_rules_group` rg
-	    WHERE `name` = \'' . pSQL($name) . '\'');
+        FROM `' . _DB_PREFIX_ . 'tax_rules_group` rg
+        WHERE `name` = \'' . pSQL($name) . '\'');
     }
     public function hasUniqueTaxRuleForCountry($id_country, $id_state, $id_tax_rule = false)
     {
@@ -100,6 +103,7 @@ class TaxRulesGroup extends ObjectModel
                 return true;
             }
         }
+
         return false;
     }
     /**
@@ -112,6 +116,7 @@ class TaxRulesGroup extends ObjectModel
         foreach (TaxRulesGroup::getTaxes($id_tax_rules_group, $id_country, $id_state, $zipcode) as $tax) {
             $rate += (double) $tax->rate;
         }
+
         return $rate;
     }
     /**
@@ -121,6 +126,7 @@ class TaxRulesGroup extends ObjectModel
     public static function getTaxes($id_tax_rules_group, $id_country, $id_state, $id_county)
     {
         Tools::displayAsDeprecated();
+
         return array();
     }
 }

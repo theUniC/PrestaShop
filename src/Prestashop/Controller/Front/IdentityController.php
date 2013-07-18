@@ -105,6 +105,7 @@ class IdentityController extends FrontController
         } else {
             $_POST = array_map('stripslashes', $this->customer->getFields());
         }
+
         return $this->customer;
     }
     /**

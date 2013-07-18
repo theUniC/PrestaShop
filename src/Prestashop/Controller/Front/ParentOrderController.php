@@ -50,7 +50,7 @@ use Prestashop\Carrier;
 /**
  * Class FreeOrder to use PaymentModule (abstract class, cannot be instancied)
  */
-class FreeOrder extends PaymentModule
+class ParentOrderController extends PaymentModule
 {
     public $active = 1;
     public $name = 'free_order';
@@ -168,8 +168,10 @@ class ParentOrderController extends FrontController
             $order = new FreeOrder();
             $order->free_order_class = true;
             $order->validateOrder($this->context->cart->id, Configuration::get('PS_OS_PAYMENT'), 0, Tools::displayError('Free order', false), null, array(), null, false, $this->context->cart->secure_key);
+
             return (int) Order::getOrderByCartId($this->context->cart->id);
         }
+
         return false;
     }
     protected function _updateMessage($messageContent)
@@ -196,6 +198,7 @@ class ParentOrderController extends FrontController
                 $message->delete();
             }
         }
+
         return true;
     }
     protected function _processCarrier()
@@ -248,6 +251,7 @@ class ParentOrderController extends FrontController
         // Carrier has changed, so we check if the cart rules still apply
         CartRule::autoRemoveFromCart($this->context);
         CartRule::autoAddToCart($this->context);
+
         return true;
     }
     /**
@@ -264,6 +268,7 @@ class ParentOrderController extends FrontController
                 return false;
             }
         }
+
         return true;
     }
     protected function _assignSummaryInformations()
@@ -431,11 +436,11 @@ class ParentOrderController extends FrontController
      * Decides what the default carrier is and update the cart with it
      *
      * @todo this function must be modified - id_carrier is now delivery_option
-     * 
+     *
      * @param array $carriers
-     * 
+     *
      * @deprecated since 1.5.0
-     * 
+     *
      * @return number the id of the default carrier
      */
     protected function setDefaultCarrierSelection($carriers)
@@ -448,9 +453,9 @@ class ParentOrderController extends FrontController
      * Decides what the default carrier is and update the cart with it
      *
      * @param array $carriers
-     * 
+     *
      * @deprecated since 1.5.0
-     * 
+     *
      * @return number the id of the default carrier
      */
     protected function _setDefaultCarrierSelection($carriers)
@@ -459,6 +464,7 @@ class ParentOrderController extends FrontController
         if ($this->context->cart->update()) {
             return $this->context->cart->id_carrier;
         }
+
         return 0;
     }
 }

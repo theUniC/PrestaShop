@@ -67,6 +67,7 @@ class HTMLTemplateSupplyOrderForm extends HTMLTemplate
         $tax_order_summary = $this->getTaxOrderSummary();
         $currency = new Currency((int) $this->supply_order->id_currency);
         $this->smarty->assign(array('warehouse' => $this->warehouse, 'address_warehouse' => $this->address_warehouse, 'address_supplier' => $this->address_supplier, 'supply_order' => $this->supply_order, 'supply_order_details' => $supply_order_details, 'tax_order_summary' => $tax_order_summary, 'currency' => $currency));
+
         return $this->smarty->fetch($this->getTemplate('supply-order'));
     }
     /**
@@ -87,10 +88,10 @@ class HTMLTemplateSupplyOrderForm extends HTMLTemplate
     {
         $query = new DbQuery();
         $query->select('
-			SUM(price_with_order_discount_te) as base_te,
-			tax_rate,
-			SUM(tax_value_with_order_discount) as total_tax_value
-		');
+            SUM(price_with_order_discount_te) as base_te,
+            tax_rate,
+            SUM(tax_value_with_order_discount) as total_tax_value
+        ');
         $query->from('supply_order_detail');
         $query->where('id_supply_order = ' . (int) $this->supply_order->id);
         $query->groupBy('tax_rate');
@@ -116,6 +117,7 @@ class HTMLTemplateSupplyOrderForm extends HTMLTemplate
             list($width, $height) = getimagesize($path_logo);
         }
         $this->smarty->assign(array('logo_path' => $path_logo, 'img_ps_dir' => 'http://' . Tools::getMediaServer(_PS_IMG_) . _PS_IMG_, 'img_update_time' => Configuration::get('PS_IMG_UPDATE_TIME'), 'title' => $this->title, 'reference' => $this->supply_order->reference, 'date' => $this->date, 'shop_name' => $shop_name, 'width_logo' => $width, 'height_logo' => $height));
+
         return $this->smarty->fetch($this->getTemplate('supply-order-header'));
     }
     /**
@@ -128,6 +130,7 @@ class HTMLTemplateSupplyOrderForm extends HTMLTemplate
         $free_text[] = HTMLTemplateSupplyOrderForm::l('DE: Discount excluded ');
         $free_text[] = HTMLTemplateSupplyOrderForm::l(' DI: Discount included');
         $this->smarty->assign(array('shop_address' => $this->getShopAddress(), 'shop_fax' => Configuration::get('PS_SHOP_FAX'), 'shop_phone' => Configuration::get('PS_SHOP_PHONE'), 'shop_details' => Configuration::get('PS_SHOP_DETAILS'), 'free_text' => $free_text));
+
         return $this->smarty->fetch($this->getTemplate('supply-order-footer'));
     }
     /**

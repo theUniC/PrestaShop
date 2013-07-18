@@ -72,6 +72,7 @@ class Tax extends ObjectModel
     public function historize()
     {
         $this->deleted = true;
+
         return parent::update();
     }
     public function toggleStatus()
@@ -79,6 +80,7 @@ class Tax extends ObjectModel
         if (parent::toggleStatus()) {
             return $this->_onStatusChange();
         }
+
         return false;
     }
     public function update($nullValues = false)
@@ -96,6 +98,7 @@ class Tax extends ObjectModel
                 return $this->_onStatusChange();
             }
         }
+
         return false;
     }
     protected function _onStatusChange()
@@ -103,6 +106,7 @@ class Tax extends ObjectModel
         if (!$this->active) {
             return TaxRule::deleteTaxRuleByIdTax($this->id);
         }
+
         return true;
     }
     /**
@@ -113,9 +117,9 @@ class Tax extends ObjectModel
     public function isUsed()
     {
         return Db::getInstance()->getValue('
-		SELECT `id_tax`
-		FROM `' . _DB_PREFIX_ . 'order_detail_tax`
-		WHERE `id_tax` = ' . (int) $this->id);
+        SELECT `id_tax`
+        FROM `' . _DB_PREFIX_ . 'order_detail_tax`
+        WHERE `id_tax` = ' . (int) $this->id);
     }
     /**
      * Get all available taxes
@@ -136,6 +140,7 @@ class Tax extends ObjectModel
         if ($active_only) {
             $sql->where('t.`active` = 1');
         }
+
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
     }
     public static function excludeTaxeOption()
@@ -144,21 +149,23 @@ class Tax extends ObjectModel
         if ($ps_tax === null) {
             $ps_tax = Configuration::get('PS_TAX');
         }
+
         return !$ps_tax;
     }
     /**
      * Return the tax id associated to the specified name
      *
-     * @param string $tax_name
-     * @param boolean $active (true by default)
+     * @param string  $tax_name
+     * @param boolean $active   (true by default)
      */
     public static function getTaxIdByName($tax_name, $active = 1)
     {
         $tax = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow('
-			SELECT t.`id_tax`
-			FROM `' . _DB_PREFIX_ . 'tax` t
-			LEFT JOIN `' . _DB_PREFIX_ . 'tax_lang` tl ON (tl.id_tax = t.id_tax)
-			WHERE tl.`name` = \'' . pSQL($tax_name) . '\' ' . ($active == 1 ? ' AND t.`active` = 1' : ''));
+            SELECT t.`id_tax`
+            FROM `' . _DB_PREFIX_ . 'tax` t
+            LEFT JOIN `' . _DB_PREFIX_ . 'tax_lang` tl ON (tl.id_tax = t.id_tax)
+            WHERE tl.`name` = \'' . pSQL($tax_name) . '\' ' . ($active == 1 ? ' AND t.`active` = 1' : ''));
+
         return $tax ? (int) $tax['id_tax'] : false;
     }
     /**
@@ -172,6 +179,7 @@ class Tax extends ObjectModel
         $address = Address::initialize($id_address);
         $tax_manager = TaxManagerFactory::getManager($address, (int) Configuration::get('PS_ECOTAX_TAX_RULES_GROUP_ID'));
         $tax_calculator = $tax_manager->getTaxCalculator();
+
         return $tax_calculator->getTotalRate();
     }
     /**
@@ -186,13 +194,14 @@ class Tax extends ObjectModel
         $id_tax_rules = (int) Carrier::getIdTaxRulesGroupByIdCarrier((int) $id_carrier);
         $tax_manager = TaxManagerFactory::getManager($address, $id_tax_rules);
         $tax_calculator = $tax_manager->getTaxCalculator();
+
         return $tax_calculator->getTotalRate();
     }
     /**
      * Return the product tax rate using the tax rules system
      *
-     * @param integer $id_product
-     * @param integer $id_country
+     * @param  integer $id_product
+     * @param  integer $id_country
      * @return Tax
      *
      * @deprecated since 1.5
@@ -204,13 +213,14 @@ class Tax extends ObjectModel
             $tax_rate = TaxRulesGroup::getTaxesRate((int) Product::getIdTaxRulesGroupByIdProduct((int) $id_product), (int) $id_country, (int) $id_state, $zipcode);
             self::$_product_tax_via_rules[$id_product . '-' . $id_country . '-' . $zipcode] = $tax_rate;
         }
+
         return self::$_product_tax_via_rules[$id_product . '-' . $id_country . '-' . $zipcode];
     }
     /**
      * Returns the product tax
      *
-     * @param integer $id_product
-     * @param integer $id_country
+     * @param  integer $id_product
+     * @param  integer $id_country
      * @return Tax
      */
     public static function getProductTaxRate($id_product, $id_address = null, Context $context = null)
@@ -222,6 +232,7 @@ class Tax extends ObjectModel
         $id_tax_rules = (int) Product::getIdTaxRulesGroupByIdProduct($id_product, $context);
         $tax_manager = TaxManagerFactory::getManager($address, $id_tax_rules);
         $tax_calculator = $tax_manager->getTaxCalculator();
+
         return $tax_calculator->getTotalRate();
     }
 }

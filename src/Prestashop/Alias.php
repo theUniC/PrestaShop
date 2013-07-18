@@ -51,9 +51,9 @@ class Alias extends ObjectModel
                     $this->search = trim($search);
                 } else {
                     $row = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow('
-				SELECT a.id_alias, a.search, a.alias
-				FROM `' . _DB_PREFIX_ . 'alias` a
-				WHERE `alias` LIKE \'' . pSQL($alias) . '\' AND `active` = 1');
+                SELECT a.id_alias, a.search, a.alias
+                FROM `' . _DB_PREFIX_ . 'alias` a
+                WHERE `alias` LIKE \'' . pSQL($alias) . '\' AND `active` = 1');
                     if ($row) {
                         $this->id = (int) $row['id_alias'];
                         $this->search = $search ? trim($search) : $row['search'];
@@ -71,8 +71,10 @@ class Alias extends ObjectModel
         if (parent::add($autodate, $nullValues)) {
             // Set cache of feature detachable to true
             Configuration::updateGlobalValue('PS_ALIAS_FEATURE_ACTIVE', '1');
+
             return true;
         }
+
         return false;
     }
     public function delete()
@@ -80,8 +82,10 @@ class Alias extends ObjectModel
         if (parent::delete()) {
             // Refresh cache of feature detachable
             Configuration::updateGlobalValue('PS_ALIAS_FEATURE_ACTIVE', Alias::isCurrentlyUsed($this->def['table'], true));
+
             return true;
         }
+
         return false;
     }
     public function getAliases()
@@ -90,10 +94,11 @@ class Alias extends ObjectModel
             return '';
         }
         $aliases = Db::getInstance()->executeS('
-		SELECT a.alias
-		FROM `' . _DB_PREFIX_ . 'alias` a
-		WHERE `search` = \'' . pSQL($this->search) . '\'');
+        SELECT a.alias
+        FROM `' . _DB_PREFIX_ . 'alias` a
+        WHERE `search` = \'' . pSQL($this->search) . '\'');
         $aliases = array_map('implode', $aliases);
+
         return implode(', ', $aliases);
     }
     /**

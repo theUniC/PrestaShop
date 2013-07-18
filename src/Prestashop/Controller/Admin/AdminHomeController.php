@@ -80,7 +80,7 @@ class AdminHomeController extends AdminController
         $indexRebuiltAfterUpdate = 0;
         $needRebuild = Configuration::get('PS_NEED_REBUILD_INDEX');
         if ($needRebuild != '0') {
-            
+
         }
         $indexRebuiltAfterUpdate = 2;
         $smartyOptimized = 0;
@@ -113,6 +113,7 @@ class AdminHomeController extends AdminController
         }
         $this->context->smarty->assign(array('opti_list' => $opti_list, 'content' => $content, 'hide_tips' => Configuration::get('PS_HIDE_OPTIMIZATION_TIPS')));
         $template = $this->createTemplate('optimizationTips.tpl');
+
         return $template->fetch();
     }
     public function setMedia()
@@ -132,7 +133,7 @@ class AdminHomeController extends AdminController
         $shop = Context::getContext()->shop;
         if ($_SERVER['HTTP_HOST'] != $shop->domain && $_SERVER['HTTP_HOST'] != $shop->domain_ssl && Tools::getValue('ajax') == false) {
             $this->displayWarning($this->l('You are currently connected under the following domain name:') . ' <span style="color: #CC0000;">' . $_SERVER['HTTP_HOST'] . '</span><br />' . $this->l('This is different from the main shop domain name set in the "Multistore" page under the "Advanced Parameters" menu:') . ' <span style="color: #CC0000;">' . $shop->domain . '</span><br />
-			<a href="index.php?controller=AdminMeta&token=' . Tools::getAdminTokenLite('AdminMeta') . '#conf_id_domain">' . $this->l('Click here if you want to modify your main shop\'s domain name.') . '</a>');
+            <a href="index.php?controller=AdminMeta&token=' . Tools::getAdminTokenLite('AdminMeta') . '#conf_id_domain">' . $this->l('Click here if you want to modify your main shop\'s domain name.') . '</a>');
         }
     }
     protected function getQuickLinks()
@@ -163,6 +164,7 @@ class AdminHomeController extends AdminController
         if ($profile_access[(int) Tab::getIdFromClassName('AdminCarts')]['view']) {
             $quick_links['eighth'] = array('href' => $this->context->link->getAdminLink('AdminCarts') . '&amp;id_cart', 'title' => $this->l('Abandoned shopping carts'), 'description' => $this->l('View your customer\'s carts.'));
         }
+
         return $quick_links;
     }
     public function getCustomersService()
@@ -172,136 +174,138 @@ class AdminHomeController extends AdminController
         $pending = (int) Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('SELECT COUNT(*) FROM `' . _DB_PREFIX_ . 'customer_thread` WHERE `status` LIKE "%pending%"');
         $close = $all - ($unread + $pending);
         $content = '
-			<div class="table_info" id="table_info_last">
-				<h5><a href="index.php?tab=AdminCustomerThreads&token=' . Tools::getAdminTokenLite('AdminCustomerThreads') . '">' . $this->l('View more') . '</a> ' . $this->l('Customer service') . '</h5>
-				<table class="table_info_details" style="width:100%;">
-					<colgroup>
-						<col width="">
-						<col width="80px">
-					</colgroup>
-					<tr class="tr_odd">
-						<td class="td_align_left">
-						' . $this->l('Unread threads') . '
-						</td>
-						<td>
-							' . $unread . '
-						</td>
-					</tr>
-					<tr>
-						<td class="td_align_left">
-							' . $this->l('Pending threads') . '
-						</td>
-						<td>
-							' . $pending . '
-						</td>
-					</tr>
-					<tr class="tr_odd">
-						<td class="td_align_left">
-							' . $this->l('Closed threads') . '
-						</td>
-						<td>
-							' . $close . '
-						</td>
-					</tr>
-					<tr>
-						<td class="td_align_left">
-							' . $this->l('Total threads') . '
-						</td>
-						<td>
-							' . $all . '
-						</td>
-					</tr>
-				</table>
-			</div>';
+            <div class="table_info" id="table_info_last">
+                <h5><a href="index.php?tab=AdminCustomerThreads&token=' . Tools::getAdminTokenLite('AdminCustomerThreads') . '">' . $this->l('View more') . '</a> ' . $this->l('Customer service') . '</h5>
+                <table class="table_info_details" style="width:100%;">
+                    <colgroup>
+                        <col width="">
+                        <col width="80px">
+                    </colgroup>
+                    <tr class="tr_odd">
+                        <td class="td_align_left">
+                        ' . $this->l('Unread threads') . '
+                        </td>
+                        <td>
+                            ' . $unread . '
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_align_left">
+                            ' . $this->l('Pending threads') . '
+                        </td>
+                        <td>
+                            ' . $pending . '
+                        </td>
+                    </tr>
+                    <tr class="tr_odd">
+                        <td class="td_align_left">
+                            ' . $this->l('Closed threads') . '
+                        </td>
+                        <td>
+                            ' . $close . '
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_align_left">
+                            ' . $this->l('Total threads') . '
+                        </td>
+                        <td>
+                            ' . $all . '
+                        </td>
+                    </tr>
+                </table>
+            </div>';
+
         return $content;
     }
     public function getMonthlyStatistics()
     {
         $currency = Tools::setCurrency($this->context->cookie);
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow('
-			SELECT IFNULL(SUM(`total_paid_real` / conversion_rate), "0") as total_sales, COUNT(*) as total_orders
-			FROM `' . _DB_PREFIX_ . 'orders`
-			WHERE valid = 1
-				AND `invoice_date` BETWEEN \'' . date('Y-m') . '-01 00:00:00\' AND \'' . date('Y-m') . '-31 23:59:59\'
-				' . Shop::addSqlRestriction(Shop::SHARE_ORDER) . '
-		');
+            SELECT IFNULL(SUM(`total_paid_real` / conversion_rate), "0") as total_sales, COUNT(*) as total_orders
+            FROM `' . _DB_PREFIX_ . 'orders`
+            WHERE valid = 1
+                AND `invoice_date` BETWEEN \'' . date('Y-m') . '-01 00:00:00\' AND \'' . date('Y-m') . '-31 23:59:59\'
+                ' . Shop::addSqlRestriction(Shop::SHARE_ORDER) . '
+        ');
         $result2 = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow('
-			SELECT COUNT(`id_customer`) AS total_registrations
-			FROM `' . _DB_PREFIX_ . 'customer` c
-			WHERE c.`date_add` BETWEEN \'' . date('Y-m') . '-01 00:00:00\' AND \'' . date('Y-m') . '-31 23:59:59\'
-				' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER) . '
-		');
+            SELECT COUNT(`id_customer`) AS total_registrations
+            FROM `' . _DB_PREFIX_ . 'customer` c
+            WHERE c.`date_add` BETWEEN \'' . date('Y-m') . '-01 00:00:00\' AND \'' . date('Y-m') . '-31 23:59:59\'
+                ' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER) . '
+        ');
         $result3 = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow('
-			SELECT SUM(pv.`counter`) AS total_viewed
-			FROM `' . _DB_PREFIX_ . 'page_viewed` pv
-			LEFT JOIN `' . _DB_PREFIX_ . 'date_range` dr ON pv.`id_date_range` = dr.`id_date_range`
-			LEFT JOIN `' . _DB_PREFIX_ . 'page` p ON pv.`id_page` = p.`id_page`
-			LEFT JOIN `' . _DB_PREFIX_ . 'page_type` pt ON pt.`id_page_type` = p.`id_page_type`
-			WHERE pt.`name` = \'product\'
-				AND dr.`time_start` BETWEEN \'' . date('Y-m') . '-01 00:00:00\' AND \'' . date('Y-m') . '-31 23:59:59\'
-				AND dr.`time_end` BETWEEN \'' . date('Y-m') . '-01 00:00:00\' AND \'' . date('Y-m') . '-31 23:59:59\'
-				' . Shop::addSqlRestriction() . '
-		');
+            SELECT SUM(pv.`counter`) AS total_viewed
+            FROM `' . _DB_PREFIX_ . 'page_viewed` pv
+            LEFT JOIN `' . _DB_PREFIX_ . 'date_range` dr ON pv.`id_date_range` = dr.`id_date_range`
+            LEFT JOIN `' . _DB_PREFIX_ . 'page` p ON pv.`id_page` = p.`id_page`
+            LEFT JOIN `' . _DB_PREFIX_ . 'page_type` pt ON pt.`id_page_type` = p.`id_page_type`
+            WHERE pt.`name` = \'product\'
+                AND dr.`time_start` BETWEEN \'' . date('Y-m') . '-01 00:00:00\' AND \'' . date('Y-m') . '-31 23:59:59\'
+                AND dr.`time_end` BETWEEN \'' . date('Y-m') . '-01 00:00:00\' AND \'' . date('Y-m') . '-31 23:59:59\'
+                ' . Shop::addSqlRestriction() . '
+        ');
         $results = array_merge($result, array_merge($result2, $result3));
         $content = '<div class="table_info">
-			<h5><a href="index.php?tab=AdminStats&token=' . Tools::getAdminTokenLite('AdminStats') . '">' . $this->l('View more') . '</a> ' . $this->l('This month\'s activity') . ' </h5>
-			<table class="table_info_details" style="width:100%;">
-					<colgroup>
-						<col width="">
-						<col width="80px">
-					</colgroup>
-				<tr class="tr_odd">
-					<td class="td_align_left">
-					' . $this->l('Sales') . '
-					</td>
-					<td>
-						' . Tools::displayPrice($results['total_sales'], $currency) . '
-					</td>
-				</tr>
-				<tr>
-					<td class="td_align_left">
-						' . $this->l('Total registrations') . '
-					</td>
-					<td>
-						' . (int) $results['total_registrations'] . '
-					</td>
-				</tr>
-				<tr class="tr_odd">
-					<td class="td_align_left">
-						' . $this->l('Total orders') . '
-					</td>
-					<td>
-						' . (int) $results['total_orders'] . '
-					</td>
-				</tr>
-				<tr>
-					<td class="td_align_left">
-						' . $this->l('Product pages viewed') . '
-					</td>
-					<td>
-						' . (int) $results['total_viewed'] . '
-					</td>
-				</tr>
-			</table>
-		</div>';
+            <h5><a href="index.php?tab=AdminStats&token=' . Tools::getAdminTokenLite('AdminStats') . '">' . $this->l('View more') . '</a> ' . $this->l('This month\'s activity') . ' </h5>
+            <table class="table_info_details" style="width:100%;">
+                    <colgroup>
+                        <col width="">
+                        <col width="80px">
+                    </colgroup>
+                <tr class="tr_odd">
+                    <td class="td_align_left">
+                    ' . $this->l('Sales') . '
+                    </td>
+                    <td>
+                        ' . Tools::displayPrice($results['total_sales'], $currency) . '
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_align_left">
+                        ' . $this->l('Total registrations') . '
+                    </td>
+                    <td>
+                        ' . (int) $results['total_registrations'] . '
+                    </td>
+                </tr>
+                <tr class="tr_odd">
+                    <td class="td_align_left">
+                        ' . $this->l('Total orders') . '
+                    </td>
+                    <td>
+                        ' . (int) $results['total_orders'] . '
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_align_left">
+                        ' . $this->l('Product pages viewed') . '
+                    </td>
+                    <td>
+                        ' . (int) $results['total_viewed'] . '
+                    </td>
+                </tr>
+            </table>
+        </div>';
+
         return $content;
     }
     public function getStatsSales()
     {
         $content = '<div id="table_info_large">
-				<h5><a href="index.php?tab=AdminStats&token=' . Tools::getAdminTokenLite('AdminStats') . '">' . $this->l('View more') . '</a> <strong>' . $this->l('Statistics') . '</strong> / ' . $this->l('This week\'s sales') . '</h5>
-				<div id="stat_google">';
+                <h5><a href="index.php?tab=AdminStats&token=' . Tools::getAdminTokenLite('AdminStats') . '">' . $this->l('View more') . '</a> <strong>' . $this->l('Statistics') . '</strong> / ' . $this->l('This week\'s sales') . '</h5>
+                <div id="stat_google">';
         $chart = new Chart();
         $chart->getCurve(1)->setType('bars');
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
-			SELECT SUM(total_paid / conversion_rate) as total_converted, left(invoice_date, 10) as invoice_date
-			FROM ' . _DB_PREFIX_ . 'orders o
-			WHERE valid = 1
-			AND total_paid > 0
-			AND invoice_date BETWEEN \'' . date('Y-m-d', strtotime('-7 DAYS', time())) . ' 00:00:00\' AND \'' . date('Y-m-d H:i:s') . '\'
-			' . Shop::addSqlRestriction(Shop::SHARE_ORDER) . ' 
-			GROUP BY DATE(invoice_date)
-		');
+            SELECT SUM(total_paid / conversion_rate) as total_converted, left(invoice_date, 10) as invoice_date
+            FROM ' . _DB_PREFIX_ . 'orders o
+            WHERE valid = 1
+            AND total_paid > 0
+            AND invoice_date BETWEEN \'' . date('Y-m-d', strtotime('-7 DAYS', time())) . ' 00:00:00\' AND \'' . date('Y-m-d H:i:s') . '\'
+            ' . Shop::addSqlRestriction(Shop::SHARE_ORDER) . '
+            GROUP BY DATE(invoice_date)
+        ');
         foreach ($result as $row) {
             $chart->getCurve(1)->setPoint(strtotime($row['invoice_date'] . ' 02:00:00'), $row['total_converted']);
         }
@@ -311,44 +315,46 @@ class AdminHomeController extends AdminController
         $chart->getCurve(1)->setLabel($this->l('Sales + Tax') . ' (' . strtoupper($currency->iso_code) . ')');
         $content .= $chart->fetch();
         $content .= '	</div>
-		</div>';
+        </div>';
+
         return $content;
     }
     public function getLastOrders()
     {
         $content = '
-			<table cellpadding="0" cellspacing="0" id="table_customer" style="width:100%;">
-				<thead>
-					<tr>
-						<th class="order_id"><span class="first">' . $this->l('ID') . '</span></th>
-						<th class="order_customer"><span>' . $this->l('Customer Name') . '</span></th>
-						<th class="order_status"><span>' . $this->l('Status') . '</span></th>
-						<th class="order_total"><span>' . $this->l('Total') . '</span></th>
-						<th class="order_action"><span class="last">' . $this->l('Action') . '</span></th>
-					<tr>
-				</thead>
-				<tbody>';
+            <table cellpadding="0" cellspacing="0" id="table_customer" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th class="order_id"><span class="first">' . $this->l('ID') . '</span></th>
+                        <th class="order_customer"><span>' . $this->l('Customer Name') . '</span></th>
+                        <th class="order_status"><span>' . $this->l('Status') . '</span></th>
+                        <th class="order_total"><span>' . $this->l('Total') . '</span></th>
+                        <th class="order_action"><span class="last">' . $this->l('Action') . '</span></th>
+                    <tr>
+                </thead>
+                <tbody>';
         $orders = Order::getOrdersWithInformations(10);
         $i = 0;
         foreach ($orders as $order) {
             $currency = Currency::getCurrency((int) $order['id_currency']);
             $content .= '
-					<tr' . ($i % 2 ? ' id="order_line1"' : '') . '>
-						<td class="order_td_first order_id">' . (int) $order['id_order'] . '</td>
-						<td class="order_customer">' . Tools::htmlentitiesUTF8($order['firstname']) . ' ' . Tools::htmlentitiesUTF8($order['lastname']) . '</td>
-						<td class="order_status">' . Tools::htmlentitiesUTF8($order['state_name']) . '</td>
-						<td class="order_total">' . Tools::displayPrice((double) $order['total_paid'], $currency) . '</td>
-						<td class="order_action">
-							<a href="index.php?tab=AdminOrders&id_order=' . (int) $order['id_order'] . '&vieworder&token=' . Tools::getAdminTokenLite('AdminOrders') . '" title="' . $this->l('Details') . '"><img src="../img/admin/details.gif" alt="' . $this->l('See') . '" /></a>
-						</td>
-					</tr>
-				';
+                    <tr' . ($i % 2 ? ' id="order_line1"' : '') . '>
+                        <td class="order_td_first order_id">' . (int) $order['id_order'] . '</td>
+                        <td class="order_customer">' . Tools::htmlentitiesUTF8($order['firstname']) . ' ' . Tools::htmlentitiesUTF8($order['lastname']) . '</td>
+                        <td class="order_status">' . Tools::htmlentitiesUTF8($order['state_name']) . '</td>
+                        <td class="order_total">' . Tools::displayPrice((double) $order['total_paid'], $currency) . '</td>
+                        <td class="order_action">
+                            <a href="index.php?tab=AdminOrders&id_order=' . (int) $order['id_order'] . '&vieworder&token=' . Tools::getAdminTokenLite('AdminOrders') . '" title="' . $this->l('Details') . '"><img src="../img/admin/details.gif" alt="' . $this->l('See') . '" /></a>
+                        </td>
+                    </tr>
+                ';
             $i++;
         }
         $content .= '
-				</tbody>
-			</table>
-	';
+                </tbody>
+            </table>
+    ';
+
         return $content;
     }
     public function ajaxProcessRefreshCheckVersion()
@@ -465,12 +471,12 @@ class AdminHomeController extends AdminController
                     }
                     $link = 'index.php?controller=adminmodules&install=' . Tools::htmlentitiesUTF8((string) $partner->module) . '&token=' . Tools::getAdminTokenLite('AdminModules') . '&module_name=' . Tools::htmlentitiesUTF8((string) $partner->module) . '&redirect=config';
                     $return .= '<div style="width:46.5%;min-height:85px;border:1px solid #cccccc;background-color:white;padding-left:5px;padding-right:5px;' . (empty($return) ? 'float:left' : 'float:right') . '">
-						<p align="center">
-							<a href="' . $link . '" class="preactivationLink" rel="' . Tools::htmlentitiesUTF8((string) $partner->module) . '"><img src="../img/tmp/preactivation_' . Tools::htmlentitiesUTF8((string) $partner->module) . '.png" alt="' . htmlentities((string) $partner->name) . '" border="0" /></a><br />
-							<b><a href="' . $link . '" class="preactivationLink" rel="' . Tools::htmlentitiesUTF8((string) $partner->module) . '">' . Tools::htmlentitiesUTF8($label_final) . '</a></b>
-							' . ($optional_final != '' ? '<a href="' . $link . '" class="preactivationLink" rel="' . Tools::htmlentitiesUTF8((string) $partner->module) . '"><img src="' . Tools::htmlentitiesUTF8((string) $optional_final) . '" /></a>' : '') . '
-						</p>
-					</div>';
+                        <p align="center">
+                            <a href="' . $link . '" class="preactivationLink" rel="' . Tools::htmlentitiesUTF8((string) $partner->module) . '"><img src="../img/tmp/preactivation_' . Tools::htmlentitiesUTF8((string) $partner->module) . '.png" alt="' . htmlentities((string) $partner->name) . '" border="0" /></a><br />
+                            <b><a href="' . $link . '" class="preactivationLink" rel="' . Tools::htmlentitiesUTF8((string) $partner->module) . '">' . Tools::htmlentitiesUTF8($label_final) . '</a></b>
+                            ' . ($optional_final != '' ? '<a href="' . $link . '" class="preactivationLink" rel="' . Tools::htmlentitiesUTF8((string) $partner->module) . '"><img src="' . Tools::htmlentitiesUTF8((string) $optional_final) . '" /></a>' : '') . '
+                        </p>
+                    </div>';
                     $count++;
                 }
             }
@@ -478,34 +484,31 @@ class AdminHomeController extends AdminController
         libxml_clear_errors();
         if (!empty($return)) {
             $return .= '<br clear="left" />
-			<script>
-				$(".preactivationLink").click(function() {
-					var module = $(this).attr("rel");
-					var ajaxCurrentIndex = "' . str_replace('index', 'ajax-tab', self::$currentIndex) . '";
-					try
-					{
-						resAjax = $.ajax({
-								type:"POST",
-								url : ajaxCurrentIndex,
-								async: true,
-								data : {
-									ajax : "1",
-									controller : "AdminHome",
-									action : "savePreactivationRequest",
-									module : module,
-								},
-								success : function(data)
-								{
-								},
-								error: function(res,textStatus,jqXHR)
-								{
-								}
-						});
-					}
-					catch(e){}
-				});
-			</script>';
+            <script>
+                $(".preactivationLink").click(function() {
+                    var module = $(this).attr("rel");
+                    var ajaxCurrentIndex = "' . str_replace('index', 'ajax-tab', self::$currentIndex) . '";
+                    try {
+                        resAjax = $.ajax({
+                                type:"POST",
+                                url : ajaxCurrentIndex,
+                                async: true,
+                                data : {
+                                    ajax : "1",
+                                    controller : "AdminHome",
+                                    action : "savePreactivationRequest",
+                                    module : module,
+                                },
+                                success : function(data) {
+                                },
+                                error: function(res,textStatus,jqXHR) {
+                                }
+                        });
+                    } catch (e) {}
+                });
+            </script>';
         }
+
         return $return;
     }
     public function ajaxProcessSavePreactivationRequest()

@@ -59,6 +59,7 @@ class AdminRequestSqlController extends AdminController
         $this->show_toolbar = true;
         $this->toolbar_scroll = true;
         $this->initToolbar();
+
         return parent::renderOptions();
     }
     public function initToolbar()
@@ -80,17 +81,18 @@ class AdminRequestSqlController extends AdminController
         $this->initToolbar();
         $this->displayWarning($this->l('When saving the query, only the request type "SELECT" is allowed.'));
         $this->displayInformation('
-		<strong>' . $this->l('How do I create a new sql query?') . '</strong><br />
-		<ul>
-			<li>' . $this->l('Click "Add New".') . '</li>
-			<li>' . $this->l('Fill in the fields and click "Save".') . '</li>
-			<li>' . $this->l('You can then view the query results by clicking on the tab:') . ' <img src="../img/admin/details.gif" /></li>
-			<li>' . $this->l('You can also export the query results as CSV file by clicking on the tab:') . ' <img src="../img/admin/export.gif" /></li>
-		</ul>');
+        <strong>' . $this->l('How do I create a new sql query?') . '</strong><br />
+        <ul>
+            <li>' . $this->l('Click "Add New".') . '</li>
+            <li>' . $this->l('Fill in the fields and click "Save".') . '</li>
+            <li>' . $this->l('You can then view the query results by clicking on the tab:') . ' <img src="../img/admin/details.gif" /></li>
+            <li>' . $this->l('You can also export the query results as CSV file by clicking on the tab:') . ' <img src="../img/admin/export.gif" /></li>
+        </ul>');
         $this->addRowAction('export');
         $this->addRowAction('view');
         $this->addRowAction('edit');
         $this->addRowAction('delete');
+
         return parent::renderList();
     }
     public function renderForm()
@@ -98,6 +100,7 @@ class AdminRequestSqlController extends AdminController
         $this->fields_form = array('legend' => array('title' => $this->l('Request')), 'input' => array(array('type' => 'text', 'label' => $this->l('Name:'), 'name' => 'name', 'size' => 103, 'required' => true), array('type' => 'textarea', 'label' => $this->l('Request:'), 'name' => 'sql', 'cols' => 100, 'rows' => 10, 'required' => true)), 'submit' => array('title' => $this->l('Save'), 'class' => 'button'));
         $request = new RequestSql();
         $this->tpl_form_vars = array('tables' => $request->getTables());
+
         return parent::renderForm();
     }
     public function postProcess()
@@ -105,9 +108,11 @@ class AdminRequestSqlController extends AdminController
         /* PrestaShop demo mode */
         if (_PS_MODE_DEMO_) {
             $this->errors[] = Tools::displayError('This functionality has been disabled.');
+
             return;
         }
         /* PrestaShop demo mode*/
+
         return parent::postProcess();
     }
     /**
@@ -152,6 +157,7 @@ class AdminRequestSqlController extends AdminController
             $view['error'] = true;
         }
         $this->tpl_view_vars = array('view' => $view);
+
         return parent::renderView();
     }
     public function _childValidation()
@@ -172,6 +178,7 @@ class AdminRequestSqlController extends AdminController
     {
         $tpl = $this->createTemplate('list_action_export.tpl');
         $tpl->assign(array('href' => self::$currentIndex . '&token=' . $this->token . '&' . $this->identifier . '=' . $id . '&export' . $this->table . '=1', 'action' => $this->l('Export')));
+
         return $tpl->fetch();
     }
     public function initProcess()

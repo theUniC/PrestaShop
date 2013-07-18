@@ -83,14 +83,14 @@ class AdminCustomersController extends AdminController
             $genders[$gender->id] = $gender->name;
         }
         $this->_select = '
-		a.date_add,
-		IF (YEAR(`birthday`) = 0, "-", (YEAR(CURRENT_DATE)-YEAR(`birthday`)) - (RIGHT(CURRENT_DATE, 5) < RIGHT(birthday, 5))) AS `age`, (
-			SELECT c.date_add FROM ' . _DB_PREFIX_ . 'guest g
-			LEFT JOIN ' . _DB_PREFIX_ . 'connections c ON c.id_guest = g.id_guest
-			WHERE g.id_customer = a.id_customer
-			ORDER BY c.date_add DESC
-			LIMIT 1
-		) as connect';
+        a.date_add,
+        IF (YEAR(`birthday`) = 0, "-", (YEAR(CURRENT_DATE)-YEAR(`birthday`)) - (RIGHT(CURRENT_DATE, 5) < RIGHT(birthday, 5))) AS `age`, (
+            SELECT c.date_add FROM ' . _DB_PREFIX_ . 'guest g
+            LEFT JOIN ' . _DB_PREFIX_ . 'connections c ON c.id_guest = g.id_guest
+            WHERE g.id_customer = a.id_customer
+            ORDER BY c.date_add DESC
+            LIMIT 1
+        ) as connect';
         $this->fields_list = array('id_customer' => array('title' => $this->l('ID'), 'align' => 'center', 'width' => 20), 'id_gender' => array('title' => $this->l('Title'), 'width' => 70, 'align' => 'center', 'icon' => $genders_icon, 'orderby' => false, 'type' => 'select', 'list' => $genders, 'filter_key' => 'a!id_gender'), 'lastname' => array('title' => $this->l('Last name'), 'width' => 'auto'), 'firstname' => array('title' => $this->l('First Name'), 'width' => 'auto'), 'email' => array('title' => $this->l('Email address'), 'width' => 140), 'age' => array('title' => $this->l('Age'), 'width' => 20, 'search' => false, 'align' => 'center'), 'active' => array('title' => $this->l('Enabled'), 'width' => 70, 'align' => 'center', 'active' => 'status', 'type' => 'bool', 'orderby' => false, 'filter_key' => 'a!active'), 'newsletter' => array('title' => $this->l('News.'), 'width' => 70, 'align' => 'center', 'type' => 'bool', 'callback' => 'printNewsIcon', 'orderby' => false), 'optin' => array('title' => $this->l('Opt.'), 'width' => 70, 'align' => 'center', 'type' => 'bool', 'callback' => 'printOptinIcon', 'orderby' => false), 'date_add' => array('title' => $this->l('Registration'), 'width' => 150, 'type' => 'date', 'align' => 'right'), 'connect' => array('title' => $this->l('Last visit'), 'width' => 100, 'type' => 'datetime', 'search' => false, 'havingFilter' => true));
         $this->shopLinkType = 'shop';
         $this->shopShareDatas = Shop::SHARE_CUSTOMER;
@@ -164,6 +164,7 @@ class AdminCustomersController extends AdminController
         if (Tools::isSubmit('submitBulkdelete' . $this->table) || Tools::isSubmit('delete' . $this->table)) {
             $this->tpl_list_vars = array('delete_customer' => true, 'REQUEST_URI' => $_SERVER['REQUEST_URI'], 'POST' => $_POST);
         }
+
         return parent::renderList();
     }
     public function renderForm()
@@ -240,6 +241,7 @@ class AdminCustomersController extends AdminController
         foreach ($groups as $group) {
             $this->fields_value['groupBox_' . $group['id_group']] = Tools::getValue('groupBox_' . $group['id_group'], in_array($group['id_group'], $customer_groups_ids));
         }
+
         return parent::renderForm();
     }
     public function beforeAdd($customer)
@@ -317,15 +319,15 @@ class AdminCustomersController extends AdminController
             $carts[$i]['name'] = $carrier->name;
         }
         $sql = 'SELECT DISTINCT id_product, c.id_cart, c.id_shop, cp.id_shop AS cp_id_shop
-				FROM ' . _DB_PREFIX_ . 'cart_product cp
-				JOIN ' . _DB_PREFIX_ . 'cart c ON (c.id_cart = cp.id_cart)
-				WHERE c.id_customer = ' . (int) $customer->id . '
-					AND cp.id_product NOT IN (
-							SELECT product_id
-							FROM ' . _DB_PREFIX_ . 'orders o
-							JOIN ' . _DB_PREFIX_ . 'order_detail od ON (o.id_order = od.id_order)
-							WHERE o.valid = 1 AND o.id_customer = ' . (int) $customer->id . '
-						)';
+                FROM ' . _DB_PREFIX_ . 'cart_product cp
+                JOIN ' . _DB_PREFIX_ . 'cart c ON (c.id_cart = cp.id_cart)
+                WHERE c.id_customer = ' . (int) $customer->id . '
+                    AND cp.id_product NOT IN (
+                            SELECT product_id
+                            FROM ' . _DB_PREFIX_ . 'orders o
+                            JOIN ' . _DB_PREFIX_ . 'order_detail od ON (o.id_order = od.id_order)
+                            WHERE o.valid = 1 AND o.id_customer = ' . (int) $customer->id . '
+                        )';
         $interested = Db::getInstance()->executeS($sql);
         $total_interested = count($interested);
         for ($i = 0; $i < $total_interested; $i++) {
@@ -347,6 +349,7 @@ class AdminCustomersController extends AdminController
         }
         $shop = new Shop($customer->id_shop);
         $this->tpl_view_vars = array('customer' => $customer, 'gender_image' => $gender_image, 'registration_date' => Tools::displayDate($customer->date_add, null, true), 'customer_stats' => $customer_stats, 'last_visit' => Tools::displayDate($customer_stats['last_visit'], null, true), 'count_better_customers' => $count_better_customers, 'shop_is_feature_active' => Shop::isFeatureActive(), 'name_shop' => $shop->name, 'customer_birthday' => Tools::displayDate($customer->birthday), 'last_update' => Tools::displayDate($customer->date_upd, null, true), 'customer_exists' => Customer::customerExists($customer->email), 'id_lang' => $customer->id_lang, 'customerLanguage' => new Language($customer->id_lang), 'customer_note' => Tools::htmlentitiesUTF8($customer->note), 'messages' => $messages, 'groups' => $groups, 'orders' => $orders, 'orders_ok' => $orders_ok, 'orders_ko' => $orders_ko, 'total_ok' => Tools::displayPrice($total_ok, $this->context->currency->id), 'products' => $products, 'addresses' => $customer->getAddresses($this->default_form_language), 'discounts' => CartRule::getCustomerCartRules($this->default_form_language, $customer->id, false, false), 'carts' => $carts, 'interested' => $interested, 'connections' => $connections, 'referrers' => $referrers, 'show_toolbar' => true);
+
         return parent::renderView();
     }
     public function processDelete()
@@ -362,6 +365,7 @@ class AdminCustomersController extends AdminController
             $this->deleted = true;
         } else {
             $this->errors[] = Tools::displayError('Unknown delete mode:') . ' ' . $this->deleted;
+
             return;
         }
     }
@@ -384,11 +388,14 @@ class AdminCustomersController extends AdminController
         if ($customer->id) {
             $this->errors[] = Tools::displayError('An account already exists for this email address:') . ' ' . $customer_email;
             $this->display = 'edit';
+
             return $customer;
         } elseif ($customer = parent::processAdd()) {
             $this->context->smarty->assign('new_customer', $customer);
+
             return $customer;
         }
+
         return false;
     }
     public function processUpdate()
@@ -403,10 +410,11 @@ class AdminCustomersController extends AdminController
                     $this->errors[] = Tools::displayError('An account already exists for this email address:') . ' ' . $customer_email;
                 }
             }
+
             return parent::processUpdate();
         } else {
             $this->errors[] = Tools::displayError('An error occurred while loading the object.') . '
-				<b>' . $this->table . '</b> ' . Tools::displayError('(cannot load object)');
+                <b>' . $this->table . '</b> ' . Tools::displayError('(cannot load object)');
         }
     }
     public function processSave()
@@ -418,6 +426,7 @@ class AdminCustomersController extends AdminController
         // Check the requires fields which are settings in the BO
         $customer = new Customer();
         $this->errors = array_merge($this->errors, $customer->validateFieldsRequiredDatabase());
+
         return parent::processSave();
     }
     protected function afterDelete($object, $old_id)
@@ -429,6 +438,7 @@ class AdminCustomersController extends AdminController
             $address->id_customer = $object->id;
             $address->save();
         }
+
         return true;
     }
     /**
@@ -483,17 +493,17 @@ class AdminCustomersController extends AdminController
     public static function printNewsIcon($value, $customer)
     {
         return '<a href="index.php?tab=AdminCustomers&id_customer=' . (int) $customer['id_customer'] . '&changeNewsletterVal&token=' . Tools::getAdminTokenLite('AdminCustomers') . '">
-				' . ($value ? '<img src="../img/admin/enabled.gif" />' : '<img src="../img/admin/disabled.gif" />') . '</a>';
+                ' . ($value ? '<img src="../img/admin/enabled.gif" />' : '<img src="../img/admin/disabled.gif" />') . '</a>';
     }
     public static function printOptinIcon($value, $customer)
     {
         return '<a href="index.php?tab=AdminCustomers&id_customer=' . (int) $customer['id_customer'] . '&changeOptinVal&token=' . Tools::getAdminTokenLite('AdminCustomers') . '">
-				' . ($value ? '<img src="../img/admin/enabled.gif" />' : '<img src="../img/admin/disabled.gif" />') . '</a>';
+                ' . ($value ? '<img src="../img/admin/enabled.gif" />' : '<img src="../img/admin/disabled.gif" />') . '</a>';
     }
     /**
-     * @param string $token
-     * @param integer $id
-     * @param string $name
+     * @param  string  $token
+     * @param  integer $id
+     * @param  string  $name
      * @return mixed
      */
     public function displayDeleteLink($token = null, $id, $name = null)
@@ -503,6 +513,7 @@ class AdminCustomersController extends AdminController
         $name = $customer->lastname . ' ' . $customer->firstname;
         $name = '\\n\\n' . $this->l('Name:', 'helper') . ' ' . $name;
         $tpl->assign(array('href' => self::$currentIndex . '&' . $this->identifier . '=' . $id . '&delete' . $this->table . '&token=' . ($token != null ? $token : $this->token), 'confirm' => $this->l('Delete the selected item?') . $name, 'action' => $this->l('Delete'), 'id' => $id));
+
         return $tpl->fetch();
     }
     /**
@@ -522,7 +533,7 @@ class AdminCustomersController extends AdminController
     }
     /**
      * Uodate the customer note
-     * 
+     *
      * @return void
      */
     public function ajaxProcessUpdateCustomerNote()

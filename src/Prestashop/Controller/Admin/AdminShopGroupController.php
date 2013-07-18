@@ -88,6 +88,7 @@ class AdminShopGroupController extends AdminController
         $default_shop = new Shop(Configuration::get('PS_SHOP_DEFAULT'));
         $this->tpl_form_vars = array('disabled' => $disabled, 'checked' => Tools::getValue('addshop_group') !== false ? true : false, 'defaultGroup' => $default_shop->id_shop_group);
         $this->fields_value = array('active' => true);
+
         return parent::renderForm();
     }
     public function getList($id_lang, $order_by = null, $order_way = null, $start = 0, $limit = null, $id_lang_shop = false)
@@ -118,6 +119,7 @@ class AdminShopGroupController extends AdminController
                 return false;
             }
         }
+
         return parent::postProcess();
     }
     protected function afterAdd($new_shop_group)
@@ -142,6 +144,7 @@ class AdminShopGroupController extends AdminController
             $helper->id = $this->id;
             $helper->tpl_vars = $this->tpl_option_vars;
             $options = $helper->generateOptions($this->fields_options);
+
             return $options;
         }
     }

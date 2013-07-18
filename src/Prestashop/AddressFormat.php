@@ -80,6 +80,7 @@ class AddressFormat extends ObjectModel
             unset($obj);
             unset($reflect);
         }
+
         return $isValide;
     }
     /*
@@ -152,6 +153,7 @@ class AddressFormat extends ObjectModel
                 }
             }
         }
+
         return count($this->_errorFormatList) ? false : true;
     }
     /*
@@ -261,6 +263,7 @@ class AddressFormat extends ObjectModel
         foreach ($temporyObject as &$object) {
             unset($object);
         }
+
         return $tab;
     }
     /**
@@ -291,6 +294,7 @@ class AddressFormat extends ObjectModel
         }
         $addressText = rtrim($addressText, $newLine);
         $addressText = rtrim($addressText, $separator);
+
         return $addressText;
     }
     public static function generateAddressSmarty($params, &$smarty)
@@ -319,6 +323,7 @@ class AddressFormat extends ObjectModel
             unset($object);
             unset($reflect);
         }
+
         return $propertyList;
     }
     /*
@@ -344,6 +349,7 @@ class AddressFormat extends ObjectModel
             unset($object);
             unset($reflect);
         }
+
         return $objectList;
     }
     /**
@@ -369,6 +375,7 @@ class AddressFormat extends ObjectModel
                 $out[] = $cleaned ? implode(' ', preg_split(self::_CLEANING_REGEX_, trim($field_item), -1, PREG_SPLIT_NO_EMPTY)) : trim($field_item);
             }
         }
+
         return $out;
     }
     /*
@@ -389,6 +396,7 @@ class AddressFormat extends ObjectModel
                 }
             }
         }
+
         return $layoutData;
     }
     /**
@@ -404,6 +412,7 @@ class AddressFormat extends ObjectModel
         $tmp_obj->id_country = $id_country;
         $out = $tmp_obj->getFormat($tmp_obj->id_country);
         unset($tmp_obj);
+
         return $out;
     }
     /**
@@ -418,17 +427,19 @@ class AddressFormat extends ObjectModel
         if (empty($out)) {
             $out = $this->_getFormatDB(Configuration::get('PS_COUNTRY_DEFAULT'));
         }
+
         return $out;
     }
     protected function _getFormatDB($id_country)
     {
         if (!Cache::isStored('AddressFormat::_getFormatDB' . $id_country)) {
             $format = Db::getInstance()->getValue('
-			SELECT format
-			FROM `' . _DB_PREFIX_ . $this->def['table'] . '`
-			WHERE `id_country` = ' . (int) $id_country);
+            SELECT format
+            FROM `' . _DB_PREFIX_ . $this->def['table'] . '`
+            WHERE `id_country` = ' . (int) $id_country);
             Cache::store('AddressFormat::_getFormatDB' . $id_country, trim($format));
         }
+
         return Cache::retrieve('AddressFormat::_getFormatDB' . $id_country);
     }
 }

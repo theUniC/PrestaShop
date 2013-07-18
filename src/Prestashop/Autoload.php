@@ -65,6 +65,7 @@ class Autoload
         if (!Autoload::$instance) {
             Autoload::$instance = new Autoload();
         }
+
         return Autoload::$instance;
     }
     /**
@@ -113,6 +114,7 @@ class Autoload
         $content = '<?php
 
 namespace Prestashop;
+
  return ' . var_export($classes, true) . '; ?>';
         // Write classes index on disc to cache it
         $filename = $this->root_dir . Autoload::INDEX_FILE;
@@ -136,7 +138,7 @@ namespace Prestashop;
     /**
      * Retrieve recursively all classes in a directory and its subdirectories
      *
-     * @param string $path Relativ path from root to the directory
+     * @param  string $path Relativ path from root to the directory
      * @return array
      */
     protected function getClassesFromDir($path)
@@ -160,6 +162,7 @@ namespace Prestashop;
                 }
             }
         }
+
         return $classes;
     }
     public function getClassPath($classname)

@@ -57,6 +57,7 @@ class AdminGendersController extends AdminController
             return;
         }
         $this->fields_value = array('img_width' => $this->default_image_width, 'img_height' => $this->default_image_height, 'image' => $obj->getImage());
+
         return parent::renderForm();
     }
     public function displayGenderType($value, $tr)
@@ -76,9 +77,11 @@ class AdminGendersController extends AdminController
                     $width = null;
                     $height = null;
                 }
+
                 return $this->uploadImage($id, $this->fieldImageSettings['name'], $this->fieldImageSettings['dir'] . '/', false, $width, $height);
             }
         }
+
         return !count($this->errors) ? true : false;
     }
 }

@@ -63,6 +63,7 @@ class AdminStoresController extends AdminController
         $this->show_toolbar = true;
         $this->toolbar_scroll = true;
         $this->initToolbar();
+
         return parent::renderOptions();
     }
     public function initToolbar()
@@ -83,11 +84,12 @@ class AdminStoresController extends AdminController
         $this->addRowAction('delete');
         $this->_select = 'cl.`name` country, st.`name` state';
         $this->_join = '
-			LEFT JOIN `' . _DB_PREFIX_ . 'country_lang` cl
-				ON (cl.`id_country` = a.`id_country`
-				AND cl.`id_lang` = ' . (int) $this->context->language->id . ')
-			LEFT JOIN `' . _DB_PREFIX_ . 'state` st
-				ON (st.`id_state` = a.`id_state`)';
+            LEFT JOIN `' . _DB_PREFIX_ . 'country_lang` cl
+                ON (cl.`id_country` = a.`id_country`
+                AND cl.`id_lang` = ' . (int) $this->context->language->id . ')
+            LEFT JOIN `' . _DB_PREFIX_ . 'state` st
+                ON (st.`id_state` = a.`id_state`)';
+
         return parent::renderList();
     }
     public function renderForm()
@@ -113,6 +115,7 @@ class AdminStoresController extends AdminController
             $hours_unserialized = Tools::unSerialize($hours);
         }
         $this->fields_value = array('latitude' => $this->getFieldValue($obj, 'latitude') ? $this->getFieldValue($obj, 'latitude') : Configuration::get('PS_STORES_CENTER_LAT'), 'longitude' => $this->getFieldValue($obj, 'longitude') ? $this->getFieldValue($obj, 'longitude') : Configuration::get('PS_STORES_CENTER_LONG'), 'image' => $image ? $image : false, 'size' => $image ? filesize(_PS_STORE_IMG_DIR_ . '/' . $obj->id . '.jpg') / 1000 : false, 'days' => $days, 'hours' => isset($hours_unserialized) ? $hours_unserialized : false);
+
         return parent::renderForm();
     }
     public function postProcess()
@@ -174,6 +177,7 @@ class AdminStoresController extends AdminController
                 ImageManager::resize(_PS_STORE_IMG_DIR_ . $id_store . '.jpg', _PS_STORE_IMG_DIR_ . $id_store . '-' . stripslashes($image_type['name']) . '.jpg', (int) $image_type['width'], (int) $image_type['height']);
             }
         }
+
         return $ret;
     }
     protected function _getDefaultFieldsContent()
@@ -190,6 +194,7 @@ class AdminStoresController extends AdminController
             $stateList[] = array('id' => $state['id_state'], 'name' => $state['name']);
         }
         $formFields = array('PS_SHOP_NAME' => array('title' => $this->l('Shop name'), 'desc' => $this->l('Displayed in emails and page titles'), 'validation' => 'isGenericName', 'required' => true, 'size' => 30, 'type' => 'text'), 'PS_SHOP_EMAIL' => array('title' => $this->l('Shop email'), 'desc' => $this->l('Displayed in emails sent to customers'), 'validation' => 'isEmail', 'required' => true, 'size' => 30, 'type' => 'text'), 'PS_SHOP_DETAILS' => array('title' => $this->l('Registration'), 'desc' => $this->l('Shop registration information (e.g. SIRET or RCS)'), 'validation' => 'isGenericName', 'size' => 30, 'type' => 'textarea', 'cols' => 30, 'rows' => 5), 'PS_SHOP_ADDR1' => array('title' => $this->l('Shop address line 1'), 'validation' => 'isAddress', 'size' => 30, 'type' => 'text'), 'PS_SHOP_ADDR2' => array('title' => $this->l('Shop address line 2'), 'validation' => 'isAddress', 'size' => 30, 'type' => 'text'), 'PS_SHOP_CODE' => array('title' => $this->l('Postal Code/Zip code'), 'validation' => 'isGenericName', 'size' => 6, 'type' => 'text'), 'PS_SHOP_CITY' => array('title' => $this->l('City'), 'validation' => 'isGenericName', 'size' => 30, 'type' => 'text'), 'PS_SHOP_COUNTRY_ID' => array('title' => $this->l('Country'), 'validation' => 'isInt', 'type' => 'select', 'list' => $countryList, 'identifier' => 'id', 'cast' => 'intval', 'defaultValue' => (int) $this->context->country->id), 'PS_SHOP_STATE_ID' => array('title' => $this->l('State'), 'validation' => 'isInt', 'type' => 'select', 'list' => $stateList, 'identifier' => 'id', 'cast' => 'intval'), 'PS_SHOP_PHONE' => array('title' => $this->l('Phone'), 'validation' => 'isGenericName', 'size' => 30, 'type' => 'text'), 'PS_SHOP_FAX' => array('title' => $this->l('Fax'), 'validation' => 'isGenericName', 'size' => 30, 'type' => 'text'));
+
         return $formFields;
     }
     protected function _buildOrderedFieldsShop($formFields)
@@ -222,8 +227,8 @@ class AdminStoresController extends AdminController
     {
         if (isset($_POST['PS_SHOP_STATE_ID']) && $_POST['PS_SHOP_STATE_ID'] != '0') {
             $sql = 'SELECT `active` FROM `' . _DB_PREFIX_ . 'state`
-					WHERE `id_country` = ' . (int) Tools::getValue('PS_SHOP_COUNTRY_ID') . '
-						AND `id_state` = ' . (int) Tools::getValue('PS_SHOP_STATE_ID');
+                    WHERE `id_country` = ' . (int) Tools::getValue('PS_SHOP_COUNTRY_ID') . '
+                        AND `id_state` = ' . (int) Tools::getValue('PS_SHOP_STATE_ID');
             $isStateOk = Db::getInstance()->getValue($sql);
             if ($isStateOk != 1) {
                 $this->errors[] = Tools::displayError('The state specified is not located in this country.');

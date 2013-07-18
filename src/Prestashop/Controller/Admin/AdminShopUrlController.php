@@ -64,6 +64,7 @@ class AdminShopUrlController extends AdminController
         if ($id_shop = (int) Tools::getValue('id_shop')) {
             $this->_where = 'AND a.id_shop = ' . $id_shop;
         }
+
         return parent::renderList();
     }
     public function renderForm()
@@ -86,6 +87,7 @@ class AdminShopUrlController extends AdminController
         }
         $this->tpl_form_vars = array('js_shop_url' => Tools::jsonEncode($list_shop_with_url));
         $this->fields_value = array('domain' => Validate::isLoadedObject($obj) ? $this->getFieldValue($obj, 'domain') : $current_shop->domain, 'domain_ssl' => Validate::isLoadedObject($obj) ? $this->getFieldValue($obj, 'domain_ssl') : $current_shop->domain_ssl, 'physical_uri' => Validate::isLoadedObject($obj) ? $this->getFieldValue($obj, 'physical_uri') : $current_shop->physical_uri, 'active' => true);
+
         return parent::renderForm();
     }
     public function initToolbar()
@@ -147,6 +149,7 @@ class AdminShopUrlController extends AdminController
         if ($this->redirect_after) {
             $this->redirect_after .= '&id_shop=' . $this->id_shop;
         }
+
         return $result;
     }
     public function processSave()
@@ -159,6 +162,7 @@ class AdminShopUrlController extends AdminController
         if (!$this->errors) {
             Tools::generateHtaccess();
         }
+
         return $return;
     }
     public function processAdd()
@@ -176,6 +180,7 @@ class AdminShopUrlController extends AdminController
         if (($object->main || Tools::getValue('main')) && !Tools::getValue('active')) {
             $this->errors[] = Tools::displayError('You cannot disable the Main URL.');
         }
+
         return parent::processAdd();
     }
     public function processUpdate()
@@ -185,6 +190,7 @@ class AdminShopUrlController extends AdminController
         if (trim(dirname(dirname($current_url['path'])), '/') == trim($this->object->getBaseURI(), '/')) {
             $this->redirect_shop_url = true;
         }
+
         return parent::processUpdate();
     }
     protected function afterUpdate($object)
@@ -197,9 +203,9 @@ class AdminShopUrlController extends AdminController
         }
     }
     /**
-     * @param string $token
-     * @param integer $id
-     * @param string $name
+     * @param  string  $token
+     * @param  integer $id
+     * @param  string  $name
      * @return mixed
      */
     public function displayDeleteLink($token = null, $id, $name = null)
@@ -222,6 +228,7 @@ class AdminShopUrlController extends AdminController
             $data['confirm'] = !is_null($this->specificConfirmDelete) ? '\\r' . $this->specificConfirmDelete : self::$cache_lang['DeleteItem'] . $name;
         }
         $tpl->assign(array_merge($this->tpl_delete_link_vars, $data));
+
         return $tpl->fetch();
     }
 }

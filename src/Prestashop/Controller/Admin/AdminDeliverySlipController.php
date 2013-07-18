@@ -44,6 +44,7 @@ class AdminDeliverySlipController extends AdminController
     {
         $this->fields_form = array('legend' => array('title' => $this->l('Print PDF delivery slips'), 'image' => '../img/admin/AdminPdf.gif'), 'input' => array(array('type' => 'date', 'label' => $this->l('From:'), 'name' => 'date_from', 'size' => 20, 'maxlength' => 10, 'required' => true, 'desc' => $this->l('Format: 2011-12-31 (inclusive)')), array('type' => 'date', 'label' => $this->l('To:'), 'name' => 'date_to', 'size' => 20, 'maxlength' => 10, 'required' => true, 'desc' => $this->l('Format: 2012-12-31 (inclusive)'))), 'submit' => array('title' => $this->l('Generate PDF file'), 'class' => 'button'));
         $this->fields_value = array('date_from' => date('Y-m-d'), 'date_to' => date('Y-m-d'));
+
         return parent::renderForm();
     }
     public function postProcess()

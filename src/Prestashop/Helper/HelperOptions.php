@@ -119,16 +119,16 @@ class HelperOptions extends Helper
                 // @todo move this
                 if ($field['type'] == 'maintenance_ip') {
                     $field['script_ip'] = '
-						<script type="text/javascript">
-							function addRemoteAddr()
-							{
-								var length = $(\'input[name=PS_MAINTENANCE_IP]\').attr(\'value\').length;
-								if (length > 0)
-									$(\'input[name=PS_MAINTENANCE_IP]\').attr(\'value\',$(\'input[name=PS_MAINTENANCE_IP]\').attr(\'value\') +\',' . Tools::getRemoteAddr() . '\');
-								else
-									$(\'input[name=PS_MAINTENANCE_IP]\').attr(\'value\',\'' . Tools::getRemoteAddr() . '\');
-							}
-						</script>';
+                        <script type="text/javascript">
+                            function addRemoteAddr()
+                            {
+                                var length = $(\'input[name=PS_MAINTENANCE_IP]\').attr(\'value\').length;
+                                if (length > 0)
+                                    $(\'input[name=PS_MAINTENANCE_IP]\').attr(\'value\',$(\'input[name=PS_MAINTENANCE_IP]\').attr(\'value\') +\',' . Tools::getRemoteAddr() . '\');
+                                else
+                                    $(\'input[name=PS_MAINTENANCE_IP]\').attr(\'value\',\'' . Tools::getRemoteAddr() . '\');
+                            }
+                        </script>';
                     $field['link_remove_ip'] = ' &nbsp<a href="#" class="button" onclick="addRemoteAddr(); return false;">' . $this->l('Add my IP', 'Helper') . '</a>';
                 }
                 // Multishop default value
@@ -148,6 +148,7 @@ class HelperOptions extends Helper
             $option_list[$category] = $category_data;
         }
         $this->tpl->assign(array('title' => $this->title, 'toolbar_btn' => $this->toolbar_btn, 'show_toolbar' => $this->show_toolbar, 'toolbar_scroll' => $this->toolbar_scroll, 'current' => $this->currentIndex, 'table' => $this->table, 'token' => $this->token, 'option_list' => $option_list, 'current_id_lang' => $this->context->language->id, 'languages' => isset($languages) ? $languages : null, 'currency_left_sign' => $this->context->currency->getSign('left'), 'currency_right_sign' => $this->context->currency->getSign('right'), 'use_multishop' => $use_multishop));
+
         return parent::generate();
     }
     /**
@@ -200,6 +201,7 @@ class HelperOptions extends Helper
         if (isset($field['defaultValue']) && !$value) {
             $value = $field['defaultValue'];
         }
+
         return $value;
     }
 }

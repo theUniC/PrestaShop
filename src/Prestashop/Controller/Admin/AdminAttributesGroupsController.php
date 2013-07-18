@@ -64,6 +64,7 @@ class AdminAttributesGroupsController extends AdminController
         $this->addRowAction('edit');
         $this->addRowAction('delete');
         $this->addRowAction('details');
+
         return parent::renderList();
     }
     /**
@@ -132,6 +133,7 @@ class AdminAttributesGroupsController extends AdminController
         if (!($obj = $this->loadObject(true))) {
             return;
         }
+
         return parent::renderForm();
     }
     public function renderFormAttributes()
@@ -173,6 +175,7 @@ class AdminAttributesGroupsController extends AdminController
         }
         $image = '../img/' . $this->fieldImageSettings['dir'] . '/' . (int) $obj->id . '.jpg';
         $this->tpl_form_vars = array('strAttributesGroups' => $str_attributes_groups, 'colorAttributeProperties' => Validate::isLoadedObject($obj) && $obj->isColorAttribute(), 'imageTextureExists' => file_exists(_PS_IMG_DIR_ . $this->fieldImageSettings['dir'] . '/' . (int) $obj->id . '.jpg'), 'imageTexture' => $image, 'imageTextureUrl' => Tools::safeOutput($_SERVER['REQUEST_URI']) . '&deleteImage=1');
+
         return parent::renderForm();
     }
     /**
@@ -211,6 +214,7 @@ class AdminAttributesGroupsController extends AdminController
         if (count($this->errors)) {
             $this->setTypeAttribute();
         }
+
         return $object;
     }
     /**
@@ -230,6 +234,7 @@ class AdminAttributesGroupsController extends AdminController
         if (count($this->errors)) {
             $this->setTypeAttribute();
         }
+
         return $object;
     }
     /**
@@ -240,6 +245,7 @@ class AdminAttributesGroupsController extends AdminController
     {
         if (!Combination::isFeatureActive()) {
             $this->displayWarning($this->l('This feature has been disabled. You can activate it at:') . ' <a href="index.php?tab=AdminPerformance&token=' . Tools::getAdminTokenLite('AdminPerformance') . '#featuresDetachables">' . $this->l('Performances') . '</a>');
+
             return;
         }
         // toolbar (save, cancel, new, ..)
@@ -383,9 +389,9 @@ class AdminAttributesGroupsController extends AdminController
                         // Adding last position to the attribute if not exist
                         if ($id_attribute <= 0) {
                             $sql = 'SELECT `position`+1
-							FROM `' . _DB_PREFIX_ . 'attribute`
-							WHERE `id_attribute_group` = ' . (int) Tools::getValue('id_attribute_group') . '
-							ORDER BY position DESC';
+                            FROM `' . _DB_PREFIX_ . 'attribute`
+                            WHERE `id_attribute_group` = ' . (int) Tools::getValue('id_attribute_group') . '
+                            ORDER BY position DESC';
                             // set the position of the new group attribute in $_POST for postProcess() method
                             $_POST['position'] = Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
                         }
@@ -418,8 +424,8 @@ class AdminAttributesGroupsController extends AdminController
                     // Adding last position to the attribute if not exist
                     if ($id_attribute_group <= 0) {
                         $sql = 'SELECT `position`+1
-							FROM `' . _DB_PREFIX_ . 'attribute_group`
-							ORDER BY position DESC';
+                            FROM `' . _DB_PREFIX_ . 'attribute_group`
+                            ORDER BY position DESC';
                         // set the position of the new group attribute in $_POST for postProcess() method
                         $_POST['position'] = Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
                     }
@@ -485,6 +491,7 @@ class AdminAttributesGroupsController extends AdminController
         // Restore vars
         $this->className = 'AttributeGroup';
         $this->table = 'attribute_group';
+
         return $result;
     }
     /* Modify group attribute position */

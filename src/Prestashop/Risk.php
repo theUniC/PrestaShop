@@ -44,6 +44,7 @@ class Risk extends ObjectModel
         $fields['id_risk'] = (int) $this->id_risk;
         $fields['color'] = pSQL($this->color);
         $fields['percent'] = (int) $this->percent;
+
         return $fields;
     }
     /**
@@ -54,6 +55,7 @@ class Risk extends ObjectModel
     public function getTranslationsFieldsChild()
     {
         $this->validateFieldsLang();
+
         return $this->getTranslationsFields(array('name'));
     }
     public static function getRisks($id_lang = null)
@@ -62,6 +64,7 @@ class Risk extends ObjectModel
             $id_lang = Context::getContext()->language->id;
         }
         $risks = new Collection('Risk', $id_lang);
+
         return $risks;
     }
 }

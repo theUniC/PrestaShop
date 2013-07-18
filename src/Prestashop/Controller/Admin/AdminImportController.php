@@ -184,6 +184,7 @@ class AdminImportController extends AdminController
         $this->addCSS(_PS_CSS_DIR_ . 'jquery.fancybox-1.3.4.css', 'screen');
         $this->addJqueryPlugin(array('fancybox'));
         $this->tpl_form_vars = array('module_confirmation' => Tools::getValue('import') && (isset($this->warnings) && !count($this->warnings)), 'path_import' => _PS_ADMIN_DIR_ . '/import/', 'entities' => $this->entities, 'entity' => Tools::getValue('entity'), 'files_to_import' => $files_to_import, 'languages' => Language::getLanguages(false), 'id_language' => $this->context->language->id, 'available_fields' => $this->getAvailableFields(), 'truncateAuthorized' => Shop::isFeatureActive() && $this->context->employee->isSuperAdmin() || !Shop::isFeatureActive(), 'PS_ADVANCED_STOCK_MANAGEMENT' => Configuration::get('PS_ADVANCED_STOCK_MANAGEMENT'));
+
         return parent::renderForm();
     }
     public function renderView()
@@ -201,6 +202,7 @@ class AdminImportController extends AdminController
             $data[$i] = $this->generateContentTable($i, $nb_column, $handle, $this->separator);
         }
         $this->tpl_view_vars = array('import_matchs' => Db::getInstance()->executeS('SELECT * FROM ' . _DB_PREFIX_ . 'import_match'), 'fields_value' => array('csv' => Tools::getValue('csv'), 'convert' => Tools::getValue('convert'), 'entity' => (int) Tools::getValue('entity'), 'iso_lang' => Tools::getValue('iso_lang'), 'truncate' => Tools::getValue('truncate'), 'forceIDs' => Tools::getValue('forceIDs'), 'match_ref' => Tools::getValue('match_ref'), 'separator' => $this->separator, 'multiple_value_separator' => $this->multiple_value_separator), 'nb_table' => $nb_table, 'nb_column' => $nb_column, 'res' => implode(',', $res), 'max_columns' => MAX_COLUMNS, 'no_pre_select' => array('price_tin', 'feature'), 'available_fields' => $this->available_fields, 'data' => $data);
+
         return parent::renderView();
     }
     public function initToolbar()
@@ -221,23 +223,23 @@ class AdminImportController extends AdminController
     protected function generateContentTable($current_table, $nb_column, $handle, $glue)
     {
         $html = '<table id="table' . $current_table . '" style="display: none;" class="table" cellspacing="0" cellpadding="0">
-					<tr>';
+                    <tr>';
         // Header
         for ($i = 0; $i < $nb_column; $i++) {
             if (MAX_COLUMNS * (int) $current_table <= $i && (int) $i < MAX_COLUMNS * ((int) $current_table + 1)) {
                 $html .= '<th style="width: ' . 900 / MAX_COLUMNS . 'px; vertical-align: top; padding: 4px">
-							<select onchange="askFeatureName(this, ' . $i . ');"
-								style="width: ' . 900 / MAX_COLUMNS . 'px;"
-								id="type_value[' . $i . ']"
-								name="type_value[' . $i . ']"
-								class="type_value">
-								' . $this->getTypeValuesOptions($i) . '
-							</select>
-							<div id="features_' . $i . '" style="display: none;">
-								<input style="width: 90px" type="text" name="" id="feature_name_' . $i . '">
-								<input type="button" value="ok" onclick="replaceFeature($(\'#feature_name_' . $i . '\').attr(\'name\'), ' . $i . ');">
-							</div>
-						</th>';
+                            <select onchange="askFeatureName(this, ' . $i . ');"
+                                style="width: ' . 900 / MAX_COLUMNS . 'px;"
+                                id="type_value[' . $i . ']"
+                                name="type_value[' . $i . ']"
+                                class="type_value">
+                                ' . $this->getTypeValuesOptions($i) . '
+                            </select>
+                            <div id="features_' . $i . '" style="display: none;">
+                                <input style="width: 90px" type="text" name="" id="feature_name_' . $i . '">
+                                <input type="button" value="ok" onclick="replaceFeature($(\'#feature_name_' . $i . '\').attr(\'name\'), ' . $i . ');">
+                            </div>
+                        </th>';
             }
         }
         $html .= '</tr>';
@@ -257,6 +259,7 @@ class AdminImportController extends AdminController
         }
         $html .= '</table>';
         AdminImportController::rewindBomAware($handle);
+
         return $html;
     }
     public function init()
@@ -298,6 +301,7 @@ class AdminImportController extends AdminController
     {
         $field = (double) str_replace(',', '.', $field);
         $field = (double) str_replace('%', '', $field);
+
         return $field;
     }
     protected static function split($field)
@@ -323,6 +327,7 @@ class AdminImportController extends AdminController
         if (empty($tab) || !is_array($tab)) {
             return array();
         }
+
         return $tab;
     }
     protected static function createMultiLangField($field)
@@ -332,6 +337,7 @@ class AdminImportController extends AdminController
         foreach ($languages as $lang) {
             $res[$lang['id_lang']] = $field;
         }
+
         return $res;
     }
     protected function getTypeValuesOptions($nb_c)
@@ -350,6 +356,7 @@ class AdminImportController extends AdminController
             $options .= '>' . $field['label'] . '</option>';
             ++$i;
         }
+
         return $options;
     }
     /*
@@ -408,6 +415,7 @@ class AdminImportController extends AdminController
             // if you choose to force table before import the column id is remove from the CSV file.
             unset($res['id']);
         }
+
         return $res;
     }
     protected static function setDefaultValues(&$info)
@@ -444,6 +452,7 @@ class AdminImportController extends AdminController
                 $entity->{$key} = isset(self::$validators[$key]) ? call_user_func(self::$validators[$key], $infos) : $infos;
             }
         }
+
         return true;
     }
     public static function arrayWalk(&$array, $funcname, &$user_data = false)
@@ -456,6 +465,7 @@ class AdminImportController extends AdminController
                 return false;
             }
         }
+
         return true;
     }
     /**
@@ -463,9 +473,9 @@ class AdminImportController extends AdminController
      * according to $entity->$id_entity .
      * $id_image is used if we need to add a watermark
      *
-     * @param int $id_entity id of product or category (set in entity)
-     * @param int $id_image (default null) id of the image if watermark enabled.
-     * @param string $url path or url to use
+     * @param int    $id_entity id of product or category (set in entity)
+     * @param int    $id_image  (default null) id of the image if watermark enabled.
+     * @param string $url       path or url to use
      * @param string entity 'products' or 'categories'
      * @return void
      */
@@ -501,9 +511,11 @@ class AdminImportController extends AdminController
             }
         } else {
             unlink($tmpfile);
+
             return false;
         }
         unlink($tmpfile);
+
         return true;
     }
     public function categoryImport()
@@ -626,8 +638,8 @@ class AdminImportController extends AdminController
                 // Associate category to shop
                 if (Shop::isFeatureActive()) {
                     Db::getInstance()->execute('
-						DELETE FROM ' . _DB_PREFIX_ . 'category_shop
-						WHERE id_category = ' . (int) $category->id);
+                        DELETE FROM ' . _DB_PREFIX_ . 'category_shop
+                        WHERE id_category = ' . (int) $category->id);
                     if (!Shop::isFeatureActive()) {
                         $info['shop'] = 1;
                     } elseif (!isset($info['shop']) || empty($info['shop'])) {
@@ -853,21 +865,21 @@ class AdminImportController extends AdminController
                 // If match ref is specified && ref product && ref product already in base, trying to update
                 if (Tools::getValue('match_ref') == 1 && $product->reference && $product->existsRefInDatabase($product->reference)) {
                     $datas = Db::getInstance()->getRow('
-						SELECT product_shop.`date_add`, p.`id_product`
-						FROM `' . _DB_PREFIX_ . 'product` p
-						' . Shop::addSqlAssociation('product', 'p') . '
-						WHERE p.`reference` = "' . $product->reference . '"
-					');
+                        SELECT product_shop.`date_add`, p.`id_product`
+                        FROM `' . _DB_PREFIX_ . 'product` p
+                        ' . Shop::addSqlAssociation('product', 'p') . '
+                        WHERE p.`reference` = "' . $product->reference . '"
+                    ');
                     $product->id = (int) $datas['id_product'];
                     $product->date_add = pSQL($datas['date_add']);
                     $res = $product->update();
                 } else {
                     if ($product->id && Product::existsInDatabase((int) $product->id, 'product')) {
                         $datas = Db::getInstance()->getRow('
-						SELECT product_shop.`date_add`
-						FROM `' . _DB_PREFIX_ . 'product` p
-						' . Shop::addSqlAssociation('product', 'p') . '
-						WHERE p.`id_product` = ' . (int) $product->id);
+                        SELECT product_shop.`date_add`
+                        FROM `' . _DB_PREFIX_ . 'product` p
+                        ' . Shop::addSqlAssociation('product', 'p') . '
+                        WHERE p.`id_product` = ' . (int) $product->id);
                         $product->date_add = pSQL($datas['date_add']);
                         $res = $product->update();
                     }
@@ -1239,13 +1251,13 @@ class AdminImportController extends AdminController
                 // now adds the attributes in the attribute_combination table
                 if ($id_product_attribute_update) {
                     Db::getInstance()->execute('
-						DELETE FROM ' . _DB_PREFIX_ . 'product_attribute_combination
-						WHERE id_product_attribute = ' . (int) $id_product_attribute);
+                        DELETE FROM ' . _DB_PREFIX_ . 'product_attribute_combination
+                        WHERE id_product_attribute = ' . (int) $id_product_attribute);
                 }
                 foreach ($attributes_to_add as $attribute_to_add) {
                     Db::getInstance()->execute('
-						INSERT IGNORE INTO ' . _DB_PREFIX_ . 'product_attribute_combination (id_attribute, id_product_attribute)
-						VALUES (' . (int) $attribute_to_add . ',' . (int) $id_product_attribute . ')');
+                        INSERT IGNORE INTO ' . _DB_PREFIX_ . 'product_attribute_combination (id_attribute, id_product_attribute)
+                        VALUES (' . (int) $attribute_to_add . ',' . (int) $id_product_attribute . ')');
                 }
                 StockAvailable::setQuantity($product->id, $id_product_attribute, (int) $info['quantity']);
             }
@@ -1556,8 +1568,8 @@ class AdminImportController extends AdminController
                     // Associate supplier to group shop
                     if (Shop::isFeatureActive() && $manufacturer->shop) {
                         Db::getInstance()->execute('
-							DELETE FROM ' . _DB_PREFIX_ . 'manufacturer_shop
-							WHERE id_manufacturer = ' . (int) $manufacturer->id);
+                            DELETE FROM ' . _DB_PREFIX_ . 'manufacturer_shop
+                            WHERE id_manufacturer = ' . (int) $manufacturer->id);
                         $manufacturer->shop = explode($this->multiple_value_separator, $manufacturer->shop);
                         $shops = array();
                         foreach ($manufacturer->shop as $shop) {
@@ -1613,8 +1625,8 @@ class AdminImportController extends AdminController
                     // Associate supplier to group shop
                     if (Shop::isFeatureActive() && $supplier->shop) {
                         Db::getInstance()->execute('
-							DELETE FROM ' . _DB_PREFIX_ . 'supplier_shop
-							WHERE id_supplier = ' . (int) $supplier->id);
+                            DELETE FROM ' . _DB_PREFIX_ . 'supplier_shop
+                            WHERE id_supplier = ' . (int) $supplier->id);
                         $supplier->shop = explode($this->multiple_value_separator, $supplier->shop);
                         $shops = array();
                         foreach ($supplier->shop as $shop) {
@@ -1813,10 +1825,10 @@ class AdminImportController extends AdminController
                     // gets ean13 / ref / upc
                     $query = new DbQuery();
                     $query->select('
-						IFNULL(pa.reference, IFNULL(p.reference, \'\')) as reference,
-						IFNULL(pa.ean13, IFNULL(p.ean13, \'\')) as ean13,
-						IFNULL(pa.upc, IFNULL(p.upc, \'\')) as upc
-					');
+                        IFNULL(pa.reference, IFNULL(p.reference, \'\')) as reference,
+                        IFNULL(pa.ean13, IFNULL(p.ean13, \'\')) as ean13,
+                        IFNULL(pa.upc, IFNULL(p.upc, \'\')) as upc
+                    ');
                     $query->from('product', 'p');
                     $query->leftJoin('product_attribute', 'pa', 'pa.id_product = p.id_product AND id_product_attribute = ' . (int) $id_product_attribute);
                     $query->where('p.id_product = ' . (int) $id_product);
@@ -1843,6 +1855,7 @@ class AdminImportController extends AdminController
     {
         $tmp = fgetcsv($handle, MAX_LINE_SIZE, $glue);
         AdminImportController::rewindBomAware($handle);
+
         return count($tmp);
     }
     protected static function usortFiles($a, $b)
@@ -1852,6 +1865,7 @@ class AdminImportController extends AdminController
         if ($a == $b) {
             return 0;
         }
+
         return $a < $b ? 1 : -1;
     }
     protected function openCsvFile()
@@ -1864,6 +1878,7 @@ class AdminImportController extends AdminController
         for ($i = 0; $i < (int) Tools::getValue('skip'); ++$i) {
             $line = fgetcsv($handle, MAX_LINE_SIZE, $this->separator);
         }
+
         return $handle;
     }
     protected function closeCsvFile($handle)
@@ -1875,14 +1890,14 @@ class AdminImportController extends AdminController
         switch ((int) $case) {
             case $this->entities[$this->l('Categories')]:
                 Db::getInstance()->execute('
-					DELETE FROM `' . _DB_PREFIX_ . 'category`
-					WHERE id_category NOT IN (' . (int) Configuration::get('PS_HOME_CATEGORY') . ', ' . (int) Configuration::get('PS_ROOT_CATEGORY') . ')');
+                    DELETE FROM `' . _DB_PREFIX_ . 'category`
+                    WHERE id_category NOT IN (' . (int) Configuration::get('PS_HOME_CATEGORY') . ', ' . (int) Configuration::get('PS_ROOT_CATEGORY') . ')');
                 Db::getInstance()->execute('
-					DELETE FROM `' . _DB_PREFIX_ . 'category_lang`
-					WHERE id_category NOT IN (' . (int) Configuration::get('PS_HOME_CATEGORY') . ', ' . (int) Configuration::get('PS_ROOT_CATEGORY') . ')');
+                    DELETE FROM `' . _DB_PREFIX_ . 'category_lang`
+                    WHERE id_category NOT IN (' . (int) Configuration::get('PS_HOME_CATEGORY') . ', ' . (int) Configuration::get('PS_ROOT_CATEGORY') . ')');
                 Db::getInstance()->execute('
-					DELETE FROM `' . _DB_PREFIX_ . 'category_shop`
-					WHERE `id_category` NOT IN (' . (int) Configuration::get('PS_HOME_CATEGORY') . ', ' . (int) Configuration::get('PS_ROOT_CATEGORY') . ')');
+                    DELETE FROM `' . _DB_PREFIX_ . 'category_shop`
+                    WHERE `id_category` NOT IN (' . (int) Configuration::get('PS_HOME_CATEGORY') . ', ' . (int) Configuration::get('PS_ROOT_CATEGORY') . ')');
                 Db::getInstance()->execute('ALTER TABLE `' . _DB_PREFIX_ . 'category` AUTO_INCREMENT = 3');
                 foreach (scandir(_PS_CAT_IMG_DIR_) as $d) {
                     if (preg_match('/^[0-9]+(\\-(.*))?\\.jpg$/', $d)) {
@@ -1975,6 +1990,7 @@ class AdminImportController extends AdminController
                 break;
         }
         Image::clearTmpDir();
+
         return true;
     }
     public function postProcess()
@@ -1982,6 +1998,7 @@ class AdminImportController extends AdminController
         /* PrestaShop demo mode */
         if (_PS_MODE_DEMO_) {
             $this->errors[] = Tools::displayError('This functionality has been disabled.');
+
             return;
         }
         /* PrestaShop demo mode*/
@@ -1993,8 +2010,8 @@ class AdminImportController extends AdminController
                         break;
                     case UPLOAD_ERR_FORM_SIZE:
                         $this->errors[] = Tools::displayError('The uploaded file exceeds the post_max_size directive in php.ini.
-							If your server configuration allows it, you may add a directive in your .htaccess, for example:') . '<br/><a href="' . $this->context->link->getAdminLink('AdminMeta') . '" >
-						<code>php_value post_max_size 20M</code> ' . Tools::displayError('(click to open "Generators" page)') . '</a>';
+                            If your server configuration allows it, you may add a directive in your .htaccess, for example:') . '<br/><a href="' . $this->context->link->getAdminLink('AdminMeta') . '" >
+                        <code>php_value post_max_size 20M</code> ' . Tools::displayError('(click to open "Generators" page)') . '</a>';
                         break;
                         break;
                     case UPLOAD_ERR_PARTIAL:
@@ -2089,17 +2106,17 @@ class AdminImportController extends AdminController
         if ($this->tabAccess['edit'] === '1') {
             $match = implode('|', Tools::getValue('type_value'));
             Db::getInstance()->execute('INSERT INTO  `' . _DB_PREFIX_ . 'import_match` (
-										`id_import_match` ,
-										`name` ,
-										`match`,
-										`skip`
-										)
-										VALUES (
-										NULL ,
-										\'' . pSQL(Tools::getValue('newImportMatchs')) . '\',
-										\'' . pSQL($match) . '\',
-										\'' . pSQL(Tools::getValue('skip')) . '\'
-										)');
+                                        `id_import_match` ,
+                                        `name` ,
+                                        `match`,
+                                        `skip`
+                                        )
+                                        VALUES (
+                                        NULL ,
+                                        \'' . pSQL(Tools::getValue('newImportMatchs')) . '\',
+                                        \'' . pSQL($match) . '\',
+                                        \'' . pSQL(Tools::getValue('skip')) . '\'
+                                        )');
             die('{"id" : "' . Db::getInstance()->Insert_ID() . '"}');
         }
     }

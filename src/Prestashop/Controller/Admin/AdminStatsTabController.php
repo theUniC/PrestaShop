@@ -2,7 +2,6 @@
 
 namespace Prestashop\Controller\Admin;
 
-use Prestashop\Controller\AdminController;
 use Prestashop\Context;
 use Prestashop\Tools;
 use Prestashop\Configuration;
@@ -36,7 +35,7 @@ use Prestashop\Hook;
 *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-abstract class AdminStatsTabControllerCore extends AdminPreferencesController
+abstract class AdminStatsTabController extends AdminPreferencesController
 {
     public function init()
     {
@@ -76,6 +75,7 @@ abstract class AdminStatsTabControllerCore extends AdminPreferencesController
             $id = Tools::getValue('module');
         }
         $tpl->assign(array('current' => self::$currentIndex, 'token' => $token, 'action' => $action, 'table' => $table, 'identifier' => $identifier, 'id' => $id, 'translations' => $translations, 'datepickerFrom' => Tools::getValue('datepickerFrom', $context->employee->stats_date_from), 'datepickerTo' => Tools::getValue('datepickerTo', $context->employee->stats_date_to)));
+
         return $tpl->fetch();
     }
     protected function displayEngines()
@@ -83,6 +83,7 @@ abstract class AdminStatsTabControllerCore extends AdminPreferencesController
         $tpl = $this->createTemplate('engines.tpl');
         $autoclean_period = array('never' => $this->l('Never', 'AdminStatsTab'), 'week' => $this->l('Week', 'AdminStatsTab'), 'month' => $this->l('Month', 'AdminStatsTab'), 'year' => $this->l('Year', 'AdminStatsTab'));
         $tpl->assign(array('current' => self::$currentIndex, 'token' => $this->token, 'graph_engine' => Configuration::get('PS_STATS_RENDER'), 'grid_engine' => Configuration::get('PS_STATS_GRID_RENDER'), 'auto_clean' => Configuration::get('PS_STATS_OLD_CONNECT_AUTO_CLEAN'), 'array_graph_engines' => ModuleGraphEngine::getGraphEngines(), 'array_grid_engines' => ModuleGridEngine::getGridEngines(), 'array_auto_clean' => $autoclean_period));
+
         return $tpl->fetch();
     }
     public function displayMenu()
@@ -94,18 +95,20 @@ abstract class AdminStatsTabControllerCore extends AdminPreferencesController
             $module_instance[$module['name']] = Module::getInstanceByName($module['name']);
         }
         $tpl->assign(array('current' => self::$currentIndex, 'token' => $this->token, 'modules' => $modules, 'module_instance' => $module_instance));
+
         return $tpl->fetch();
     }
     protected function getModules()
     {
         $sql = 'SELECT h.`name` AS hook, m.`name`
-				FROM `' . _DB_PREFIX_ . 'module` m
-				LEFT JOIN `' . _DB_PREFIX_ . 'hook_module` hm ON hm.`id_module` = m.`id_module`
-				LEFT JOIN `' . _DB_PREFIX_ . 'hook` h ON hm.`id_hook` = h.`id_hook`
-				WHERE h.`name` LIKE \'displayAdminStatsModules\'
-					AND m.`active` = 1
-				GROUP BY hm.id_module
-				ORDER BY hm.`position`';
+                FROM `' . _DB_PREFIX_ . 'module` m
+                LEFT JOIN `' . _DB_PREFIX_ . 'hook_module` hm ON hm.`id_module` = m.`id_module`
+                LEFT JOIN `' . _DB_PREFIX_ . 'hook` h ON hm.`id_hook` = h.`id_hook`
+                WHERE h.`name` LIKE \'displayAdminStatsModules\'
+                    AND m.`active` = 1
+                GROUP BY hm.id_module
+                ORDER BY hm.`position`';
+
         return Db::getInstance()->executeS($sql);
     }
     public function displayStats()
@@ -124,6 +127,7 @@ abstract class AdminStatsTabControllerCore extends AdminPreferencesController
             }
         }
         $tpl->assign(array('module_name' => $module_name, 'module_instance' => isset($module_instance) ? $module_instance : null, 'hook' => isset($hook) ? $hook : null));
+
         return $tpl->fetch();
     }
     public function postProcess()
@@ -183,6 +187,7 @@ abstract class AdminStatsTabControllerCore extends AdminPreferencesController
         $year = isset($this->context->cookie->stats_year) ? $this->context->cookie->stats_year : date('Y');
         $month = isset($this->context->cookie->stats_month) ? sprintf('%02d', $this->context->cookie->stats_month) : '%';
         $day = isset($this->context->cookie->stats_day) ? sprintf('%02d', $this->context->cookie->stats_day) : '%';
+
         return $year . '-' . $month . '-' . $day;
     }
 }

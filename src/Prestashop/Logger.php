@@ -31,7 +31,7 @@ use Prestashop\Db\Db;
 *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-class LoggerCore extends ObjectModel
+class Logger extends ObjectModel
 {
     /** @var integer Log id */
     public $id_log;
@@ -71,12 +71,12 @@ class LoggerCore extends ObjectModel
     /**
      * add a log item to the database and send a mail if configured for this $severity
      *
-     * @param string $message the log message
-     * @param int $severity
-     * @param int $error_code
-     * @param string $object_type
-     * @param int $object_id
-     * @param boolean $allow_duplicate if set to true, can log several time the same information (not recommended)
+     * @param  string  $message         the log message
+     * @param  int     $severity
+     * @param  int     $error_code
+     * @param  string  $object_type
+     * @param  int     $object_id
+     * @param  boolean $allow_duplicate if set to true, can log several time the same information (not recommended)
      * @return boolean true if succeed
      */
     public static function addLog($message, $severity = 1, $error_code = null, $object_type = null, $object_id = null, $allow_duplicate = false, $id_employee = null)
@@ -102,9 +102,11 @@ class LoggerCore extends ObjectModel
             $res = $log->add();
             if ($res) {
                 self::$is_present[$log->getHash()] = isset(self::$is_present[$log->getHash()]) ? self::$is_present[$log->getHash()] + 1 : 1;
+
                 return true;
             }
         }
+
         return false;
     }
     /**
@@ -117,6 +119,7 @@ class LoggerCore extends ObjectModel
         if (empty($this->hash)) {
             $this->hash = md5($this->message . $this->severity . $this->error_code . $this->object_type . $this->object_id);
         }
+
         return $this->hash;
     }
     /**
@@ -128,15 +131,16 @@ class LoggerCore extends ObjectModel
     {
         if (!isset(self::$is_present[md5($this->message)])) {
             self::$is_present[$this->getHash()] = Db::getInstance()->getValue('SELECT COUNT(*)
-				FROM `' . _DB_PREFIX_ . 'log`
-				WHERE
-					`message` = \'' . $this->message . '\'
-					AND `severity` = \'' . $this->severity . '\'
-					AND `error_code` = \'' . $this->error_code . '\'
-					AND `object_type` = \'' . $this->object_type . '\'
-					AND `object_id` = \'' . $this->object_id . '\'
-				');
+                FROM `' . _DB_PREFIX_ . 'log`
+                WHERE
+                    `message` = \'' . $this->message . '\'
+                    AND `severity` = \'' . $this->severity . '\'
+                    AND `error_code` = \'' . $this->error_code . '\'
+                    AND `object_type` = \'' . $this->object_type . '\'
+                    AND `object_id` = \'' . $this->object_id . '\'
+                ');
         }
+
         return self::$is_present[$this->getHash()];
     }
 }

@@ -88,6 +88,7 @@ class HelpAccess
                 }
             }
         }
+
         return array('version' => $version, 'tooltip' => $tooltip);
     }
 }

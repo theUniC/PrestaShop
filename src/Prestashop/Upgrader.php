@@ -69,8 +69,8 @@ class Upgrader
     /**
      * downloadLast download the last version of PrestaShop and save it in $dest/$filename
      *
-     * @param string $dest directory where to save the file
-     * @param string $filename new filename
+     * @param  string  $dest     directory where to save the file
+     * @param  string  $filename new filename
      * @return boolean
      *
      * @TODO ftp if copy is not possible (safe_mode for example)
@@ -92,6 +92,7 @@ class Upgrader
         if (empty($this->link)) {
             $this->checkPSVersion();
         }
+
         return $this->need_upgrade;
     }
     /**
@@ -135,6 +136,7 @@ class Upgrader
         // false otherwise
         if (version_compare(_PS_VERSION_, $this->version_num, '<')) {
             $this->need_upgrade = true;
+
             return array('name' => $this->version_name, 'link' => $this->link);
         } else {
             return false;
@@ -180,6 +182,7 @@ class Upgrader
                 $this->changelog = $last_version_check['changelog'];
             }
         }
+
         return $this;
     }
     /**
@@ -198,6 +201,7 @@ class Upgrader
                 $this->browseXmlAndCompare($checksum->ps_root_dir[0]);
             }
         }
+
         return $this->changed_files;
     }
     /** populate $this->changed_files with $path
@@ -260,11 +264,13 @@ class Upgrader
         if (md5_file($path) == $original_sum) {
             return true;
         }
+
         return false;
     }
     public function isAuthenticPrestashopVersion()
     {
         $this->getChangedFilesList();
+
         return !$this->version_is_modified;
     }
 }

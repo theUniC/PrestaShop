@@ -54,13 +54,14 @@ class SpecificPriceRule extends ObjectModel
     {
         $this->deleteConditions();
         Db::getInstance()->execute('DELETE FROM ' . _DB_PREFIX_ . 'specific_price WHERE id_specific_price_rule=' . (int) $this->id);
+
         return parent::delete();
     }
     public function deleteConditions()
     {
         $ids_condition_group = Db::getInstance()->executeS('SELECT id_specific_price_rule_condition_group
-																		 FROM ' . _DB_PREFIX_ . 'specific_price_rule_condition_group
-																		 WHERE id_specific_price_rule=' . (int) $this->id);
+                                                                         FROM ' . _DB_PREFIX_ . 'specific_price_rule_condition_group
+                                                                         WHERE id_specific_price_rule=' . (int) $this->id);
         if ($ids_condition_group) {
             foreach ($ids_condition_group as $row) {
                 Db::getInstance()->delete('specific_price_rule_condition_group', 'id_specific_price_rule_condition_group=' . (int) $row['id_specific_price_rule_condition_group']);
@@ -84,6 +85,7 @@ class SpecificPriceRule extends ObjectModel
                 return false;
             }
         }
+
         return true;
     }
     public function apply($products = false)
@@ -100,6 +102,7 @@ class SpecificPriceRule extends ObjectModel
         if ($products && count($products)) {
             $where .= ' AND id_product IN (' . implode(', ', array_map('intval', $products)) . ')';
         }
+
         return Db::getInstance()->execute('DELETE FROM ' . _DB_PREFIX_ . 'specific_price WHERE id_specific_price_rule=' . (int) $this->id . $where);
     }
     public static function applyAllRules($products = false)
@@ -112,26 +115,27 @@ class SpecificPriceRule extends ObjectModel
     public function getConditions()
     {
         $conditions = Db::getInstance()->executeS('
-			SELECT g.*, c.*
-			FROM ' . _DB_PREFIX_ . 'specific_price_rule_condition_group g
-			LEFT JOIN ' . _DB_PREFIX_ . 'specific_price_rule_condition c
-				ON (c.id_specific_price_rule_condition_group = g.id_specific_price_rule_condition_group)
-			WHERE g.id_specific_price_rule=' . (int) $this->id);
+            SELECT g.*, c.*
+            FROM ' . _DB_PREFIX_ . 'specific_price_rule_condition_group g
+            LEFT JOIN ' . _DB_PREFIX_ . 'specific_price_rule_condition c
+                ON (c.id_specific_price_rule_condition_group = g.id_specific_price_rule_condition_group)
+            WHERE g.id_specific_price_rule=' . (int) $this->id);
         $conditions_group = array();
         if ($conditions) {
             foreach ($conditions as &$condition) {
                 if ($condition['type'] == 'attribute') {
                     $condition['id_attribute_group'] = Db::getInstance()->getValue('SELECT id_attribute_group
-																										FROM ' . _DB_PREFIX_ . 'attribute
-																										WHERE id_attribute=' . (int) $condition['value']);
+                                                                                                        FROM ' . _DB_PREFIX_ . 'attribute
+                                                                                                        WHERE id_attribute=' . (int) $condition['value']);
                 } elseif ($condition['type'] == 'feature') {
                     $condition['id_feature'] = Db::getInstance()->getValue('SELECT id_feature
-																								FROM ' . _DB_PREFIX_ . 'feature_value
-																								WHERE id_feature_value=' . (int) $condition['value']);
+                                                                                                FROM ' . _DB_PREFIX_ . 'feature_value
+                                                                                                WHERE id_feature_value=' . (int) $condition['value']);
                 }
                 $conditions_group[(int) $condition['id_specific_price_rule_condition_group']][] = $condition;
             }
         }
+
         return $conditions_group;
     }
     public function getAffectedProducts($products = false)
@@ -200,6 +204,7 @@ class SpecificPriceRule extends ObjectModel
         if ($where) {
             $query->where($where);
         }
+
         return Db::getInstance()->executeS($query);
     }
     public static function applyRuleToProduct($id_rule, $id_product, $id_product_attribute = null)
@@ -223,6 +228,7 @@ class SpecificPriceRule extends ObjectModel
         $specific_price->reduction = $rule->reduction_type == 'percentage' ? $rule->reduction / 100 : (double) $rule->reduction;
         $specific_price->from = $rule->from;
         $specific_price->to = $rule->to;
+
         return $specific_price->add();
     }
 }

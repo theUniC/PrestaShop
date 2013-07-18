@@ -39,11 +39,11 @@ class ImageManager
     /**
      * Generate a cached thumbnail for object lists (eg. carrier, order states...etc)
      *
-     * @param string $image Real image filename
-     * @param string $cache_image Cached filename
-     * @param int $size Desired size
-     * @param string $image_type Image type
-     * @param bool $disable_cache When turned on a timestamp will be added to the image URI to disable the HTTP cache
+     * @param  string $image         Real image filename
+     * @param  string $cache_image   Cached filename
+     * @param  int    $size          Desired size
+     * @param  string $image_type    Image type
+     * @param  bool   $disable_cache When turned on a timestamp will be added to the image URI to disable the HTTP cache
      * @return string
      */
     public static function thumbnail($image, $cache_image, $size, $image_type = 'jpg', $disable_cache = false)
@@ -99,16 +99,17 @@ class ImageManager
                 return false;
             }
         }
+
         return true;
     }
     /**
      * Resize, cut and optimize image
      *
-     * @param string $src_file Image object from $_FILE
-     * @param string $dst_file Destination filename
-     * @param integer $dst_width Desired width (optional)
-     * @param integer $dst_height Desired height (optional)
-     * @param string $file_type
+     * @param  string  $src_file   Image object from $_FILE
+     * @param  string  $dst_file   Destination filename
+     * @param  integer $dst_width  Desired width (optional)
+     * @param  integer $dst_height Desired height (optional)
+     * @param  string  $file_type
      * @return boolean Operation result
      */
     public static function resize($src_file, $dst_file, $dst_width = null, $dst_height = null, $file_type = 'jpg', $force_type = false)
@@ -169,14 +170,15 @@ class ImageManager
             imagefilledrectangle($dest_image, 0, 0, $dst_width, $dst_height, $white);
         }
         imagecopyresampled($dest_image, $src_image, (int) (($dst_width - $next_width) / 2), (int) (($dst_height - $next_height) / 2), 0, 0, $next_width, $next_height, $src_width, $src_height);
+
         return ImageManager::write($file_type, $dest_image, $dst_file);
     }
     /**
      * Check if file is a real image
      *
-     * @param string $filename File path to check
-     * @param string $file_mime_type File known mime type (generally from $_FILES)
-     * @param array $mime_type_list Allowed MIME types
+     * @param  string $filename       File path to check
+     * @param  string $file_mime_type File known mime type (generally from $_FILES)
+     * @param  array  $mime_type_list Allowed MIME types
      * @return bool
      */
     public static function isRealImage($filename, $file_mime_type = null, $mime_type_list = null)
@@ -212,6 +214,7 @@ class ImageManager
                 return true;
             }
         }
+
         return false;
     }
     /**
@@ -234,13 +237,14 @@ class ImageManager
         } else {
             return false;
         }
+
         return true;
     }
     /**
      * Validate image upload (check image type and weight)
      *
-     * @param array $file Upload $_FILE value
-     * @param integer $max_file_size Maximum upload size
+     * @param  array       $file          Upload $_FILE value
+     * @param  integer     $max_file_size Maximum upload size
      * @return bool|string Return false if no error encountered
      */
     public static function validateUpload($file, $max_file_size = 0)
@@ -254,13 +258,14 @@ class ImageManager
         if ($file['error']) {
             return sprintf(Tools::displayError('Error while uploading image; please change your server\'s settings. (Error code: %s)'), $file['error']);
         }
+
         return false;
     }
     /**
      * Validate icon upload
      *
-     * @param array $file Upload $_FILE value
-     * @param int $max_file_size Maximum upload size
+     * @param  array       $file          Upload $_FILE value
+     * @param  int         $max_file_size Maximum upload size
      * @return bool|string Return false if no error encountered
      */
     public static function validateIconUpload($file, $max_file_size = 0)
@@ -274,18 +279,19 @@ class ImageManager
         if ($file['error']) {
             return Tools::displayError('Error while uploading image; please change your server\'s settings.');
         }
+
         return false;
     }
     /**
      * Cut image
      *
-     * @param array $src_file Origin filename
-     * @param string $dst_file Destination filename
-     * @param integer $dst_width Desired width
+     * @param array   $src_file   Origin filename
+     * @param string  $dst_file   Destination filename
+     * @param integer $dst_width  Desired width
      * @param integer $dst_height Desired height
-     * @param string $file_type
-     * @param int $dst_x
-     * @param int $dst_y
+     * @param string  $file_type
+     * @param int     $dst_x
+     * @param int     $dst_y
      *
      * @return bool Operation result
      */
@@ -308,13 +314,14 @@ class ImageManager
         imagecopyresampled($dest['ressource'], $src['ressource'], 0, 0, $dest['x'], $dest['y'], $dest['width'], $dest['height'], $dest['width'], $dest['height']);
         imagecolortransparent($dest['ressource'], $white);
         $return = ImageManager::write($file_type, $dest['ressource'], $dst_file);
+
         return $return;
     }
     /**
      * Create an image with GD extension from a given type
      *
-     * @param string $type
-     * @param string $filename
+     * @param  string   $type
+     * @param  string   $filename
      * @return resource
      */
     public static function create($type, $filename)
@@ -335,8 +342,8 @@ class ImageManager
     /**
      * Create an empty image with white background
      *
-     * @param int $width
-     * @param int $height
+     * @param  int      $width
+     * @param  int      $height
      * @return resource
      */
     public static function createWhiteImage($width, $height)
@@ -344,14 +351,15 @@ class ImageManager
         $image = imagecreatetruecolor($width, $height);
         $white = imagecolorallocate($image, 255, 255, 255);
         imagefill($image, 0, 0, $white);
+
         return $image;
     }
     /**
      * Generate and write image
      *
-     * @param string $type
-     * @param resource $resource
-     * @param string $filename
+     * @param  string   $type
+     * @param  resource $resource
+     * @param  string   $filename
      * @return bool
      */
     public static function write($type, $resource, $filename)
@@ -373,12 +381,13 @@ class ImageManager
         }
         imagedestroy($resource);
         @chmod($filename, 436);
+
         return $success;
     }
     /**
      * Return the mime type by the file extension
      *
-     * @param string $file_name
+     * @param  string $file_name
      * @return string
      */
     public static function getMimeTypeByExtension($file_name)
@@ -395,6 +404,7 @@ class ImageManager
         if ($mime_type === null) {
             $mime_type = 'image/jpeg';
         }
+
         return $mime_type;
     }
 }

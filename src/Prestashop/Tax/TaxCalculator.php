@@ -55,7 +55,7 @@ class TaxCalculator
     public $computation_method;
     /**
      * @param array $taxes
-     * @param int $computation_method (COMBINE_METHOD | ONE_AFTER_ANOTHER_METHOD)
+     * @param int   $computation_method (COMBINE_METHOD | ONE_AFTER_ANOTHER_METHOD)
      */
     public function __construct(array $taxes = array(), $computation_method = TaxCalculator::COMBINE_METHOD)
     {
@@ -106,6 +106,7 @@ class TaxCalculator
                 $taxes += abs($tax->rate);
             }
         }
+
         return (double) $taxes;
     }
     public function getTaxesName()
@@ -115,12 +116,13 @@ class TaxCalculator
             $name .= $tax->name[(int) Context::getContext()->language->id] . ' - ';
         }
         $name = rtrim($name, ' - ');
+
         return $name;
     }
     /**
      * Return the tax amount associated to each taxes of the TaxCalculator
      *
-     * @param float $price_te
+     * @param  float $price_te
      * @return array $taxes_amount
      */
     public function getTaxesAmount($price_te)
@@ -134,6 +136,7 @@ class TaxCalculator
                 $taxes_amounts[$tax->id] = $price_te * (abs($tax->rate) / 100);
             }
         }
+
         return $taxes_amounts;
     }
 }

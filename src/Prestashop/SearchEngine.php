@@ -59,6 +59,7 @@ class SearchEngine extends ObjectModel
                 if (!Validate::isMessage($str)) {
                     return false;
                 }
+
                 return $str;
             }
         }

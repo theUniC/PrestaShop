@@ -54,12 +54,13 @@ class Contact extends ObjectModel
     {
         $shop_ids = Shop::getContextListShopID();
         $sql = 'SELECT *
-				FROM `' . _DB_PREFIX_ . 'contact` c
-				' . Shop::addSqlAssociation('contact', 'c', false) . '
-				LEFT JOIN `' . _DB_PREFIX_ . 'contact_lang` cl ON (c.`id_contact` = cl.`id_contact`)
-				WHERE cl.`id_lang` = ' . (int) $id_lang . '
-				AND contact_shop.`id_shop` IN (' . implode(', ', array_map('intval', $shop_ids)) . ')
-				ORDER BY `name` ASC';
+                FROM `' . _DB_PREFIX_ . 'contact` c
+                ' . Shop::addSqlAssociation('contact', 'c', false) . '
+                LEFT JOIN `' . _DB_PREFIX_ . 'contact_lang` cl ON (c.`id_contact` = cl.`id_contact`)
+                WHERE cl.`id_lang` = ' . (int) $id_lang . '
+                AND contact_shop.`id_shop` IN (' . implode(', ', array_map('intval', $shop_ids)) . ')
+                ORDER BY `name` ASC';
+
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
     }
     /**
@@ -69,11 +70,11 @@ class Contact extends ObjectModel
     public static function getCategoriesContacts()
     {
         return Db::getInstance()->executeS('
-			SELECT cl.*
-			FROM ' . _DB_PREFIX_ . 'contact ct
-			LEFT JOIN ' . _DB_PREFIX_ . 'contact_lang cl
-				ON (cl.id_contact = ct.id_contact AND cl.id_lang = ' . (int) Context::getContext()->language->id . ')
-			WHERE ct.customer_service = 1
-		');
+            SELECT cl.*
+            FROM ' . _DB_PREFIX_ . 'contact ct
+            LEFT JOIN ' . _DB_PREFIX_ . 'contact_lang cl
+                ON (cl.id_contact = ct.id_contact AND cl.id_lang = ' . (int) Context::getContext()->language->id . ')
+            WHERE ct.customer_service = 1
+        ');
     }
 }

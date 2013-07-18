@@ -55,6 +55,7 @@ class AdminTaxRulesGroupController extends AdminController
     {
         $this->addRowAction('edit');
         $this->addRowAction('delete');
+
         return parent::renderList();
     }
     public function initRulesList($id_group)
@@ -70,20 +71,21 @@ class AdminTaxRulesGroupController extends AdminController
         $this->addRowAction('edit');
         $this->addRowAction('delete');
         $this->_select = '
-			c.`name` AS country_name,
-			s.`name` AS state_name,
-			CONCAT_WS(" - ", a.`zipcode_from`, a.`zipcode_to`) AS zipcode,
-			t.rate';
+            c.`name` AS country_name,
+            s.`name` AS state_name,
+            CONCAT_WS(" - ", a.`zipcode_from`, a.`zipcode_to`) AS zipcode,
+            t.rate';
         $this->_join = '
-			LEFT JOIN `' . _DB_PREFIX_ . 'country_lang` c
-				ON (a.`id_country` = c.`id_country` AND id_lang = ' . (int) $this->context->language->id . ')
-			LEFT JOIN `' . _DB_PREFIX_ . 'state` s
-				ON (a.`id_state` = s.`id_state`)
-			LEFT JOIN `' . _DB_PREFIX_ . 'tax` t
-				ON (a.`id_tax` = t.`id_tax`)';
+            LEFT JOIN `' . _DB_PREFIX_ . 'country_lang` c
+                ON (a.`id_country` = c.`id_country` AND id_lang = ' . (int) $this->context->language->id . ')
+            LEFT JOIN `' . _DB_PREFIX_ . 'state` s
+                ON (a.`id_state` = s.`id_state`)
+            LEFT JOIN `' . _DB_PREFIX_ . 'tax` t
+                ON (a.`id_tax` = t.`id_tax`)';
         $this->_where = 'AND `id_tax_rules_group` = ' . (int) $id_group;
         $this->show_toolbar = false;
         $this->tpl_list_vars = array('id_tax_rules_group' => (int) $id_group);
+
         return parent::renderList();
     }
     public function renderForm()
@@ -104,14 +106,15 @@ class AdminTaxRulesGroupController extends AdminController
             // We change the variable $ tpl_folder to avoid the overhead calling the file in list_action_edit.tpl in intList ();
             $content .= $this->initRulesList((int) $obj->id);
         }
+
         return $content;
     }
     public function initRuleForm()
     {
         $this->fields_form[0]['form'] = array('legend' => array('title' => $this->l('New tax rule'), 'image' => '../img/admin/dollar.gif'), 'input' => array(array('type' => 'select', 'label' => $this->l('Country:'), 'name' => 'country', 'id' => 'country', 'options' => array('query' => Country::getCountries($this->context->language->id), 'id' => 'id_country', 'name' => 'name', 'default' => array('value' => 0, 'label' => $this->l('All')))), array('type' => 'select', 'label' => $this->l('State:'), 'name' => 'states[]', 'id' => 'states', 'multiple' => true, 'size' => 5, 'options' => array('query' => array(), 'id' => 'id_state', 'name' => 'name', 'default' => array('value' => 0, 'label' => $this->l('All')))), array('type' => 'hidden', 'name' => 'action'), array('type' => 'hidden', 'name' => 'id_tax_rules_group'), array('type' => 'text', 'label' => $this->l('Zip Code range:'), 'name' => 'zipcode', 'required' => false, 'hint' => $this->l('You can define a range of zipcodes (eg: 75000-75015) or simply use one zipcode.')), array('type' => 'select', 'label' => $this->l('Behavior:'), 'name' => 'behavior', 'required' => false, 'options' => array('query' => array(array('id' => 0, 'name' => $this->l('This tax only')), array('id' => 1, 'name' => $this->l('Combine')), array('id' => 2, 'name' => $this->l('One after another'))), 'id' => 'id', 'name' => 'name'), 'hint' => $this->l('Define the behavior if an address matches multiple rules:') . '<br />
-						<b>' . $this->l('This Tax Only:') . '</b> ' . $this->l('Will apply only this tax') . '<br />
-						<b>' . $this->l('Combine:') . '</b> ' . $this->l('Combine taxes (eg: 10% + 5% = 15%)') . '<br />
-						<b>' . $this->l('One After Another:') . '</b> ' . $this->l('Apply taxes one after another (eg: 0 + 10% = 0 + 5% = 5.5)')), array('type' => 'select', 'label' => $this->l('Tax:'), 'name' => 'id_tax', 'required' => false, 'options' => array('query' => Tax::getTaxes((int) $this->context->language->id), 'id' => 'id_tax', 'name' => 'name', 'default' => array('value' => 0, 'label' => $this->l('No Tax'))), 'desc' => sprintf($this->l('(Total tax: %s)'), '9%')), array('type' => 'text', 'label' => $this->l('Description:'), 'name' => 'description', 'size' => 40)), 'submit' => array('title' => $this->l('Save and stay'), 'class' => 'button', 'stay' => true));
+                        <b>' . $this->l('This Tax Only:') . '</b> ' . $this->l('Will apply only this tax') . '<br />
+                        <b>' . $this->l('Combine:') . '</b> ' . $this->l('Combine taxes (eg: 10% + 5% = 15%)') . '<br />
+                        <b>' . $this->l('One After Another:') . '</b> ' . $this->l('Apply taxes one after another (eg: 0 + 10% = 0 + 5% = 5.5)')), array('type' => 'select', 'label' => $this->l('Tax:'), 'name' => 'id_tax', 'required' => false, 'options' => array('query' => Tax::getTaxes((int) $this->context->language->id), 'id' => 'id_tax', 'name' => 'name', 'default' => array('value' => 0, 'label' => $this->l('No Tax'))), 'desc' => sprintf($this->l('(Total tax: %s)'), '9%')), array('type' => 'text', 'label' => $this->l('Description:'), 'name' => 'description', 'size' => 40)), 'submit' => array('title' => $this->l('Save and stay'), 'class' => 'button', 'stay' => true));
         if (!($obj = $this->loadObject(true))) {
             return;
         }
@@ -132,6 +135,7 @@ class AdminTaxRulesGroupController extends AdminController
         $helper->fields_value = $this->getFieldsValue($this->object);
         $helper->toolbar_btn = null;
         $helper->submit_action = 'create_rule';
+
         return $helper->generateForm($this->fields_form);
     }
     public function initProcess()

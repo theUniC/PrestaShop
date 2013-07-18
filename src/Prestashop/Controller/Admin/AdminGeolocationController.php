@@ -63,6 +63,7 @@ class AdminGeolocationController extends AdminController
 ', ';', str_replace('', '', Tools::getValue('PS_GEOLOCATION_WHITELIST'))));
             }
         }
+
         return parent::processUpdateOptions();
     }
     public function renderOptions()
@@ -70,14 +71,15 @@ class AdminGeolocationController extends AdminController
         // This field is not declared in class constructor because we want it to be manually post processed
         $this->fields_options['geolocationCountries']['fields']['countries'] = array('title' => $this->l('Select the countries from which your store is accessible'), 'type' => 'checkbox_table', 'identifier' => 'iso_code', 'list' => Country::getCountries($this->context->language->id), 'auto_value' => false);
         $this->tpl_option_vars = array('allowed_countries' => explode(';', Configuration::get('PS_ALLOWED_COUNTRIES')));
+
         return parent::renderOptions();
     }
     public function initContent()
     {
         $this->display = 'options';
         if (!$this->isGeoLiteCityAvailable()) {
-            $this->displayWarning($this->l('In order to use Geolocation, please download') . ' 
-				<a href="http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz">' . $this->l('this file') . '</a> ' . $this->l('and extract it (using Winrar or Gzip) into the /tools/geoip/ directory.'));
+            $this->displayWarning($this->l('In order to use Geolocation, please download') . '
+                <a href="http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz">' . $this->l('this file') . '</a> ' . $this->l('and extract it (using Winrar or Gzip) into the /tools/geoip/ directory.'));
         }
         parent::initContent();
     }
@@ -86,6 +88,7 @@ class AdminGeolocationController extends AdminController
         if (file_exists(_PS_GEOIP_DIR_ . 'GeoLiteCity.dat')) {
             return true;
         }
+
         return false;
     }
 }

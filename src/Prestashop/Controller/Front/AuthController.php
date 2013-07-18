@@ -173,20 +173,18 @@ class AuthController extends FrontController
                 $selectedCountry = (int) $_POST['id_country'];
             }
             /* FIXME : language iso and country iso are not similar,
-                        			 * maybe an associative table with country an language can resolve it,
-                        			 * But for now it's a bug !
-                        			 * @see : bug #6968
-                        			 * @link:http://www.prestashop.com/bug_tracker/view/6968/
-                        			 elseif (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
-                        			 {
-                        			 $array = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-                        			 if (Validate::isLanguageIsoCode($array[0]))
-                        			 {
-                        			 $selectedCountry = Country::getByIso($array[0]);
-                        			 if (!$selectedCountry)
-                        			 $selectedCountry = (int)(Configuration::get('PS_COUNTRY_DEFAULT'));
-                        			 }
-                        			 }*/
+                                     * maybe an associative table with country an language can resolve it,
+                                     * But for now it's a bug !
+                                     * @see : bug #6968
+                                     * @link:http://www.prestashop.com/bug_tracker/view/6968/
+                                     elseif (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+                                     $array = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+                                     if (Validate::isLanguageIsoCode($array[0])) {
+                                     $selectedCountry = Country::getByIso($array[0]);
+                                     if (!$selectedCountry)
+                                     $selectedCountry = (int) (Configuration::get('PS_COUNTRY_DEFAULT'));
+                                     }
+                                     }*/
             if (!isset($selectedCountry)) {
                 $selectedCountry = (int) Configuration::get('PS_COUNTRY_DEFAULT');
             }
@@ -585,7 +583,7 @@ class AuthController extends FrontController
     }
     /**
      * sendConfirmationMail
-     * @param Customer $customer
+     * @param  Customer $customer
      * @return bool
      */
     protected function sendConfirmationMail(Customer $customer)
@@ -593,6 +591,7 @@ class AuthController extends FrontController
         if (!Configuration::get('PS_CUSTOMER_CREATION_EMAIL')) {
             return true;
         }
+
         return Mail::Send($this->context->language->id, 'account', Mail::l('Welcome!'), array('{firstname}' => $customer->firstname, '{lastname}' => $customer->lastname, '{email}' => $customer->email, '{passwd}' => Tools::getValue('passwd')), $customer->email, $customer->firstname . ' ' . $customer->lastname);
     }
 }

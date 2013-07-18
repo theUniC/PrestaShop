@@ -56,6 +56,7 @@ class RequestSql extends ObjectModel
         foreach ($result as $row) {
             $request_sql[] = $row['sql'];
         }
+
         return $request_sql;
     }
     /**
@@ -100,6 +101,7 @@ class RequestSql extends ObjectModel
                         return false;
                     }
                 }
+
                 return true;
             } else {
                 return $this->validateSql($tab, $in, $sql);
@@ -166,6 +168,7 @@ class RequestSql extends ObjectModel
                 return false;
             }
         }
+
         return true;
     }
     /**
@@ -180,6 +183,7 @@ class RequestSql extends ObjectModel
             $key = array_keys($result);
             $tables[] = $result[$key[0]];
         }
+
         return $tables;
     }
     /**
@@ -207,6 +211,7 @@ class RequestSql extends ObjectModel
                 $tab[] = $attribut;
             }
         }
+
         return $tab;
     }
     /**
@@ -254,11 +259,13 @@ class RequestSql extends ObjectModel
         } else {
             if (!$alias && count($tables) > 1) {
                 $this->error_sql['returnNameTable'] = false;
+
                 return false;
             } else {
                 foreach ($tables as $table) {
                     $tab[] = $table['table'];
                 }
+
                 return $tab;
             }
         }
@@ -281,6 +288,7 @@ class RequestSql extends ObjectModel
                 return true;
             }
         }
+
         return false;
     }
     /**
@@ -294,9 +302,11 @@ class RequestSql extends ObjectModel
         foreach ($this->tested['required'] as $key) {
             if (!array_key_exists($key, $tab)) {
                 $this->error_sql['testedRequired'] = $key;
+
                 return false;
             }
         }
+
         return true;
     }
     /**
@@ -310,9 +320,11 @@ class RequestSql extends ObjectModel
         foreach ($this->tested['unauthorized'] as $key) {
             if (array_key_exists($key, $tab)) {
                 $this->error_sql['testedUnauthorized'] = $key;
+
                 return false;
             }
         }
+
         return true;
     }
     /**
@@ -328,6 +340,7 @@ class RequestSql extends ObjectModel
             $table = $from[$i];
             if (!in_array(str_replace('`', '', $table['table']), $this->getTables())) {
                 $this->error_sql['checkedFrom']['table'] = $table['table'];
+
                 return false;
             }
             if ($table['ref_type'] == 'ON' && (trim($table['join_type']) == 'LEFT' || trim($table['join_type']) == 'JOIN')) {
@@ -335,20 +348,24 @@ class RequestSql extends ObjectModel
                     foreach ($attrs as $attr) {
                         if (!$this->attributExistInTable($attr['attribut'], $attr['table'])) {
                             $this->error_sql['checkedFrom']['attribut'] = array($attr['attribut'], implode(', ', $attr['table']));
+
                             return false;
                         }
                     }
                 } else {
                     if (isset($this->error_sql['returnNameTable'])) {
                         $this->error_sql['checkedFrom'] = $this->error_sql['returnNameTable'];
+
                         return false;
                     } else {
                         $this->error_sql['checkedFrom'] = false;
+
                         return false;
                     }
                 }
             }
         }
+
         return true;
     }
     /**
@@ -356,7 +373,7 @@ class RequestSql extends ObjectModel
      *
      * @param $select
      * @param $from
-     * @param bool $in
+     * @param  bool $in
      * @return bool
      */
     public function checkedSelect($select, $from, $in = false)
@@ -369,14 +386,17 @@ class RequestSql extends ObjectModel
                     if ($attr = $this->cutAttribute(trim($attribut['base_expr']), $from)) {
                         if (!$this->attributExistInTable($attr['attribut'], $attr['table'])) {
                             $this->error_sql['checkedSelect']['attribut'] = array($attr['attribut'], implode(', ', $attr['table']));
+
                             return false;
                         }
                     } else {
                         if (isset($this->error_sql['returnNameTable'])) {
                             $this->error_sql['checkedSelect'] = $this->error_sql['returnNameTable'];
+
                             return false;
                         } else {
                             $this->error_sql['checkedSelect'] = false;
+
                             return false;
                         }
                     }
@@ -384,10 +404,12 @@ class RequestSql extends ObjectModel
             } else {
                 if ($in) {
                     $this->error_sql['checkedSelect']['*'] = false;
+
                     return false;
                 }
             }
         }
+
         return true;
     }
     /**
@@ -407,14 +429,17 @@ class RequestSql extends ObjectModel
                 if ($attr = $this->cutAttribute(trim($attribut['base_expr']), $from)) {
                     if (!$this->attributExistInTable($attr['attribut'], $attr['table'])) {
                         $this->error_sql['checkedWhere']['attribut'] = array($attr['attribut'], implode(', ', $attr['table']));
+
                         return false;
                     }
                 } else {
                     if (isset($this->error_sql['returnNameTable'])) {
                         $this->error_sql['checkedWhere'] = $this->error_sql['returnNameTable'];
+
                         return false;
                     } else {
                         $this->error_sql['checkedWhere'] = false;
+
                         return false;
                     }
                 }
@@ -422,16 +447,19 @@ class RequestSql extends ObjectModel
                 if ($attribut['expr_type'] == 'operator') {
                     if (!in_array(strtoupper($attribut['base_expr']), $this->tested['operator'])) {
                         $this->error_sql['checkedWhere']['operator'] = array($attribut['base_expr']);
+
                         return false;
                     }
                 } else {
                     if ($attribut['expr_type'] == 'subquery') {
                         $tab = $attribut['sub_tree'];
+
                         return $this->validateParser($tab, true, $sql);
                     }
                 }
             }
         }
+
         return true;
     }
     /**
@@ -450,14 +478,17 @@ class RequestSql extends ObjectModel
                 if ($attr = $this->cutAttribute(trim($attribut['base_expr']), $from)) {
                     if (!$this->attributExistInTable($attr['attribut'], $attr['table'])) {
                         $this->error_sql['checkedHaving']['attribut'] = array($attr['attribut'], implode(', ', $attr['table']));
+
                         return false;
                     }
                 } else {
                     if (isset($this->error_sql['returnNameTable'])) {
                         $this->error_sql['checkedHaving'] = $this->error_sql['returnNameTable'];
+
                         return false;
                     } else {
                         $this->error_sql['checkedHaving'] = false;
+
                         return false;
                     }
                 }
@@ -465,10 +496,12 @@ class RequestSql extends ObjectModel
             if ($attribut['expr_type'] == 'operator') {
                 if (!in_array(strtoupper($attribut['base_expr']), $this->tested['operator'])) {
                     $this->error_sql['checkedHaving']['operator'] = array($attribut['base_expr']);
+
                     return false;
                 }
             }
         }
+
         return true;
     }
     /**
@@ -485,18 +518,22 @@ class RequestSql extends ObjectModel
             if ($attr = $this->cutAttribute(trim($order['base_expr']), $from)) {
                 if (!$this->attributExistInTable($attr['attribut'], $attr['table'])) {
                     $this->error_sql['checkedOrder']['attribut'] = array($attr['attribut'], implode(', ', $attr['table']));
+
                     return false;
                 }
             } else {
                 if (isset($this->error_sql['returnNameTable'])) {
                     $this->error_sql['checkedOrder'] = $this->error_sql['returnNameTable'];
+
                     return false;
                 } else {
                     $this->error_sql['checkedOrder'] = false;
+
                     return false;
                 }
             }
         }
+
         return true;
     }
     /**
@@ -513,18 +550,22 @@ class RequestSql extends ObjectModel
             if ($attr = $this->cutAttribute(trim($group['base_expr']), $from)) {
                 if (!$this->attributExistInTable($attr['attribut'], $attr['table'])) {
                     $this->error_sql['checkedGroupBy']['attribut'] = array($attr['attribut'], implode(', ', $attr['table']));
+
                     return false;
                 }
             } else {
                 if (isset($this->error_sql['returnNameTable'])) {
                     $this->error_sql['checkedGroupBy'] = $this->error_sql['returnNameTable'];
+
                     return false;
                 } else {
                     $this->error_sql['checkedGroupBy'] = false;
+
                     return false;
                 }
             }
         }
+
         return true;
     }
     /**
@@ -537,8 +578,10 @@ class RequestSql extends ObjectModel
     {
         if (!preg_match('#^[0-9]+$#', trim($limit['start'])) || !preg_match('#^[0-9]+$#', trim($limit['end']))) {
             $this->error_sql['checkedLimit'] = false;
+
             return false;
         }
+
         return true;
     }
 }

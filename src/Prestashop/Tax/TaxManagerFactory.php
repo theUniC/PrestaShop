@@ -39,7 +39,7 @@ class TaxManagerFactory
      * Returns a tax manager able to handle this address
      *
      * @param Address $address
-     * @param string $type
+     * @param string  $type
      *
      * @return TaxManager
      */
@@ -53,13 +53,14 @@ class TaxManagerFactory
             }
             TaxManagerFactory::$cache_tax_manager[$cache_id] = $tax_manager;
         }
+
         return TaxManagerFactory::$cache_tax_manager[$cache_id];
     }
     /**
      * Check for a tax manager able to handle this type of address in the module list
      *
      * @param Address $address
-     * @param string $type
+     * @param string  $type
      *
      * @return TaxManager
      */
@@ -76,6 +77,7 @@ class TaxManagerFactory
                 break;
             }
         }
+
         return $tax_manager;
     }
     /**

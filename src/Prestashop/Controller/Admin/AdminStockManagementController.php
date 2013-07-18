@@ -89,6 +89,7 @@ class AdminStockManagementController extends AdminController
         $this->displayInformation($this->l('Finally, you need to provide the quantity that you\'ll be adding:'));
         $this->displayInformation($this->l('Usable for sale means that this quantity will be available in your shop(s),'));
         $this->displayInformation($this->l('otherwise it will be considered reserved (i.e. for other purposes).'));
+
         return parent::renderList();
     }
     /**
@@ -451,8 +452,8 @@ class AdminStockManagementController extends AdminController
      * Check stock for a given product or product attribute
      * and manage available actions in consequence
      *
-     * @param array $item reference to the current item
-     * @param bool $is_product_attribute specify if it's a product or a product variation
+     * @param array $item                 reference to the current item
+     * @param bool  $is_product_attribute specify if it's a product or a product variation
      */
     protected function skipActionByStock(&$item, $is_product_variation = false)
     {
@@ -479,6 +480,7 @@ class AdminStockManagementController extends AdminController
     {
         if (!Configuration::get('PS_ADVANCED_STOCK_MANAGEMENT')) {
             $this->warnings[md5('PS_ADVANCED_STOCK_MANAGEMENT')] = $this->l('You need to activate advanced stock management prior to using this feature.');
+
             return false;
         }
         // Manage the add stock form
@@ -507,10 +509,10 @@ class AdminStockManagementController extends AdminController
                         $query->select('IFNULL(CONCAT(pl.`name`, \' : \', GROUP_CONCAT(agl.`name`, \' - \', al.`name` SEPARATOR \', \')),pl.`name`) as name');
                         $query->from('product_attribute', 'a');
                         $query->join('INNER JOIN ' . _DB_PREFIX_ . 'product_lang pl ON (pl.`id_product` = a.`id_product` AND pl.`id_lang` = ' . (int) $lang_id . ')
-							LEFT JOIN ' . _DB_PREFIX_ . 'product_attribute_combination pac ON (pac.`id_product_attribute` = a.`id_product_attribute`)
-							LEFT JOIN ' . _DB_PREFIX_ . 'attribute atr ON (atr.`id_attribute` = pac.`id_attribute`)
-							LEFT JOIN ' . _DB_PREFIX_ . 'attribute_lang al ON (al.`id_attribute` = atr.`id_attribute` AND al.`id_lang` = ' . (int) $lang_id . ')
-							LEFT JOIN ' . _DB_PREFIX_ . 'attribute_group_lang agl ON (agl.`id_attribute_group` = atr.`id_attribute_group` AND agl.`id_lang` = ' . (int) $lang_id . ')');
+                            LEFT JOIN ' . _DB_PREFIX_ . 'product_attribute_combination pac ON (pac.`id_product_attribute` = a.`id_product_attribute`)
+                            LEFT JOIN ' . _DB_PREFIX_ . 'attribute atr ON (atr.`id_attribute` = pac.`id_attribute`)
+                            LEFT JOIN ' . _DB_PREFIX_ . 'attribute_lang al ON (al.`id_attribute` = atr.`id_attribute` AND al.`id_lang` = ' . (int) $lang_id . ')
+                            LEFT JOIN ' . _DB_PREFIX_ . 'attribute_group_lang agl ON (agl.`id_attribute_group` = atr.`id_attribute_group` AND agl.`id_lang` = ' . (int) $lang_id . ')');
                         $query->where('a.`id_product_attribute` = ' . $id_product_attribute);
                         $name = Db::getInstance()->getValue($query);
                     }
@@ -566,8 +568,8 @@ class AdminStockManagementController extends AdminController
     }
     /**
      * Display addstock action link
-     * @param string $token the token to add to the link
-     * @param int $id the identifier to add to the link
+     * @param  string $token the token to add to the link
+     * @param  int    $id    the identifier to add to the link
      * @return string
      */
     public function displayAddstockLink($token = null, $id)
@@ -576,12 +578,13 @@ class AdminStockManagementController extends AdminController
             self::$cache_lang['AddStock'] = $this->l('Add stock');
         }
         $this->context->smarty->assign(array('href' => self::$currentIndex . '&' . $this->identifier . '=' . $id . '&addstock&token=' . ($token != null ? $token : $this->token), 'action' => self::$cache_lang['AddStock']));
+
         return $this->context->smarty->fetch('helpers/list/list_action_addstock.tpl');
     }
     /**
      * Display removestock action link
-     * @param string $token the token to add to the link
-     * @param int $id the identifier to add to the link
+     * @param  string $token the token to add to the link
+     * @param  int    $id    the identifier to add to the link
      * @return string
      */
     public function displayRemovestockLink($token = null, $id)
@@ -590,12 +593,13 @@ class AdminStockManagementController extends AdminController
             self::$cache_lang['RemoveStock'] = $this->l('Remove stock');
         }
         $this->context->smarty->assign(array('href' => self::$currentIndex . '&' . $this->identifier . '=' . $id . '&removestock&token=' . ($token != null ? $token : $this->token), 'action' => self::$cache_lang['RemoveStock']));
+
         return $this->context->smarty->fetch('helpers/list/list_action_removestock.tpl');
     }
     /**
      * Display transferstock action link
-     * @param string $token the token to add to the link
-     * @param int $id the identifier to add to the link
+     * @param  string $token the token to add to the link
+     * @param  int    $id    the identifier to add to the link
      * @return string
      */
     public function displayTransferstockLink($token = null, $id)
@@ -604,12 +608,14 @@ class AdminStockManagementController extends AdminController
             self::$cache_lang['TransferStock'] = $this->l('Transfer stock');
         }
         $this->context->smarty->assign(array('href' => self::$currentIndex . '&' . $this->identifier . '=' . $id . '&transferstock&token=' . ($token != null ? $token : $this->token), 'action' => self::$cache_lang['TransferStock']));
+
         return $this->context->smarty->fetch('helpers/list/list_action_transferstock.tpl');
     }
     public function initProcess()
     {
         if (!Configuration::get('PS_ADVANCED_STOCK_MANAGEMENT')) {
             $this->warnings[md5('PS_ADVANCED_STOCK_MANAGEMENT')] = $this->l('You need to activate advanced stock management prior to using this feature.');
+
             return false;
         }
         parent::initProcess();

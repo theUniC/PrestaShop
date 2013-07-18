@@ -92,67 +92,67 @@ abstract class Db
     /**
      * Open a connection
      */
-    public abstract function connect();
+    abstract public function connect();
     /**
      * Close a connection
      */
-    public abstract function disconnect();
+    abstract public function disconnect();
     /**
      * Execute a query and get result resource
      *
-     * @param string $sql
+     * @param  string $sql
      * @return mixed
      */
-    protected abstract function _query($sql);
+    abstract protected function _query($sql);
     /**
      * Get number of rows in a result
      *
      * @param mixed $result
      */
-    protected abstract function _numRows($result);
+    abstract protected function _numRows($result);
     /**
      * Get the ID generated from the previous INSERT operation
      */
-    public abstract function Insert_ID();
+    abstract public function Insert_ID();
     /**
      * Get number of affected rows in previous database operation
      */
-    public abstract function Affected_Rows();
+    abstract public function Affected_Rows();
     /**
      * Get next row for a query which doesn't return an array
      *
      * @param mixed $result
      */
-    public abstract function nextRow($result = false);
+    abstract public function nextRow($result = false);
     /**
      * Get database version
      *
      * @return string
      */
-    public abstract function getVersion();
+    abstract public function getVersion();
     /**
      * Protect string against SQL injections
      *
-     * @param string $str
+     * @param  string $str
      * @return string
      */
-    public abstract function _escape($str);
+    abstract public function _escape($str);
     /**
      * Returns the text of the error message from previous database operation
      */
-    public abstract function getMsgError();
+    abstract public function getMsgError();
     /**
      * Returns the number of the error from previous database operation
      */
-    public abstract function getNumberError();
+    abstract public function getNumberError();
     /* do not remove, useful for some modules */
-    public abstract function set_db($db_name);
-    public abstract function getBestEngine();
+    abstract public function set_db($db_name);
+    abstract public function getBestEngine();
     /**
      * Get Db object instance
      *
-     * @param bool $master Decides whether the connection to be returned by the master server or the slave server
-     * @return Db instance
+     * @param  bool $master Decides whether the connection to be returned by the master server or the slave server
+     * @return Db   instance
      */
     public static function getInstance($master = true)
     {
@@ -172,6 +172,7 @@ abstract class Db
             $class = Db::getClass();
             self::$instance[$id_server] = new $class(self::$_servers[$id_server]['server'], self::$_servers[$id_server]['user'], self::$_servers[$id_server]['password'], self::$_servers[$id_server]['database']);
         }
+
         return self::$instance[$id_server];
     }
     /**
@@ -189,16 +190,17 @@ abstract class Db
                 $class = 'DbMySQLi';
             }
         }
+
         return $class;
     }
     /**
      * Instantiate database connection
      *
-     * @param string $server Server address
-     * @param string $user User login
+     * @param string $server   Server address
+     * @param string $user     User login
      * @param string $password User password
      * @param string $database Database name
-     * @param bool $connect If false, don't connect in constructor (since 1.5.0)
+     * @param bool   $connect  If false, don't connect in constructor (since 1.5.0)
      */
     public function __construct($server, $user, $password, $database, $connect = true)
     {
@@ -245,11 +247,11 @@ abstract class Db
     /**
      * Filter SQL query within a blacklist
      *
-     * @param string $table Table where insert/update data
-     * @param string $values Data to insert/update
-     * @param string $type INSERT or UPDATE
-     * @param string $where WHERE clause, only for UPDATE (optional)
-     * @param int $limit LIMIT clause (optional)
+     * @param  string        $table  Table where insert/update data
+     * @param  string        $values Data to insert/update
+     * @param  string        $type   INSERT or UPDATE
+     * @param  string        $where  WHERE clause, only for UPDATE (optional)
+     * @param  int           $limit  LIMIT clause (optional)
      * @return mixed|boolean SQL query result
      */
     public function autoExecuteWithNullValues($table, $values, $type, $where = '', $limit = 0)
@@ -259,7 +261,7 @@ abstract class Db
     /**
      * Execute a query and get result ressource
      *
-     * @param string $sql
+     * @param  string $sql
      * @return mixed
      */
     public function query($sql)
@@ -271,17 +273,18 @@ abstract class Db
         if (_PS_DEBUG_SQL_) {
             $this->displayError($sql);
         }
+
         return $this->result;
     }
     /**
      * Execute an INSERT query
      *
-     * @param string $table Table name without prefix
-     * @param array $data Data to insert as associative array. If $data is a list of arrays, multiple insert will be done
-     * @param bool $null_values If we want to use NULL values instead of empty quotes
-     * @param bool $use_cache
-     * @param int $type Must be Db::INSERT or Db::INSERT_IGNORE or Db::REPLACE
-     * @param bool $add_prefix Add or not _DB_PREFIX_ before table name
+     * @param  string $table       Table name without prefix
+     * @param  array  $data        Data to insert as associative array. If $data is a list of arrays, multiple insert will be done
+     * @param  bool   $null_values If we want to use NULL values instead of empty quotes
+     * @param  bool   $use_cache
+     * @param  int    $type        Must be Db::INSERT or Db::INSERT_IGNORE or Db::REPLACE
+     * @param  bool   $add_prefix  Add or not _DB_PREFIX_ before table name
      * @return bool
      */
     public function insert($table, $data, $null_values = false, $use_cache = true, $type = Db::INSERT, $add_prefix = true)
@@ -336,16 +339,17 @@ abstract class Db
             $values_stringified[] = '(' . implode(', ', $values) . ')';
         }
         $sql = $insert_keyword . ' INTO `' . $table . '` (' . $keys_stringified . ') VALUES ' . implode(', ', $values_stringified);
+
         return (bool) $this->q($sql, $use_cache);
     }
     /**
-     * @param string $table Table name without prefix
-     * @param array $data Data to insert as associative array. If $data is a list of arrays, multiple insert will be done
-     * @param string $where WHERE condition
-     * @param int $limit
-     * @param bool $null_values If we want to use NULL values instead of empty quotes
-     * @param bool $use_cache
-     * @param bool $add_prefix Add or not _DB_PREFIX_ before table name
+     * @param  string $table       Table name without prefix
+     * @param  array  $data        Data to insert as associative array. If $data is a list of arrays, multiple insert will be done
+     * @param  string $where       WHERE condition
+     * @param  int    $limit
+     * @param  bool   $null_values If we want to use NULL values instead of empty quotes
+     * @param  bool   $use_cache
+     * @param  bool   $add_prefix  Add or not _DB_PREFIX_ before table name
      * @return bool
      */
     public function update($table, $data, $where = '', $limit = 0, $null_values = false, $use_cache = true, $add_prefix = true)
@@ -374,16 +378,17 @@ abstract class Db
         if ($limit) {
             $sql .= ' LIMIT ' . (int) $limit;
         }
+
         return (bool) $this->q($sql, $use_cache);
     }
     /**
      * Execute a DELETE query
      *
-     * @param string $table Name of the table to delete
-     * @param string $where WHERE clause on query
-     * @param int $limit Number max of rows to delete
-     * @param bool $use_cache Use cache or not
-     * @param bool $add_prefix Add or not _DB_PREFIX_ before table name
+     * @param  string $table      Name of the table to delete
+     * @param  string $where      WHERE clause on query
+     * @param  int    $limit      Number max of rows to delete
+     * @param  bool   $use_cache  Use cache or not
+     * @param  bool   $add_prefix Add or not _DB_PREFIX_ before table name
      * @return bool
      */
     public function delete($table, $where = '', $limit = 0, $use_cache = true, $add_prefix = true)
@@ -397,13 +402,14 @@ abstract class Db
         if ($use_cache && $this->is_cache_enabled) {
             Cache::getInstance()->deleteQuery($sql);
         }
+
         return (bool) $res;
     }
     /**
      * Execute a query
      *
-     * @param string $sql
-     * @param bool $use_cache
+     * @param  string $sql
+     * @param  bool   $use_cache
      * @return bool
      */
     public function execute($sql, $use_cache = true)
@@ -415,15 +421,16 @@ abstract class Db
         if ($use_cache && $this->is_cache_enabled) {
             Cache::getInstance()->deleteQuery($sql);
         }
+
         return (bool) $this->result;
     }
     /**
      * ExecuteS return the result of $sql as array
      *
-     * @param string $sql query to execute
-     * @param boolean $array return an array instead of a mysql_result object (deprecated since 1.5.0, use query method instead)
-     * @param bool $use_cache if query has been already executed, use its result
-     * @return array or result object
+     * @param  string  $sql       query to execute
+     * @param  boolean $array     return an array instead of a mysql_result object (deprecated since 1.5.0, use query method instead)
+     * @param  bool    $use_cache if query has been already executed, use its result
+     * @return array   or result object
      */
     public function executeS($sql, $array = true, $use_cache = true)
     {
@@ -435,12 +442,14 @@ abstract class Db
             if (defined('_PS_MODE_DEV_') && _PS_MODE_DEV_) {
                 throw new PrestaShopDatabaseException('Db->executeS() must be used only with select, show, explain or describe queries');
             }
+
             return $this->execute($sql, $use_cache);
         }
         $this->result = false;
         $this->last_query = $sql;
         if ($use_cache && $this->is_cache_enabled && $array && ($result = Cache::getInstance()->get(md5($sql)))) {
             $this->last_cached = true;
+
             return $result;
         }
         $this->result = $this->query($sql);
@@ -458,14 +467,15 @@ abstract class Db
         if ($use_cache && $this->is_cache_enabled) {
             Cache::getInstance()->setQuery($sql, $result_array);
         }
+
         return $result_array;
     }
     /**
      * getRow return an associative array containing the first row of the query
      * This function automatically add "limit 1" to the query
      *
-     * @param mixed $sql the select query (without "LIMIT 1")
-     * @param bool $use_cache find it in cache first
+     * @param  mixed $sql       the select query (without "LIMIT 1")
+     * @param  bool  $use_cache find it in cache first
      * @return array associative array of (field=>value)
      */
     public function getRow($sql, $use_cache = true)
@@ -478,6 +488,7 @@ abstract class Db
         $this->last_query = $sql;
         if ($use_cache && $this->is_cache_enabled && ($result = Cache::getInstance()->get(md5($sql)))) {
             $this->last_cached = true;
+
             return $result;
         }
         $this->result = $this->query($sql);
@@ -489,13 +500,14 @@ abstract class Db
         if ($use_cache && $this->is_cache_enabled) {
             Cache::getInstance()->setQuery($sql, $result);
         }
+
         return $result;
     }
     /**
      * getValue return the first item of a select query.
      *
-     * @param mixed $sql
-     * @param bool $use_cache
+     * @param  mixed $sql
+     * @param  bool  $use_cache
      * @return mixed
      */
     public function getValue($sql, $use_cache = true)
@@ -506,6 +518,7 @@ abstract class Db
         if (!($result = $this->getRow($sql, $use_cache))) {
             return false;
         }
+
         return array_shift($result);
     }
     /**
@@ -520,6 +533,7 @@ abstract class Db
             if ($this->is_cache_enabled) {
                 Cache::getInstance()->set(md5($this->last_query) . '_nrows', $nrows);
             }
+
             return $nrows;
         } else {
             if ($this->is_cache_enabled && $this->last_cached) {
@@ -531,9 +545,9 @@ abstract class Db
      *
      * Execute a query
      *
-     * @param string $sql
-     * @param bool $use_cache
-     * @return mixed $result
+     * @param  string $sql
+     * @param  bool   $use_cache
+     * @return mixed  $result
      */
     protected function q($sql, $use_cache = true)
     {
@@ -548,6 +562,7 @@ abstract class Db
         if (_PS_DEBUG_SQL_) {
             $this->displayError($sql);
         }
+
         return $result;
     }
     /**
@@ -574,9 +589,9 @@ abstract class Db
     /**
      * Sanitize data which will be injected into SQL query
      *
-     * @param string $string SQL data which will be injected into SQL query
-     * @param boolean $html_ok Does data contain HTML code ? (optional)
-     * @return string Sanitized data
+     * @param  string  $string  SQL data which will be injected into SQL query
+     * @param  boolean $html_ok Does data contain HTML code ? (optional)
+     * @return string  Sanitized data
      */
     public function escape($string, $html_ok = false)
     {
@@ -589,17 +604,18 @@ abstract class Db
                 $string = strip_tags(Tools::nl2br($string));
             }
         }
+
         return $string;
     }
     /**
      * Try a connection to te database
      *
-     * @param string $server Server address
-     * @param string $user Login for database connection
-     * @param string $pwd Password for database connection
-     * @param string $db Database name
-     * @param bool $new_db_link
-     * @param bool $engine
+     * @param  string $server      Server address
+     * @param  string $user        Login for database connection
+     * @param  string $pwd         Password for database connection
+     * @param  string $db          Database name
+     * @param  bool   $new_db_link
+     * @param  bool   $engine
      * @return int
      */
     public static function checkConnection($server, $user, $pwd, $db, $new_db_link = true, $engine = null, $timeout = 5)
@@ -609,9 +625,9 @@ abstract class Db
     /**
      * Try a connection to te database
      *
-     * @param string $server Server address
-     * @param string $user Login for database connection
-     * @param string $pwd Password for database connection
+     * @param  string $server Server address
+     * @param  string $user   Login for database connection
+     * @param  string $pwd    Password for database connection
      * @return int
      */
     public static function checkEncoding($server, $user, $pwd)
@@ -621,11 +637,11 @@ abstract class Db
     /**
      * Try a connection to the database and check if at least one table with same prefix exists
      *
-     * @param string $server Server address
-     * @param string $user Login for database connection
-     * @param string $pwd Password for database connection
-     * @param string $db Database name
-     * @param string $prefix Tables prefix
+     * @param  string $server Server address
+     * @param  string $user   Login for database connection
+     * @param  string $pwd    Password for database connection
+     * @param  string $db     Database name
+     * @param  string $prefix Tables prefix
      * @return bool
      */
     public static function hasTableWithSamePrefix($server, $user, $pwd, $db, $prefix)
@@ -642,6 +658,7 @@ abstract class Db
     public static function s($sql, $use_cache = true)
     {
         Tools::displayAsDeprecated();
+
         return Db::getInstance()->executeS($sql, true, $use_cache);
     }
     /**
@@ -652,6 +669,7 @@ abstract class Db
         Tools::displayAsDeprecated();
         $ret = Db::s($sql, $use_cache);
         p($ret);
+
         return $ret;
     }
     /**

@@ -70,8 +70,10 @@ class Scene extends ObjectModel
         if (parent::update($null_values)) {
             // Refresh cache of feature detachable
             Configuration::updateGlobalValue('PS_SCENE_FEATURE_ACTIVE', Scene::isCurrentlyUsed($this->def['table'], true));
+
             return true;
         }
+
         return false;
     }
     public function add($autodate = true, $null_values = false)
@@ -87,8 +89,10 @@ class Scene extends ObjectModel
             if ($this->active) {
                 Configuration::updateGlobalValue('PS_SCENE_FEATURE_ACTIVE', '1');
             }
+
             return true;
         }
+
         return false;
     }
     public function delete()
@@ -98,6 +102,7 @@ class Scene extends ObjectModel
         if (parent::delete()) {
             return $this->deleteImage() && Configuration::updateGlobalValue('PS_SCENE_FEATURE_ACTIVE', Scene::isCurrentlyUsed($this->def['table'], true));
         }
+
         return false;
     }
     public function deleteImage($force_delete = false)
@@ -108,6 +113,7 @@ class Scene extends ObjectModel
         if (!(isset($_FILES) && count($_FILES))) {
             return parent::deleteImage();
         }
+
         return true;
     }
     public function addCategories($categories)
@@ -116,13 +122,14 @@ class Scene extends ObjectModel
         foreach ($categories as $category) {
             $data[] = array('id_scene' => (int) $this->id, 'id_category' => (int) $category);
         }
+
         return Db::getInstance()->insert('scene_category', $data);
     }
     public function deleteCategories()
     {
         return Db::getInstance()->execute('
-		DELETE FROM `' . _DB_PREFIX_ . 'scene_category`
-		WHERE `id_scene` = ' . (int) $this->id);
+        DELETE FROM `' . _DB_PREFIX_ . 'scene_category`
+        WHERE `id_scene` = ' . (int) $this->id);
     }
     public function updateCategories()
     {
@@ -132,6 +139,7 @@ class Scene extends ObjectModel
         if (!empty($this->categories) && !$this->addCategories($this->categories)) {
             return false;
         }
+
         return true;
     }
     public function addZoneProducts($zones)
@@ -140,13 +148,14 @@ class Scene extends ObjectModel
         foreach ($zones as $zone) {
             $data[] = array('id_scene' => (int) $this->id, 'id_product' => (int) $zone['id_product'], 'x_axis' => (int) $zone['x1'], 'y_axis' => (int) $zone['y1'], 'zone_width' => (int) $zone['width'], 'zone_height' => (int) $zone['height']);
         }
+
         return Db::getInstance()->insert('scene_products', $data);
     }
     public function deleteZoneProducts()
     {
         return Db::getInstance()->execute('
-		DELETE FROM `' . _DB_PREFIX_ . 'scene_products`
-		WHERE `id_scene` = ' . (int) $this->id);
+        DELETE FROM `' . _DB_PREFIX_ . 'scene_products`
+        WHERE `id_scene` = ' . (int) $this->id);
     }
     public function updateZoneProducts()
     {
@@ -156,6 +165,7 @@ class Scene extends ObjectModel
         if ($this->zones && !$this->addZoneProducts($this->zones)) {
             return false;
         }
+
         return true;
     }
     /**
@@ -173,19 +183,20 @@ class Scene extends ObjectModel
         }
         $id_lang = is_null($id_lang) ? $context->language->id : $id_lang;
         $sql = 'SELECT s.*
-				FROM `' . _DB_PREFIX_ . 'scene_category` sc
-				LEFT JOIN `' . _DB_PREFIX_ . 'scene` s ON (sc.id_scene = s.id_scene)
-				' . Shop::addSqlAssociation('scene', 's') . '
-				LEFT JOIN `' . _DB_PREFIX_ . 'scene_lang` sl ON (sl.id_scene = s.id_scene)
-				WHERE sc.id_category = ' . (int) $id_category . '
-					AND sl.id_lang = ' . (int) $id_lang . ($only_active ? ' AND s.active = 1' : '') . '
-				ORDER BY sl.name ASC';
+                FROM `' . _DB_PREFIX_ . 'scene_category` sc
+                LEFT JOIN `' . _DB_PREFIX_ . 'scene` s ON (sc.id_scene = s.id_scene)
+                ' . Shop::addSqlAssociation('scene', 's') . '
+                LEFT JOIN `' . _DB_PREFIX_ . 'scene_lang` sl ON (sl.id_scene = s.id_scene)
+                WHERE sc.id_category = ' . (int) $id_category . '
+                    AND sl.id_lang = ' . (int) $id_lang . ($only_active ? ' AND s.active = 1' : '') . '
+                ORDER BY sl.name ASC';
         $scenes = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
         if (!$lite_result && $scenes) {
             foreach ($scenes as &$scene) {
                 $scene = new Scene($scene['id_scene'], $id_lang, false, $hide_scene_position);
             }
         }
+
         return $scenes;
     }
     /**
@@ -203,11 +214,11 @@ class Scene extends ObjectModel
         }
         $id_lang = is_null($id_lang) ? $context->language->id : $id_lang;
         $products = Db::getInstance()->executeS('
-		SELECT s.*
-		FROM `' . _DB_PREFIX_ . 'scene_products` s
-		LEFT JOIN `' . _DB_PREFIX_ . 'product` p ON (p.id_product = s.id_product)
-		' . Shop::addSqlAssociation('product', 'p') . '
-		WHERE s.id_scene = ' . (int) $this->id . ($only_active ? ' AND product_shop.active = 1' : ''));
+        SELECT s.*
+        FROM `' . _DB_PREFIX_ . 'scene_products` s
+        LEFT JOIN `' . _DB_PREFIX_ . 'product` p ON (p.id_product = s.id_product)
+        ' . Shop::addSqlAssociation('product', 'p') . '
+        WHERE s.id_scene = ' . (int) $this->id . ($only_active ? ' AND product_shop.active = 1' : ''));
         if (!$lite_result && $products) {
             foreach ($products as &$product) {
                 $product['details'] = new Product($product['id_product'], !$lite_result, $id_lang);
@@ -218,25 +229,26 @@ class Scene extends ObjectModel
                 }
             }
         }
+
         return $products;
     }
     /**
      * Get categories where scene is indexed
      *
-     * @param integer $id_scene Scene id
-     * @return array Categories where scene is indexed
+     * @param  integer $id_scene Scene id
+     * @return array   Categories where scene is indexed
      */
     public static function getIndexedCategories($id_scene)
     {
         return Db::getInstance()->executeS('
-		SELECT `id_category`
-		FROM `' . _DB_PREFIX_ . 'scene_category`
-		WHERE `id_scene` = ' . (int) $id_scene);
+        SELECT `id_category`
+        FROM `' . _DB_PREFIX_ . 'scene_category`
+        WHERE `id_scene` = ' . (int) $id_scene);
     }
     /**
      * Hide scene prefix used for position
      *
-     * @param string $name Scene name
+     * @param  string $name Scene name
      * @return string Name without position
      */
     public static function hideScenePosition($name)

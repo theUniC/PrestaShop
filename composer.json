@@ -1,8 +1,11 @@
 {
     "name": "theUniC/presta-shop",
-    "require": {
-        "symfony/console": "2.3.1",
-        "symfony/finder": "~2.3.1"
+    "require-dev": {
+        "symfony/console": "~2.3.2",
+        "symfony/finder": "~2.3.2",
+        "symfony/process": "~2.3.2",
+        "nikic/php-parser": "0.9.*@dev",
+        "fabpot/php-cs-fixer": "0.3.*@dev"
     },
     "authors": [
         {
@@ -10,5 +13,8 @@
             "email": "theunic@gmail.com"
         }
     ],
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "config": {
+        "bin-dir": "bin/"
+    }
 }

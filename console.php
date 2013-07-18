@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use Symfony\Component\Process\ProcessBuilder;
 
 class Console extends Application
 {
@@ -131,7 +132,124 @@ namespace ' . $namespace . ';
 
         $commands[] = $refactorControllersCommand;
 
+        $fixClassReferences = new Command('refactor:fix-class-references');
+        $fixClassReferences->setCode(function(InputInterface $input, OutputInterface $output) {
+            $finder = Finder::create();
+            $finder
+                ->files()
+                ->in(__DIR__ . DIRECTORY_SEPARATOR . 'src')
+                ->name('*.php')
+            ;
+
+            $parser = new PHPParser_Parser(new PHPParser_Lexer());
+            $printer = new PHPParser_PrettyPrinter_Default();
+            ini_set('xdebug.max_nesting_level', 2000);
+
+            /** @var SplFileInfo $file */
+            foreach ($finder as $file) {
+                $output->writeln(sprintf('<info>Traversing <comment>%s</comment></info>', $file->getRealPath()));
+                $nodes = $parser->parse($file->getContents());
+
+                // If already has a "use", skip
+                if ($nodes[0]->stmts[0] instanceof PHPParser_Node_Stmt_Use) {
+                    continue;
+                }
+
+                $traverser = new PHPParser_NodeTraverser();
+                $traverser->addVisitor($classReferenceVisitor = new ClassReferenceVisitor());
+                $nodes = $traverser->traverse($nodes);
+                $filePathParts = explode(DIRECTORY_SEPARATOR, $file->getRealPath());
+                $currentClassName = basename($filePathParts[count($filePathParts) - 1], '.php');
+
+                if (count($classReferenceVisitor->getUses())) {
+                    $uses = array();
+                    foreach ($classReferenceVisitor->getUses() as $use) {
+
+                        if ($currentClassName == $use) {
+                            continue;
+                        }
+
+                        $parts = explode('\\', $use);
+                        // Find the right namespace
+                        $namespaceFinder = Finder::create();
+                        $namespaceFinder
+                            ->files()
+                            ->in(__DIR__ . DIRECTORY_SEPARATOR . 'src')
+                            ->name(array_pop($parts) . '.php');
+                        ;
+
+                        $path = dirname(key(iterator_to_array($namespaceFinder)));
+                        $path = str_replace(__DIR__ . DIRECTORY_SEPARATOR . 'src/', '', $path);
+                        $path = str_replace(DIRECTORY_SEPARATOR, '\\', $path);
+
+                        $uses[] = new PHPParser_Node_Stmt_Use(
+                            array(
+                                new PHPParser_Node_Stmt_UseUse(
+                                    new PHPParser_Node_Name($path . '\\' . $use)
+                                )
+                            )
+                        );
+                    }
+
+                    $nodes[0]->stmts = array_merge($uses, $nodes[0]->stmts);
+                    file_put_contents($file->getRealPath(), '<?php
+
+' . $printer->prettyPrint($nodes));
+                }
+            }
+        });
+
+        $commands[] = $fixClassReferences;
+
+        $phpCsFixerCommand = new Command('refactor:php-cs-fixer');
+        $phpCsFixerCommand->setCode(function(InputInterface $input, OutputInterface $output) {
+            $finder = Finder::create();
+            $finder
+                ->files()
+                ->in(__DIR__ . DIRECTORY_SEPARATOR . 'src')
+                ->name('*.php')
+            ;
+
+            /** @var SplFileInfo $file */
+            foreach ($finder as $file) {
+                $output->writeln(sprintf('<info>Fixing PSR-2 issues for <comment>%s</comment></info>', $file->getRealPath()));
+                $processBuilder = new ProcessBuilder(array(PHP_BINARY, 'bin/php-cs-fixer', 'fix', $file->getRealPath()));
+                $processBuilder->getProcess()->run();
+            }
+        });
+
+        $commands[] = $phpCsFixerCommand;
+
         return $commands;
+    }
+}
+
+class ClassReferenceVisitor extends PHPParser_NodeVisitorAbstract
+{
+    /**
+     * @var array
+     */
+    private $uses = array();
+
+    public function leaveNode(PHPParser_Node $node)
+    {
+        if (($node instanceof PHPParser_Node_Expr_New
+            || $node instanceof PHPParser_Node_Expr_StaticCall
+            || $node instanceof PHPParser_Node_Expr_ClassConstFetch)
+            && $node->class instanceof PHPParser_Node_Name
+        ) {
+            if (!in_array($className = $node->class->toString(), array('static', 'self', 'parent'))) {
+                $this->uses[] = $className;
+            }
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getUses()
+    {
+        return array_unique($this->uses);
     }
 }
 

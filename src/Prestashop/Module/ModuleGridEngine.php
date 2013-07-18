@@ -41,17 +41,18 @@ abstract class ModuleGridEngine extends Module
         if (!parent::install()) {
             return false;
         }
+
         return Configuration::updateValue('PS_STATS_GRID_RENDER', $this->name);
     }
     public static function getGridEngines()
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
-	    	SELECT m.`name`
-	    	FROM `' . _DB_PREFIX_ . 'module` m
-	    	LEFT JOIN `' . _DB_PREFIX_ . 'hook_module` hm ON hm.`id_module` = m.`id_module`
-	    	LEFT JOIN `' . _DB_PREFIX_ . 'hook` h ON hm.`id_hook` = h.`id_hook`
-	    	WHERE h.`name` = \'displayAdminStatsGridEngine\'
-	    ');
+            SELECT m.`name`
+            FROM `' . _DB_PREFIX_ . 'module` m
+            LEFT JOIN `' . _DB_PREFIX_ . 'hook_module` hm ON hm.`id_module` = m.`id_module`
+            LEFT JOIN `' . _DB_PREFIX_ . 'hook` h ON hm.`id_hook` = h.`id_hook`
+            WHERE h.`name` = \'displayAdminStatsGridEngine\'
+        ');
         $array_engines = array();
         foreach ($result as $module) {
             $instance = Module::getInstanceByName($module['name']);
@@ -60,12 +61,13 @@ abstract class ModuleGridEngine extends Module
             }
             $array_engines[$module['name']] = array($instance->displayName, $instance->description);
         }
+
         return $array_engines;
     }
-    public abstract function setValues($values);
-    public abstract function setTitle($title);
-    public abstract function setSize($width, $height);
-    public abstract function setTotalCount($totalCount);
-    public abstract function setLimit($start, $limit);
-    public abstract function render();
+    abstract public function setValues($values);
+    abstract public function setTitle($title);
+    abstract public function setSize($width, $height);
+    abstract public function setTotalCount($totalCount);
+    abstract public function setLimit($start, $limit);
+    abstract public function render();
 }

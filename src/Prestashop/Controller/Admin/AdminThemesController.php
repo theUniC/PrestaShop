@@ -100,19 +100,21 @@ class AdminThemesController extends AdminController
         } else {
             $this->fields_form['input'][] = array('type' => 'radio', 'label' => $this->l('Directory:'), 'name' => 'directory', 'required' => true, 'br' => true, 'class' => 't', 'values' => $available_theme_dir, 'selected' => $selected_theme_dir, 'desc' => $this->l('Please select a valid theme directory.'));
         }
+
         return parent::renderForm();
     }
     public function renderList()
     {
         $this->addRowAction('edit');
         $this->addRowAction('delete');
+
         return parent::renderList();
     }
     /**
      * copy $base_theme_dir into $target_theme_dir.
      *
-     * @param string $base_theme_dir relative path to base dir 
-     * @param string $target_theme_dir relative path to target dir
+     * @param  string  $base_theme_dir   relative path to base dir
+     * @param  string  $target_theme_dir relative path to target dir
      * @return boolean true if success
      */
     protected static function copyTheme($base_theme_dir, $target_theme_dir)
@@ -135,6 +137,7 @@ class AdminThemesController extends AdminController
                 }
             }
         }
+
         return $res;
     }
     public function processAdd()
@@ -154,6 +157,7 @@ class AdminThemesController extends AdminController
                 $base_theme = new Theme((int) Tools::getValue('based_on'));
             }
         }
+
         return parent::processAdd();
     }
     public function processDelete()
@@ -164,8 +168,10 @@ class AdminThemesController extends AdminController
         }
         if ($obj && $obj->isUsed()) {
             $this->errors[] = $this->l('The theme is already being used by at least one shop. Please choose another theme before continuing.');
+
             return false;
         }
+
         return parent::processDelete();
     }
     public function initContent()
@@ -194,6 +200,7 @@ class AdminThemesController extends AdminController
             Configuration::updateValue('SHOP_LOGO_MOBILE_WIDTH', (int) round($width));
         }
         $this->content .= $content;
+
         return parent::initContent();
     }
     public function ajaxProcessGetAddonsThemes()
@@ -209,7 +216,7 @@ class AdminThemesController extends AdminController
      * to be desactivated
      *
      * @since 1.4
-     * @param string $theme_dir theme directory
+     * @param  string  $theme_dir theme directory
      * @return boolean Validity is ok or not
      */
     protected function _isThemeCompatible($theme_dir)
@@ -250,13 +257,14 @@ class AdminThemesController extends AdminController
             $this->errors[] .= Tools::displayError('config.xml theme file has not been created for this version of PrestaShop.');
             $return = false;
         }
+
         return $return;
     }
     /**
      * _checkConfigForFeatures
      *
-     * @param array $arrFeature array of feature code to check
-     * @param mixed $configItem will precise the attribute which not matches. If empty, will check every attributes
+     * @param  array $arrFeature array of feature code to check
+     * @param  mixed $configItem will precise the attribute which not matches. If empty, will check every attributes
      * @return error message, or null if disabled
      */
     protected function _checkConfigForFeatures($arrFeatures, $configItem = array())
@@ -274,6 +282,7 @@ class AdminThemesController extends AdminController
                     $return = false;
                 }
             }
+
             return $return;
         }
         $return = true;
@@ -291,6 +300,7 @@ class AdminThemesController extends AdminController
                 }
             }
         }
+
         return $return;
     }
     /**
@@ -308,6 +318,7 @@ class AdminThemesController extends AdminController
             unset($_POST['submitThemes' . $this->table]);
         }
         Tools::clearCache($this->context->smarty);
+
         return parent::postProcess();
     }
     /**
@@ -421,6 +432,7 @@ class AdminThemesController extends AdminController
                 $this->errors[] = sprintf(Tools::displayError('An error occurred while uploading favicon: %s to %s'), $_FILES[$name]['tmp_name'], $dest);
             }
         }
+
         return !count($this->errors) ? true : false;
     }
     public function initProcess()
@@ -445,6 +457,7 @@ class AdminThemesController extends AdminController
             $helper->id = $this->id;
             $helper->tpl_vars = $this->tpl_option_vars;
             $options = $helper->generateOptions($this->fields_options);
+
             return $options;
         }
     }

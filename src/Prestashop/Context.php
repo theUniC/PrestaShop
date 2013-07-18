@@ -128,6 +128,7 @@ class Context
                 }
             }
         }
+
         return $this->mobile_device;
     }
     protected function checkMobileContext()
@@ -148,6 +149,7 @@ class Context
                 $guest->update();
             }
         }
+
         return isset($_SERVER['HTTP_USER_AGENT']) && isset(Context::getContext()->cookie) && (bool) Configuration::get('PS_ALLOW_MOBILE_DEVICE') && @filemtime(_PS_THEME_MOBILE_DIR_) && !Context::getContext()->cookie->no_mobile;
     }
     /**
@@ -160,11 +162,12 @@ class Context
         if (!isset(self::$instance)) {
             self::$instance = new Context();
         }
+
         return self::$instance;
     }
     /**
      * Clone current context
-     * 
+     *
      * @return Context
      */
     public function cloneContext()

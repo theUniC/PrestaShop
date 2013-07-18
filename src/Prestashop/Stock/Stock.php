@@ -70,6 +70,7 @@ class Stock extends ObjectModel
     public function update($null_values = false)
     {
         $this->getProductInformations();
+
         return parent::update($null_values);
     }
     /**
@@ -78,6 +79,7 @@ class Stock extends ObjectModel
     public function add($autodate = true, $null_values = false)
     {
         $this->getProductInformations();
+
         return parent::add($autodate, $null_values);
     }
     /**
@@ -118,6 +120,7 @@ class Stock extends ObjectModel
     {
         $manager = StockManagerFactory::getManager();
         $quantity = $manager->getProductRealQuantities($this->id_product, $this->id_product_attribute, $this->id_warehouse, true);
+
         return $quantity;
     }
 }

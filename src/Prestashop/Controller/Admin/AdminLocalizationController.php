@@ -66,6 +66,7 @@ class AdminLocalizationController extends AdminController
                     foreach ($selection as $selected) {
                         if (!Validate::isLocalizationPackSelection($selected)) {
                             $this->errors[] = Tools::displayError('Invalid selection');
+
                             return;
                         }
                     }
@@ -115,6 +116,7 @@ class AdminLocalizationController extends AdminController
         $this->fields_form = array('tinymce' => true, 'legend' => array('title' => $this->l('Import a localization pack'), 'image' => '../img/admin/localization.gif'), 'input' => array(array('type' => 'select', 'label' => $this->l('Localization pack you want to import:'), 'name' => 'iso_localization_pack', 'options' => array('query' => $localizations_pack, 'id' => 'iso_localization_pack', 'name' => 'name')), array('type' => 'checkbox', 'label' => $this->l('Content to import:'), 'name' => 'selection[]', 'lang' => true, 'values' => array('query' => $selection_import, 'id' => 'id', 'name' => 'name'))), 'submit' => array('title' => $this->l('Import   '), 'class' => 'button', 'name' => 'submitLocalizationPack'));
         $this->fields_value = array('selection[]_states' => true, 'selection[]_taxes' => true, 'selection[]_currencies' => true, 'selection[]_languages' => true, 'selection[]_units' => true);
         $this->show_toolbar = false;
+
         return parent::renderForm();
     }
     public function initContent()

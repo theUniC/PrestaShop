@@ -7,7 +7,7 @@ use \JSMin;
 use Prestashop\Tools;
 use Prestashop\Context;
 /*
-* 2007-2013 PrestaShop 
+* 2007-2013 PrestaShop
 *
 * NOTICE OF LICENSE
 *
@@ -43,8 +43,10 @@ class Media
             if (trim($minified_content = Minify_HTML::minify($html_content, array('xhtml', 'cssMinifier', 'jsMinifier'))) != '') {
                 $html_content = $minified_content;
             }
+
             return $html_content;
         }
+
         return false;
     }
     public static function minifyHTMLpregCallback($preg_matches)
@@ -59,6 +61,7 @@ class Media
         } else {
             $output = $preg_matches[1] . ' ' . implode(' ', $args) . '>';
         }
+
         return $output;
     }
     public static function packJSinHTML($html_content)
@@ -70,10 +73,13 @@ class Media
             // In this case, we don't compress the content
             if (preg_last_error() == PREG_BACKTRACK_LIMIT_ERROR) {
                 error_log('ERROR: PREG_BACKTRACK_LIMIT_ERROR in function packJSinHTML');
+
                 return $html_content_copy;
             }
+
             return $html_content;
         }
+
         return false;
     }
     public static function packJSinHTMLpregCallback($preg_matches)
@@ -83,6 +89,7 @@ class Media
         $preg_matches[count($preg_matches) - 1] = '/* ]]> */' . $preg_matches[count($preg_matches) - 1];
         unset($preg_matches[0]);
         $output = implode('', $preg_matches);
+
         return $output;
     }
     public static function packJS($js_content)
@@ -95,9 +102,11 @@ class Media
                 if (_PS_MODE_DEV_) {
                     echo $e->getMessage();
                 }
+
                 return $js_content;
             }
         }
+
         return $js_content;
     }
     public static function minifyCSS($css_content, $fileuri = false, &$import_url = array())
@@ -125,14 +134,16 @@ class Media
                 $import_url[] = $m[0][$i];
                 $css_content = str_replace($m[0][$i], '', $css_content);
             }
+
             return trim($css_content);
         }
+
         return false;
     }
     /**
      * addJS return javascript path
      *
-     * @param mixed $js_uri
+     * @param  mixed  $js_uri
      * @return string
      */
     public static function getJSPath($js_uri)
@@ -154,13 +165,14 @@ class Media
             $js_uri = preg_replace('/^' . preg_quote(__PS_BASE_URI__, '/') . '/', '/', $js_uri);
             $js_uri = dirname(preg_replace('/\\?.+$/', '', $_SERVER['REQUEST_URI']) . 'a') . '/..' . $js_uri;
         }
+
         return $js_uri;
     }
     /**
      * addCSS return stylesheet path.
      *
-     * @param mixed $css_uri
-     * @param string $css_media_type
+     * @param  mixed  $css_uri
+     * @param  string $css_media_type
      * @return string
      */
     public static function getCSSPath($css_uri, $css_media_type = 'all')
@@ -179,12 +191,13 @@ class Media
             $css_uri = preg_replace('/^' . preg_quote(__PS_BASE_URI__, '/') . '/', '/', $css_uri);
             $css_uri = dirname(preg_replace('/\\?.+$/', '', $_SERVER['REQUEST_URI']) . 'a') . '/..' . $css_uri;
         }
+
         return array($css_uri => $css_media_type);
     }
     /**
      * return jquery path.
      *
-     * @param mixed $version
+     * @param  mixed  $version
      * @return string
      */
     public static function getJqueryPath($version = null, $folder = null, $minifier = true)
@@ -218,12 +231,13 @@ class Media
         if ($add_no_conflict) {
             $return[] = Media::getJSPath(_PS_JS_DIR_ . 'jquery/jquery.noConflict.php?version=' . $version);
         }
+
         return $return;
     }
     /**
      * return jqueryUI component path.
      *
-     * @param mixed $component
+     * @param  mixed  $component
      * @return string
      */
     public static function getJqueryUIPath($component, $theme, $check_dependencies)
@@ -270,12 +284,13 @@ class Media
         if ($component == 'ui.datepicker') {
             $ui_path['js'][] = Media::getJSPath($folder . 'i18n/jquery.ui.datepicker-' . Context::getContext()->language->iso_code . '.js');
         }
+
         return $ui_path;
     }
     /**
      * return jquery plugin path.
      *
-     * @param mixed $name
+     * @param  mixed $name
      * @return void
      */
     public static function getJqueryPluginPath($name, $folder = null)
@@ -296,12 +311,13 @@ class Media
             return false;
         }
         $plugin_path['css'] = Media::getJqueryPluginCSSPath($name, $folder);
+
         return $plugin_path;
     }
     /**
      * return jquery plugin css path if exist.
      *
-     * @param mixed $name
+     * @param  mixed $name
      * @return void
      */
     public static function getJqueryPluginCSSPath($name, $folder = null)
@@ -391,6 +407,7 @@ class Media
             $url = str_replace(_PS_THEME_DIR_, _THEMES_DIR_ . _THEME_NAME_ . '/', $filename);
             $css_files[$protocol_link . Tools::getMediaServer($url) . $url] = $media;
         }
+
         return $css_files;
     }
     public static function getBackTrackLimit()
@@ -402,6 +419,7 @@ class Media
                 $limit = -1;
             }
         }
+
         return $limit;
     }
     /**
@@ -458,6 +476,7 @@ class Media
         }
         // rebuild the original js_files array
         $url = str_replace(_PS_ROOT_DIR_ . '/', __PS_BASE_URI__, $compressed_js_path);
+
         return array_merge(array($protocol_link . Tools::getMediaServer($url) . $url), $js_external_files);
     }
 }

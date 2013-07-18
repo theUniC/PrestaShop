@@ -133,11 +133,11 @@ class StockMvt extends ObjectModel
      * the given product, in the given quantity.
      *
      * @since 1.5.0
-     * @param int $id_order
-     * @param int $id_product
-     * @param int $id_product_attribute Use 0 if the product does not have attributes
-     * @param int $quantity
-     * @param int $id_warehouse Optional
+     * @param  int   $id_order
+     * @param  int   $id_product
+     * @param  int   $id_product_attribute Use 0 if the product does not have attributes
+     * @param  int   $quantity
+     * @param  int   $id_warehouse         Optional
      * @return Array mvts
      */
     public static function getNegativeStockMvts($id_order, $id_product, $id_product_attribute, $quantity, $id_warehouse = null)
@@ -168,14 +168,15 @@ class StockMvt extends ObjectModel
             $quantity_total += (int) $row['physical_quantity'];
             $movements[] = $row;
         }
+
         return $movements;
     }
     /**
      * For a given product, gets the last positive stock mvt
      *
      * @since 1.5.0
-     * @param int $id_product
-     * @param int $id_product_attribute Use 0 if the product does not have attributes
+     * @param  int        $id_product
+     * @param  int        $id_product_attribute Use 0 if the product does not have attributes
      * @return bool|array
      */
     public static function getLastPositiveStockMvt($id_product, $id_product_attribute)
@@ -192,6 +193,7 @@ class StockMvt extends ObjectModel
         if ($res != false) {
             return $res['0'];
         }
+
         return false;
     }
 }

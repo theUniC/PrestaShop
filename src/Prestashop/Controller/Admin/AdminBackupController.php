@@ -42,12 +42,13 @@ class AdminBackupController extends AdminController
         $this->fields_list = array('date' => array('title' => $this->l('Date'), 'type' => 'datetime', 'width' => 120, 'align' => 'right'), 'age' => array('title' => $this->l('Age')), 'filename' => array('title' => $this->l('File name'), 'width' => 200), 'filesize' => array('title' => $this->l('File size')));
         $this->bulk_actions = array('delete' => array('text' => $this->l('Delete selected'), 'confirm' => $this->l('Delete selected items?')));
         $this->fields_options = array('general' => array('title' => $this->l('Backup options'), 'fields' => array('PS_BACKUP_ALL' => array('title' => $this->l('Ignore statistics tables'), 'desc' => $this->l('Drop existing tables during import') . '
-							<br />' . _DB_PREFIX_ . 'connections, ' . _DB_PREFIX_ . 'connections_page, ' . _DB_PREFIX_ . 'connections_source, ' . _DB_PREFIX_ . 'guest, ' . _DB_PREFIX_ . 'statssearch', 'cast' => 'intval', 'type' => 'bool'), 'PS_BACKUP_DROP_TABLE' => array('title' => $this->l('Drop existing tables during import'), 'desc' => $this->l('If enabled, the backup script will drop your tables prior to restoring data.') . '<br />(ie. "DROP TABLE IF EXISTS")', 'cast' => 'intval', 'type' => 'bool')), 'submit' => array()));
+                            <br />' . _DB_PREFIX_ . 'connections, ' . _DB_PREFIX_ . 'connections_page, ' . _DB_PREFIX_ . 'connections_source, ' . _DB_PREFIX_ . 'guest, ' . _DB_PREFIX_ . 'statssearch', 'cast' => 'intval', 'type' => 'bool'), 'PS_BACKUP_DROP_TABLE' => array('title' => $this->l('Drop existing tables during import'), 'desc' => $this->l('If enabled, the backup script will drop your tables prior to restoring data.') . '<br />(ie. "DROP TABLE IF EXISTS")', 'cast' => 'intval', 'type' => 'bool')), 'submit' => array()));
     }
     public function renderList()
     {
         $this->addRowAction('view');
         $this->addRowAction('delete');
+
         return parent::renderList();
     }
     public function renderView()
@@ -62,11 +63,13 @@ class AdminBackupController extends AdminController
                 $this->errors[] = $object->error;
             }
         }
+
         return parent::renderView();
     }
     public function initViewDownload()
     {
         $this->tpl_folder = $this->tpl_folder . 'download/';
+
         return parent::renderView();
     }
     public function initToolbar()
@@ -87,6 +90,7 @@ class AdminBackupController extends AdminController
         if ($this->display == 'add') {
             $this->display = 'list';
         }
+
         return parent::initContent();
     }
     /**
@@ -94,7 +98,7 @@ class AdminBackupController extends AdminController
      * otherwise return an empty object
      * This method overrides the one in AdminTab because AdminTab assumes the id is a UnsignedInt
      * "Backups" Directory in admin directory must be writeable (CHMOD 777)
-     * @param boolean $opt Return an empty object if load fail
+     * @param  boolean $opt Return an empty object if load fail
      * @return object
      */
     protected function loadObject($opt = false)
@@ -102,6 +106,7 @@ class AdminBackupController extends AdminController
         if ($id = Tools::getValue($this->identifier)) {
             return new $this->className($id);
         }
+
         return new $this->className();
     }
     public function postProcess()
@@ -109,6 +114,7 @@ class AdminBackupController extends AdminController
         /* PrestaShop demo mode */
         if (_PS_MODE_DEMO_) {
             $this->errors[] = Tools::displayError('This functionality has been disabled.');
+
             return;
         }
         /* PrestaShop demo mode*/
@@ -175,6 +181,7 @@ class AdminBackupController extends AdminController
         $dh = @opendir(_PS_ADMIN_DIR_ . '/backups/');
         if ($dh === false) {
             $this->errors[] = Tools::displayError('Unable to open backup directory.') . addslashes(_PS_ADMIN_DIR_ . '/backups/') . '"';
+
             return;
         }
         while (($file = readdir($dh)) !== false) {

@@ -48,6 +48,7 @@ class MySQL extends Db
         if (!mysql_query('SET NAMES \'utf8\'', $this->link)) {
             throw new PrestaShopDatabaseException(Tools::displayError('PrestaShop Fatal error: no utf-8 support. Please check your server configuration.'));
         }
+
         return $this->link;
     }
     public static function createDatabase($host, $user, $password, $dbname, $dropit = false)
@@ -57,6 +58,7 @@ class MySQL extends Db
         if ($dropit && mysql_query('DROP DATABASE `' . str_replace('`', '\\`', $dbname) . '`', $link) !== false) {
             return true;
         }
+
         return $success;
     }
     /**
@@ -84,6 +86,7 @@ class MySQL extends Db
         } elseif (is_resource($this->_result) && $this->_result) {
             $return = mysql_fetch_assoc($this->_result);
         }
+
         return $return;
     }
     /**
@@ -155,6 +158,7 @@ class MySQL extends Db
         }
         $sql = 'SHOW TABLES LIKE \'' . $prefix . '%\'';
         $result = mysql_query($sql);
+
         return (bool) @mysql_fetch_assoc($result);
     }
     /**
@@ -170,6 +174,7 @@ class MySQL extends Db
             return 2;
         }
         @mysql_close($link);
+
         return 0;
     }
     public function getBestEngine()
@@ -195,6 +200,7 @@ class MySQL extends Db
                 break;
             }
         }
+
         return $value;
     }
     public static function checkCreatePrivilege($server, $user, $pwd, $db, $prefix, $engine = null)
@@ -207,14 +213,15 @@ class MySQL extends Db
             return false;
         }
         $sql = '
-			CREATE TABLE `' . $prefix . 'test` (
-			`test` tinyint(1) unsigned NOT NULL
-			) ENGINE=MyISAM';
+            CREATE TABLE `' . $prefix . 'test` (
+            `test` tinyint(1) unsigned NOT NULL
+            ) ENGINE=MyISAM';
         $result = mysql_query($sql, $link);
         if (!$result) {
             return mysql_error($link);
         }
         mysql_query('DROP TABLE `' . $prefix . 'test`', $link);
+
         return true;
     }
     /**
@@ -229,6 +236,7 @@ class MySQL extends Db
             $ret = true;
         }
         @mysql_close($link);
+
         return $ret;
     }
 }

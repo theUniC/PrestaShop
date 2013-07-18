@@ -64,6 +64,7 @@ abstract class ImportModule extends Module
         } else {
             die(Tools::displayError('Link to database cannot be established.'));
         }
+
         return $this->_link;
     }
     public function ExecuteS($query)
@@ -76,11 +77,13 @@ abstract class ImportModule extends Module
                 $resultArray[] = $row;
             }
         }
+
         return $resultArray;
     }
     public function Execute($query)
     {
         $this->initDatabaseConnection();
+
         return mysql_query($query, $this->_link);
     }
     public function getValue($query)
@@ -101,7 +104,8 @@ abstract class ImportModule extends Module
                 unset($modules[$key]);
             }
         }
+
         return $modules;
     }
-    public abstract function getDefaultIdLang();
+    abstract public function getDefaultIdLang();
 }

@@ -57,19 +57,19 @@ class Mail
     const TYPE_BOTH = 3;
     /**
      * Send Email
-     * 
-     * @param int $id_lang Language of the email (to translate the template)
-     * @param string $template Template: the name of template not be a var but a string !
+     *
+     * @param int    $id_lang         Language of the email (to translate the template)
+     * @param string $template        Template: the name of template not be a var but a string !
      * @param string $subject
      * @param string $template_vars
      * @param string $to
      * @param string $to_name
      * @param string $from
      * @param string $from_name
-     * @param array $file_attachment Array with three parameters (content, mime and name). You can use an array of array to attach multiple files
-     * @param bool $modeSMTP
+     * @param array  $file_attachment Array with three parameters (content, mime and name). You can use an array of array to attach multiple files
+     * @param bool   $modeSMTP
      * @param string $template_path
-     * @param bool $die
+     * @param bool   $die
      */
     public static function Send($id_lang, $template, $subject, $template_vars, $to, $to_name = null, $from = null, $from_name = null, $file_attachment = null, $mode_smtp = null, $template_path = _PS_MAIL_DIR_, $die = false, $id_shop = null)
     {
@@ -110,6 +110,7 @@ class Mail
         // It would be difficult to send an e-mail if the e-mail is not valid, so this time we can die if there is a problem
         if (!is_array($to) && !Validate::isEmail($to)) {
             Tools::dieOrLog(Tools::displayError('Error: parameter "to" is corrupted'), $die);
+
             return false;
         }
         if (!is_array($template_vars)) {
@@ -121,10 +122,12 @@ class Mail
         }
         if (!Validate::isTplName($template)) {
             Tools::dieOrLog(Tools::displayError('Error: invalid e-mail template'), $die);
+
             return false;
         }
         if (!Validate::isMailSubject($subject)) {
             Tools::dieOrLog(Tools::displayError('Error: invalid e-mail subject'), $die);
+
             return false;
         }
         /* Construct multiple recipients list if needed */
@@ -135,6 +138,7 @@ class Mail
                 $addr = trim($addr);
                 if (!Validate::isEmail($addr)) {
                     Tools::dieOrLog(Tools::displayError('Error: invalid e-mail address'), $die);
+
                     return false;
                 }
                 if (is_array($to_name)) {
@@ -163,6 +167,7 @@ class Mail
             if ($configuration['PS_MAIL_METHOD'] == 2) {
                 if (empty($configuration['PS_MAIL_SERVER']) || empty($configuration['PS_MAIL_SMTP_PORT'])) {
                     Tools::dieOrLog(Tools::displayError('Error: invalid SMTP server or SMTP port'), $die);
+
                     return false;
                 }
                 $connection = new Swift_Connection_SMTP($configuration['PS_MAIL_SERVER'], $configuration['PS_MAIL_SMTP_PORT'], $configuration['PS_MAIL_SMTP_ENCRYPTION'] == 'ssl' ? Swift_Connection_SMTP::ENC_SSL : ($configuration['PS_MAIL_SMTP_ENCRYPTION'] == 'tls' ? Swift_Connection_SMTP::ENC_TLS : Swift_Connection_SMTP::ENC_OFF));
@@ -187,6 +192,7 @@ class Mail
             $iso = Language::getIsoById((int) $id_lang);
             if (!$iso) {
                 Tools::dieOrLog(Tools::displayError('Error - No ISO code for email'), $die);
+
                 return false;
             }
             $template = $iso . '/' . $template;
@@ -204,10 +210,12 @@ class Mail
             }
             if (!file_exists($template_path . $template . '.txt') && ($configuration['PS_MAIL_TYPE'] == Mail::TYPE_BOTH || $configuration['PS_MAIL_TYPE'] == Mail::TYPE_TEXT)) {
                 Tools::dieOrLog(Tools::displayError('Error - The following e-mail template is missing:') . ' ' . $template_path . $template . '.txt', $die);
+
                 return false;
             } else {
                 if (!file_exists($template_path . $template . '.html') && ($configuration['PS_MAIL_TYPE'] == Mail::TYPE_BOTH || $configuration['PS_MAIL_TYPE'] == Mail::TYPE_HTML)) {
                     Tools::dieOrLog(Tools::displayError('Error - The following e-mail template is missing:') . ' ' . $template_path . $template . '.html', $die);
+
                     return false;
                 }
             }
@@ -272,6 +280,7 @@ class Mail
             $send = $swift->send($message, $to, new Swift_Address($from, $from_name));
             $swift->disconnect();
             ShopUrl::resetMainDomainCache();
+
             return $send;
         } catch (Swift_Exception $e) {
             return false;
@@ -301,13 +310,14 @@ class Mail
         } catch (Swift_Message_MimeException $e) {
             $result = $e->getMessage();
         }
+
         return $result;
     }
     /**
      * This method is used to get the translation for email Object.
      * For an object is forbidden to use htmlentities,
      * we have to return a sentence with accents.
-     * 
+     *
      * @param string $string raw sentence (write directly in file)
      */
     public static function l($string, $id_lang = null, Context $context = null)
@@ -337,12 +347,14 @@ class Mail
         } else {
             $str = $string;
         }
+
         return str_replace('"', '&quot;', stripslashes($str));
     }
     /* Rewrite of Swift_Message::generateId() without getmypid() */
     protected static function generateId($idstring = null)
     {
         $midparams = array('utctime' => gmstrftime('%Y%m%d%H%M%S'), 'randint' => mt_rand(), 'customstr' => preg_match('/^(?<!\\.)[a-z0-9\\.]+(?!\\.)$/iD', $idstring) ? $idstring : 'swift', 'hostname' => isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : php_uname('n'));
+
         return vsprintf('<%s.%d.%s@%s>', $midparams);
     }
 }

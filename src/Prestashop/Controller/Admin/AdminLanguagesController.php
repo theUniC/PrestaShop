@@ -58,6 +58,7 @@ class AdminLanguagesController extends AdminController
         $this->addRowAction('delete');
         $this->displayWarning($this->l('When you delete a language, all related translations in the database will be deleted.'));
         $this->displayInformation($this->l('Your .htaccess file must be writable.'));
+
         return parent::renderList();
     }
     public function renderForm()
@@ -75,6 +76,7 @@ class AdminLanguagesController extends AdminController
         }
         $this->fields_value = array('ps_version' => _PS_VERSION_);
         $this->addJS(_PS_JS_DIR_ . 'checkLangPack.js');
+
         return parent::renderForm();
     }
     public function processDelete()
@@ -86,6 +88,7 @@ class AdminLanguagesController extends AdminController
         if (!$this->deleteNoPictureImages((int) $object->id)) {
             $this->errors[] = Tools::displayError('An error occurred while deleting the object.') . ' <b>' . $this->table . '</b> ';
         }
+
         return parent::processDelete();
     }
     protected function processBulkDelete()
@@ -99,10 +102,12 @@ class AdminLanguagesController extends AdminController
                 }
                 if (!$this->deleteNoPictureImages((int) $object->id)) {
                     $this->errors[] = Tools::displayError('An error occurred while deleting the object.') . ' <b>' . $this->table . '</b> ';
+
                     return false;
                 }
             }
         }
+
         return parent::processBulkDelete();
     }
     protected function checkDeletion($object)
@@ -118,6 +123,7 @@ class AdminLanguagesController extends AdminController
         } else {
             $this->errors[] = Tools::displayError('(cannot load object)');
         }
+
         return false;
     }
     protected function checkDisableStatus($object)
@@ -131,6 +137,7 @@ class AdminLanguagesController extends AdminController
                 return true;
             }
         }
+
         return false;
     }
     public function processStatus()
@@ -138,8 +145,10 @@ class AdminLanguagesController extends AdminController
         $object = $this->loadObject();
         if ($this->checkDisableStatus($object)) {
             $this->checkEmployeeIdLang($object->id);
+
             return parent::processStatus();
         }
+
         return false;
     }
     protected function processBulkDisableSelection()
@@ -153,6 +162,7 @@ class AdminLanguagesController extends AdminController
                 $this->checkEmployeeIdLang($object->id);
             }
         }
+
         return parent::processBulkDisableSelection();
     }
     public function processAdd()
@@ -165,10 +175,12 @@ class AdminLanguagesController extends AdminController
                 $this->copyNoPictureImage(strtolower(Tools::getValue('iso_code')));
             }
             unset($_FILES['no-picture']);
+
             return parent::processAdd();
         } else {
             $this->errors[] = Tools::displayError('Flag and "No picture" image fields are required.');
         }
+
         return false;
     }
     public function processUpdate()
@@ -187,6 +199,7 @@ class AdminLanguagesController extends AdminController
             }
         }
         $this->checkEmployeeIdLang($object->id);
+
         return parent::processUpdate();
     }
     /**
@@ -232,7 +245,7 @@ class AdminLanguagesController extends AdminController
     /**
      * deleteNoPictureImages will delete all default image created for the language id_language
      *
-     * @param string $id_language
+     * @param  string  $id_language
      * @return boolean true if no error
      */
     protected function deleteNoPictureImages($id_language)
@@ -254,6 +267,7 @@ class AdminLanguagesController extends AdminController
                 }
             }
         }
+
         return !count($this->errors) ? true : false;
     }
     protected function copyFromPost(&$object, $table)
@@ -271,11 +285,13 @@ class AdminLanguagesController extends AdminController
         if (!Tools::getValue('iso_lang') || !Validate::isLanguageIsoCode(Tools::getValue('iso_lang'))) {
             $this->status = 'error';
             $this->errors[] = $this->l('Iso code is not valid');
+
             return;
         }
         if (!Tools::getValue('ps_version') || !Validate::isPrestaShopVersion(Tools::getValue('ps_version'))) {
             $this->status = 'error';
             $this->errors[] = $this->l('Technical Error: ps_version is not valid');
+
             return;
         }
         // Get all iso code available

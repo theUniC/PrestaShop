@@ -175,12 +175,12 @@ class AddressController extends FrontController
                 $id_address = Tools::getValue('opc_id_address_' . Tools::getValue('type'));
             }
             if (Db::getInstance()->getValue('
-				SELECT count(*)
-				FROM ' . _DB_PREFIX_ . 'address
-				WHERE `alias` = \'' . pSql($_POST['alias']) . '\'
-				AND id_address != ' . (int) $id_address . '
-				AND id_customer = ' . (int) $this->context->customer->id . '
-				AND deleted = 0') > 0) {
+                SELECT count(*)
+                FROM ' . _DB_PREFIX_ . 'address
+                WHERE `alias` = \'' . pSql($_POST['alias']) . '\'
+                AND id_address != ' . (int) $id_address . '
+                AND id_customer = ' . (int) $this->context->customer->id . '
+                AND deleted = 0') > 0) {
                 $this->errors[] = sprintf(Tools::displayError('The alias "%s" has already been used. Please select another one.'), Tools::safeOutput($_POST['alias']));
             }
         }

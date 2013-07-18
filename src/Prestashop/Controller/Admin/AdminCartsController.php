@@ -60,10 +60,10 @@ class AdminCartsController extends AdminController
         $this->allow_export = true;
         $this->_select = 'CONCAT(LEFT(c.`firstname`, 1), \'. \', c.`lastname`) `customer`, a.id_cart total, ca.name carrier, o.id_order, IF(co.id_guest, 1, 0) id_guest';
         $this->_join = 'LEFT JOIN ' . _DB_PREFIX_ . 'customer c ON (c.id_customer = a.id_customer)
-		LEFT JOIN ' . _DB_PREFIX_ . 'currency cu ON (cu.id_currency = a.id_currency)
-		LEFT JOIN ' . _DB_PREFIX_ . 'carrier ca ON (ca.id_carrier = a.id_carrier)
-		LEFT JOIN ' . _DB_PREFIX_ . 'orders o ON (o.id_cart = a.id_cart)
-		LEFT JOIN `' . _DB_PREFIX_ . 'connections` co ON (a.id_guest = co.id_guest AND TIME_TO_SEC(TIMEDIFF(NOW(), co.`date_add`)) < 1800)';
+        LEFT JOIN ' . _DB_PREFIX_ . 'currency cu ON (cu.id_currency = a.id_currency)
+        LEFT JOIN ' . _DB_PREFIX_ . 'carrier ca ON (ca.id_carrier = a.id_carrier)
+        LEFT JOIN ' . _DB_PREFIX_ . 'orders o ON (o.id_cart = a.id_cart)
+        LEFT JOIN `' . _DB_PREFIX_ . 'connections` co ON (a.id_guest = co.id_guest AND TIME_TO_SEC(TIMEDIFF(NOW(), co.`date_add`)) < 1800)';
         $this->fields_list = array('id_cart' => array('title' => $this->l('ID'), 'align' => 'center', 'width' => 25), 'id_order' => array('title' => $this->l('Order ID'), 'align' => 'center', 'width' => 25), 'customer' => array('title' => $this->l('Customer'), 'width' => 'auto', 'filter_key' => 'c!lastname'), 'total' => array('title' => $this->l('Total'), 'callback' => 'getOrderTotalUsingTaxCalculationMethod', 'orderby' => false, 'search' => false, 'width' => 80, 'align' => 'right', 'prefix' => '<b>', 'suffix' => '</b>'), 'carrier' => array('title' => $this->l('Carrier'), 'width' => 50, 'align' => 'center', 'callback' => 'replaceZeroByShopName', 'filter_key' => 'ca!name'), 'date_add' => array('title' => $this->l('Date'), 'width' => 150, 'align' => 'right', 'type' => 'datetime', 'filter_key' => 'a!date_add'), 'id_guest' => array('title' => $this->l('Online'), 'width' => 40, 'align' => 'center', 'type' => 'bool', 'havingFilter' => true, 'icon' => array(0 => 'blank.gif', 1 => 'tab-customers.gif')));
         $this->shopLinkType = 'shop';
         parent::__construct();
@@ -116,13 +116,13 @@ class AdminCartsController extends AdminController
             $image = array();
             if (isset($product['id_product_attribute']) && (int) $product['id_product_attribute']) {
                 $image = Db::getInstance()->getRow('SELECT id_image
-																FROM ' . _DB_PREFIX_ . 'product_attribute_image
-																WHERE id_product_attribute = ' . (int) $product['id_product_attribute']);
+                                                                FROM ' . _DB_PREFIX_ . 'product_attribute_image
+                                                                WHERE id_product_attribute = ' . (int) $product['id_product_attribute']);
             }
             if (!isset($image['id_image'])) {
                 $image = Db::getInstance()->getRow('SELECT id_image
-																FROM ' . _DB_PREFIX_ . 'image
-																WHERE id_product = ' . (int) $product['id_product'] . ' AND cover = 1');
+                                                                FROM ' . _DB_PREFIX_ . 'image
+                                                                WHERE id_product = ' . (int) $product['id_product'] . ' AND cover = 1');
             }
             $product_obj = new Product($product['id_product']);
             $product['qty_in_stock'] = StockAvailable::getQuantityAvailableByProduct($product['id_product'], isset($product['id_product_attribute']) ? $product['id_product_attribute'] : null, (int) $id_shop);
@@ -130,6 +130,7 @@ class AdminCartsController extends AdminController
             $product['image'] = isset($image['id_image']) ? ImageManager::thumbnail(_PS_IMG_DIR_ . 'p/' . $image_product->getExistingImgPath() . '.jpg', 'product_mini_' . (int) $product['id_product'] . (isset($product['id_product_attribute']) ? '_' . (int) $product['id_product_attribute'] : '') . '.jpg', 45, 'jpg') : '--';
         }
         $this->tpl_view_vars = array('products' => $products, 'discounts' => $cart->getCartRules(), 'order' => $order, 'cart' => $cart, 'currency' => $currency, 'customer' => $customer, 'customer_stats' => $customer->getStats(), 'total_products' => $total_products, 'total_discounts' => $total_discounts, 'total_wrapping' => $total_wrapping, 'total_price' => $total_price, 'total_shipping' => $total_shipping, 'customized_datas' => $customized_datas);
+
         return parent::renderView();
     }
     public function ajaxPreProcess()
@@ -258,6 +259,7 @@ class AdminCartsController extends AdminController
             $this->setMedia();
             $this->initFooter();
             $this->context->smarty->assign(array('customization_errors' => implode('<br />', $errors), 'css_files' => $this->css_files));
+
             return $this->smartyOutputContent('controllers/orders/form_customization_feedback.tpl');
         }
     }
@@ -502,6 +504,7 @@ class AdminCartsController extends AdminController
                 }
             }
         }
+
         return $summary;
     }
     protected function getDeliveryOptionList()
@@ -539,6 +542,7 @@ class AdminCartsController extends AdminController
             }
             $delivery_option_list_formated[] = array('name' => $name, 'key' => $key);
         }
+
         return $delivery_option_list_formated;
     }
     public function displayAjaxSearchCarts()
@@ -586,6 +590,7 @@ class AdminCartsController extends AdminController
                 }
             }
         }
+
         return array('summary' => $this->getCartSummary(), 'delivery_option_list' => $this->getDeliveryOptionList(), 'cart' => $this->context->cart, 'addresses' => $this->context->customer->getAddresses((int) $this->context->cart->id_lang), 'id_cart' => $id_cart, 'order_message' => $message_content, 'link_order' => $this->context->link->getPageLink('order', false, (int) $this->context->cart->id_lang, 'step=3&recover_cart=' . $id_cart . '&token_cart=' . md5(_COOKIE_KEY_ . 'recover_cart_' . $id_cart)), 'free_shipping' => (int) $free_shipping);
     }
     public function initToolbar()
@@ -627,6 +632,7 @@ class AdminCartsController extends AdminController
         $context->cart = new Cart($id_cart);
         $context->currency = new Currency((int) $context->cart->id_currency);
         $context->customer = new Customer((int) $context->cart->id_customer);
+
         return Cart::getTotalCart($id_cart, true, Cart::BOTH_WITHOUT_SHIPPING);
     }
     public static function replaceZeroByShopName($echo, $tr)
@@ -641,6 +647,7 @@ class AdminCartsController extends AdminController
                 return;
             }
         }
+
         return $this->helper->displayDeleteLink($token, $id, $name);
     }
 }

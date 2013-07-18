@@ -52,7 +52,7 @@ class ConfigurationTest
     /**
      * run all test defined in $tests
      *
-     * @param array $tests
+     * @param  array $tests
      * @return array results of tests
      */
     public static function check($tests)
@@ -61,6 +61,7 @@ class ConfigurationTest
         foreach ($tests as $key => $test) {
             $res[$key] = ConfigurationTest::run($key, $test);
         }
+
         return $res;
     }
     public static function run($ptr, $arg = 0)
@@ -68,6 +69,7 @@ class ConfigurationTest
         if (call_user_func(array('ConfigurationTest', 'test_' . $ptr), $arg)) {
             return 'ok';
         }
+
         return 'fail';
     }
     public static function test_phpversion()
@@ -101,6 +103,7 @@ class ConfigurationTest
                 return false;
             }
         }
+
         return true;
     }
     public static function test_gd()
@@ -116,6 +119,7 @@ class ConfigurationTest
         if (function_exists('gzencode')) {
             return @gzencode('dd') !== false;
         }
+
         return false;
     }
     public static function test_dir($relative_dir, $recursive = false, &$full_report = null)
@@ -131,6 +135,7 @@ class ConfigurationTest
             @unlink($dummy);
             if (!$recursive) {
                 closedir($dh);
+
                 return true;
             }
         } elseif (!is_writable($dir)) {
@@ -148,11 +153,13 @@ class ConfigurationTest
             }
         }
         closedir($dh);
+
         return true;
     }
     public static function test_file($file_relative)
     {
         $file = _PS_ROOT_DIR_ . DIRECTORY_SEPARATOR . $file_relative;
+
         return file_exists($file) && is_writable($file);
     }
     public static function test_config_dir($dir)
@@ -213,6 +220,7 @@ class ConfigurationTest
         if (!file_exists($absoluteDir)) {
             return true;
         }
+
         return ConfigurationTest::test_dir($dir, true);
     }
     public static function test_theme_pdf_lang_dir($dir)
@@ -221,6 +229,7 @@ class ConfigurationTest
         if (!file_exists($absoluteDir)) {
             return true;
         }
+
         return ConfigurationTest::test_dir($dir, true);
     }
     public static function test_theme_cache_dir($dir)
@@ -229,6 +238,7 @@ class ConfigurationTest
         if (!file_exists($absoluteDir)) {
             return true;
         }
+
         return ConfigurationTest::test_dir($dir, true);
     }
     public static function test_customizable_products_dir($dir)
@@ -252,6 +262,7 @@ class ConfigurationTest
         if (!($path = @ini_get('session.save_path'))) {
             return true;
         }
+
         return is_writable($path);
     }
     public static function test_dom()

@@ -54,33 +54,36 @@ class OrderPayment extends ObjectModel
     {
         if (parent::add($autodate, $nullValues)) {
             Hook::exec('actionPaymentCCAdd', array('paymentCC' => $this));
+
             return true;
         }
+
         return false;
     }
     /**
      * Get the detailed payment of an order
-     * @param int $id_order
+     * @param  int   $id_order
      * @return array
      */
     public static function getByOrderId($id_order)
     {
         Tools::displayAsDeprecated();
         $order = new Order($id_order);
+
         return OrderPayment::getByOrderReference($order->reference);
     }
     /**
      * Get the detailed payment of an order
-     * @param int $order_reference
+     * @param  int   $order_reference
      * @return array
      * @since 1.5.0.13
      */
     public static function getByOrderReference($order_reference)
     {
         return ObjectModel::hydrateCollection('OrderPayment', Db::getInstance()->executeS('
-			SELECT *
-			FROM `' . _DB_PREFIX_ . 'order_payment`
-			WHERE `order_reference` = \'' . pSQL($order_reference) . '\''));
+            SELECT *
+            FROM `' . _DB_PREFIX_ . 'order_payment`
+            WHERE `order_reference` = \'' . pSQL($order_reference) . '\''));
     }
     /**
      * Get Order Payments By Invoice ID
@@ -100,11 +103,12 @@ class OrderPayment extends ObjectModel
         }
         $payments = new Collection('OrderPayment');
         $payments->where('id_order_payment', 'IN', $payment_list);
+
         return $payments;
     }
     /**
      * Return order invoice object linked to the payment
-     * 
+     *
      * @param int $id_order Order Id
      *
      * @since 1.5.0.13
@@ -112,13 +116,14 @@ class OrderPayment extends ObjectModel
     public function getOrderInvoice($id_order)
     {
         $res = Db::getInstance()->getValue('
-		SELECT id_order_invoice
-		FROM `' . _DB_PREFIX_ . 'order_invoice_payment`
-		WHERE id_order_payment = ' . (int) $this->id . '
-		AND id_order = ' . (int) $id_order);
+        SELECT id_order_invoice
+        FROM `' . _DB_PREFIX_ . 'order_invoice_payment`
+        WHERE id_order_payment = ' . (int) $this->id . '
+        AND id_order = ' . (int) $id_order);
         if (!$res) {
             return false;
         }
+
         return new OrderInvoice((int) $res);
     }
 }

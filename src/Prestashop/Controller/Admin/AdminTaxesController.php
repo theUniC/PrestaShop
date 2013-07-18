@@ -70,17 +70,18 @@ class AdminTaxesController extends AdminController
             $confirm = $this->l('This tax is currently in use as tax rule. Are you sure you\'d like to continue?');
         }
         $this->context->smarty->assign(array('href' => self::$currentIndex . '&' . $this->identifier . '=' . $id . '&delete' . $this->table . '&token=' . ($token != null ? $token : $this->token), 'confirm' => isset($confirm) ? '\\r' . $confirm : self::$cache_lang['DeleteItem'] . $id . ' ? ', 'action' => self::$cache_lang['Delete']));
+
         return $this->context->smarty->fetch('helpers/list/list_action_delete.tpl');
     }
     /**
      * Fetch the template for action enable
      *
      * @param string $token
-     * @param int $id
-     * @param int $value state enabled or not
-     * @param string $active status
-     * @param int $id_category
-     * @param int $id_product
+     * @param int    $id
+     * @param int    $value       state enabled or not
+     * @param string $active      status
+     * @param int    $id_category
+     * @param int    $id_product
      */
     public function displayEnableLink($token, $id, $value, $active, $id_category = null, $id_product = null)
     {
@@ -89,11 +90,13 @@ class AdminTaxesController extends AdminController
         }
         $tpl_enable = $this->context->smarty->createTemplate('helpers/list/list_action_enable.tpl');
         $tpl_enable->assign(array('enabled' => (bool) $value, 'url_enable' => self::$currentIndex . '&' . $this->identifier . '=' . (int) $id . '&' . $active . $this->table . ((int) $id_category && (int) $id_product ? '&id_category=' . (int) $id_category : '') . '&token=' . ($token != null ? $token : $this->token), 'confirm' => isset($confirm) ? $confirm : null));
+
         return $tpl_enable->fetch();
     }
     public function renderForm()
     {
         $this->fields_form = array('legend' => array('title' => $this->l('Taxes'), 'image' => '../img/admin/dollar.gif'), 'input' => array(array('type' => 'text', 'label' => $this->l('Name:'), 'name' => 'name', 'size' => 33, 'required' => true, 'lang' => true, 'hint' => $this->l('Invalid characters') . ' <>;=#{}', 'desc' => $this->l('Tax name to display in carts and on invoices (e.g. VAT).')), array('type' => 'text', 'label' => $this->l('Rate:'), 'name' => 'rate', 'size' => 4, 'maxlength' => 6, 'required' => true, 'hint' => $this->l('Invalid characters') . ' <>;=#{}', 'desc' => $this->l('Format: XX.XX or XX.XXX (e.g. 19.60 or 13.925)')), array('type' => 'radio', 'label' => $this->l('Enable:'), 'name' => 'active', 'required' => false, 'class' => 't', 'is_bool' => true, 'values' => array(array('id' => 'active_on', 'value' => 1, 'label' => $this->l('Enabled')), array('id' => 'active_off', 'value' => 0, 'label' => $this->l('Disabled'))))), 'submit' => array('title' => $this->l('Save'), 'class' => 'button'));
+
         return parent::renderForm();
     }
     public function postProcess()

@@ -110,7 +110,8 @@ class AdminEmployeesController extends AdminController
     {
         $this->_select = 'pl.`name` AS profile';
         $this->_join = 'LEFT JOIN `' . _DB_PREFIX_ . 'profile` p ON a.`id_profile` = p.`id_profile`
-		LEFT JOIN `' . _DB_PREFIX_ . 'profile_lang` pl ON (pl.`id_profile` = p.`id_profile` AND pl.`id_lang` = ' . (int) $this->context->language->id . ')';
+        LEFT JOIN `' . _DB_PREFIX_ . 'profile_lang` pl ON (pl.`id_profile` = p.`id_profile` AND pl.`id_lang` = ' . (int) $this->context->language->id . ')';
+
         return parent::renderList();
     }
     public function renderForm()
@@ -121,6 +122,7 @@ class AdminEmployeesController extends AdminController
         $available_profiles = Profile::getProfiles($this->context->language->id);
         if ($obj->id_profile == _PS_ADMIN_PROFILE_ && $this->context->employee->id_profile != _PS_ADMIN_PROFILE_) {
             $this->errors[] = Tools::displayError('You cannot edit the SuperAdmin profile.');
+
             return parent::renderForm();
         }
         $this->fields_form = array('legend' => array('title' => $this->l('Employees'), 'image' => '../img/admin/nav-user.gif'), 'input' => array(array('type' => 'text', 'label' => $this->l('First Name:'), 'name' => 'firstname', 'size' => 33, 'required' => true), array('type' => 'text', 'label' => $this->l('Last Name:'), 'name' => 'lastname', 'size' => 33, 'required' => true), array('type' => 'password', 'label' => $this->l('Password:'), 'name' => 'passwd', 'required' => true, 'size' => 33, 'desc' => $obj->id ? $this->l('Leave this field blank if you do not want to change your password.') : $this->l('Minimum of eight characters (use only letters and numbers)') . ' -_'), array('type' => 'text', 'label' => $this->l('Email address:'), 'name' => 'email', 'size' => 33, 'required' => true), array('type' => 'color', 'label' => $this->l('Admin panel color:'), 'name' => 'bo_color', 'class' => 'color mColorPickerInput', 'size' => 20, 'desc' => $this->l('Admin panel background will be displayed in this color (HTML colors only).') . ' "lightblue", "#CC6600")'), array('type' => 'default_tab', 'label' => $this->l('Default page:'), 'name' => 'default_tab', 'desc' => $this->l('This page will be displayed just after login'), 'options' => $this->tabs_list), array('type' => 'text', 'label' => $this->l('Back Office width'), 'name' => 'bo_width', 'size' => 10, 'desc' => $this->l('Back Office width, in pixels. The value "0" means that the Back Office width will be flexible.')), array('type' => 'select', 'label' => $this->l('Language:'), 'name' => 'id_lang', 'required' => true, 'options' => array('query' => Language::getLanguages(false), 'id' => 'id_lang', 'name' => 'name')), array('type' => 'select_theme', 'label' => $this->l('Theme:'), 'name' => 'bo_theme', 'options' => array('query' => $this->themes), 'desc' => $this->l('Back Office theme')), array('type' => 'radio', 'label' => $this->l('Show screencast at login:'), 'name' => 'bo_show_screencast', 'desc' => $this->l('Display the welcome video in the Admin panel dashboard at log in.'), 'required' => false, 'class' => 't', 'is_bool' => true, 'values' => array(array('id' => 'bo_show_screencast_on', 'value' => 1, 'label' => $this->l('Enabled')), array('id' => 'bo_show_screencast_off', 'value' => 0, 'label' => $this->l('Disabled'))))));
@@ -146,6 +148,7 @@ class AdminEmployeesController extends AdminController
         if (empty($obj->id)) {
             $this->fields_value['id_lang'] = $this->context->language->id;
         }
+
         return parent::renderForm();
     }
     protected function _childValidation()
@@ -166,21 +169,25 @@ class AdminEmployeesController extends AdminController
             /* PrestaShop demo mode */
             if (_PS_MODE_DEMO_ && ($id_employee = Tools::getValue('id_employee') && (int) $id_employee == _PS_DEMO_MAIN_BO_ACCOUNT_)) {
                 $this->errors[] = Tools::displayError('This functionality has been disabled.');
+
                 return;
             }
             if ($this->context->employee->id == Tools::getValue('id_employee')) {
                 $this->errors[] = Tools::displayError('You cannot disable or delete your own account.');
+
                 return false;
             }
             $employee = new Employee(Tools::getValue('id_employee'));
             if ($employee->isLastAdmin()) {
                 $this->errors[] = Tools::displayError('You cannot disable or delete the administrator account.');
+
                 return false;
             }
             // It is not possible to delete an employee if he manages warehouses
             $warehouses = Warehouse::getWarehousesByEmployee((int) Tools::getValue('id_employee'));
             if (Tools::isSubmit('deleteemployee') && count($warehouses) > 0) {
                 $this->errors[] = Tools::displayError('You cannot delete this account because it manages warehouses. Check your warehouses first.');
+
                 return false;
             }
         } elseif (Tools::isSubmit('submitAddemployee')) {
@@ -232,15 +239,18 @@ class AdminEmployeesController extends AdminController
             if ($employee->isLastAdmin()) {
                 if (Tools::getValue('id_profile') != (int) _PS_ADMIN_PROFILE_) {
                     $this->errors[] = Tools::displayError('You should have at least one employee in the administrator group.');
+
                     return false;
                 }
                 if (Tools::getvalue('active') == 0) {
                     $this->errors[] = Tools::displayError('You cannot disable or delete the administrator account.');
+
                     return false;
                 }
             }
             if (!in_array(Tools::getValue('bo_theme'), $this->themes)) {
                 $this->errors[] = Tools::displayError('Invalid theme');
+
                 return false;
             }
             $assos = $this->getSelectedAssoShop($this->table);
@@ -250,6 +260,7 @@ class AdminEmployeesController extends AdminController
                 }
             }
         }
+
         return parent::postProcess();
     }
     public function initContent()
@@ -257,6 +268,7 @@ class AdminEmployeesController extends AdminController
         if ($this->context->employee->id == Tools::getValue('id_employee')) {
             $this->display = 'edit';
         }
+
         return parent::initContent();
     }
     public function ajaxProcessGetTabByIdProfile()

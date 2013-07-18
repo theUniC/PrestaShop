@@ -67,9 +67,9 @@ class AdminAddressesController extends AdminController
         parent::__construct();
         $this->_select = 'cl.`name` as country';
         $this->_join = '
-			LEFT JOIN `' . _DB_PREFIX_ . 'country_lang` cl ON (cl.`id_country` = a.`id_country` AND cl.`id_lang` = ' . (int) $this->context->language->id . ')
-			LEFT JOIN `' . _DB_PREFIX_ . 'customer` c ON a.id_customer = c.id_customer
-		';
+            LEFT JOIN `' . _DB_PREFIX_ . 'country_lang` cl ON (cl.`id_country` = a.`id_country` AND cl.`id_lang` = ' . (int) $this->context->language->id . ')
+            LEFT JOIN `' . _DB_PREFIX_ . 'customer` c ON a.id_customer = c.id_customer
+        ';
         $this->_where = 'AND a.id_customer != 0 ' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER, 'c');
     }
     public function initToolbar()
@@ -141,6 +141,7 @@ class AdminAddressesController extends AdminController
         }
         // merge address format with the rest of the form
         array_splice($this->fields_form['input'], 3, 0, $temp_fields);
+
         return parent::renderForm();
     }
     public function processSave()
@@ -224,6 +225,7 @@ class AdminAddressesController extends AdminController
         if (Tools::getValue('submitFormAjax')) {
             $this->redirect_after = false;
         }
+
         return parent::processAdd();
     }
     /**
@@ -249,6 +251,7 @@ class AdminAddressesController extends AdminController
             $out[$adr_type . '_adr_fields'] = ${$adr_type . '_adr_fields'};
             $out[$adr_type . '_all_fields'] = ${$adr_type . '_all_fields'};
         }
+
         return $out;
     }
     /**
@@ -277,6 +280,7 @@ class AdminAddressesController extends AdminController
                 $this->deleted = false;
             }
         }
+
         return parent::processDelete();
     }
     /**
@@ -297,6 +301,7 @@ class AdminAddressesController extends AdminController
             }
             $this->deleted = $deleted;
         }
+
         return parent::processBulkDelete();
     }
 }

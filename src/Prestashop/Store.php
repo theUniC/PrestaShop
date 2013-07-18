@@ -81,6 +81,7 @@ class Store extends ObjectModel
     public function setWsHours($hours)
     {
         $this->hours = serialize(explode(';', $hours));
+
         return true;
     }
 }

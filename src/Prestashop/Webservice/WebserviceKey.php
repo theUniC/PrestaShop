@@ -45,55 +45,59 @@ class WebserviceKey extends ObjectModel
         if (WebserviceKey::keyExists($this->key)) {
             return false;
         }
+
         return parent::add($autodate = true, $nullValues = false);
     }
     public static function keyExists($key)
     {
         return !Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('SELECT `key`
-			FROM ' . _DB_PREFIX_ . 'webservice_account
-			WHERE `key` = \'' . pSQL($key) . '\'') ? false : true;
+            FROM ' . _DB_PREFIX_ . 'webservice_account
+            WHERE `key` = \'' . pSQL($key) . '\'') ? false : true;
     }
     public function delete()
     {
         if (!parent::delete() || $this->deleteAssociations() === false) {
             return false;
         }
+
         return true;
     }
     public function deleteAssociations()
     {
         if (Db::getInstance()->execute('
-				DELETE FROM `' . _DB_PREFIX_ . 'webservice_permission`
-				WHERE `id_webservice_account` = ' . (int) $this->id) === false || Db::getInstance()->execute('
-				DELETE FROM `' . _DB_PREFIX_ . 'webservice_permission`
-				WHERE `id_webservice_account` = ' . (int) $this->id) === false) {
+                DELETE FROM `' . _DB_PREFIX_ . 'webservice_permission`
+                WHERE `id_webservice_account` = ' . (int) $this->id) === false || Db::getInstance()->execute('
+                DELETE FROM `' . _DB_PREFIX_ . 'webservice_permission`
+                WHERE `id_webservice_account` = ' . (int) $this->id) === false) {
             return false;
         }
+
         return true;
     }
     public static function getPermissionForAccount($auth_key)
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
-			SELECT p.*
-			FROM `' . _DB_PREFIX_ . 'webservice_permission` p
-			LEFT JOIN `' . _DB_PREFIX_ . 'webservice_account` a ON (a.id_webservice_account = p.id_webservice_account)
-			WHERE a.key = \'' . pSQL($auth_key) . '\'
-		');
+            SELECT p.*
+            FROM `' . _DB_PREFIX_ . 'webservice_permission` p
+            LEFT JOIN `' . _DB_PREFIX_ . 'webservice_account` a ON (a.id_webservice_account = p.id_webservice_account)
+            WHERE a.key = \'' . pSQL($auth_key) . '\'
+        ');
         $permissions = array();
         if ($result) {
             foreach ($result as $row) {
                 $permissions[$row['resource']][] = $row['method'];
             }
         }
+
         return $permissions;
     }
     public static function isKeyActive($auth_key)
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
-			SELECT a.active
-			FROM `' . _DB_PREFIX_ . 'webservice_account` a
-			WHERE a.key = \'' . pSQL($auth_key) . '\'
-		');
+            SELECT a.active
+            FROM `' . _DB_PREFIX_ . 'webservice_account` a
+            WHERE a.key = \'' . pSQL($auth_key) . '\'
+        ');
         if (!isset($result[0])) {
             return null;
         } else {
@@ -103,10 +107,10 @@ class WebserviceKey extends ObjectModel
     public static function getClassFromKey($auth_key)
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
-			SELECT a.class_name as class
-			FROM `' . _DB_PREFIX_ . 'webservice_account` a
-			WHERE a.key = \'' . pSQL($auth_key) . '\'
-		');
+            SELECT a.class_name as class
+            FROM `' . _DB_PREFIX_ . 'webservice_account` a
+            WHERE a.key = \'' . pSQL($auth_key) . '\'
+        ');
         if (!isset($result[0])) {
             return null;
         } else {
@@ -145,6 +149,7 @@ class WebserviceKey extends ObjectModel
                 }
             }
         }
+
         return $ok;
     }
 }

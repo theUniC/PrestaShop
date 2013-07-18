@@ -71,30 +71,31 @@ class OrderState extends ObjectModel
     /**
      * Get all available order states
      *
-     * @param integer $id_lang Language id for state name
-     * @return array Order states
+     * @param  integer $id_lang Language id for state name
+     * @return array   Order states
      */
     public static function getOrderStates($id_lang)
     {
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
-		SELECT *
-		FROM `' . _DB_PREFIX_ . 'order_state` os
-		LEFT JOIN `' . _DB_PREFIX_ . 'order_state_lang` osl ON (os.`id_order_state` = osl.`id_order_state` AND osl.`id_lang` = ' . (int) $id_lang . ')
-		WHERE deleted = 0
-		ORDER BY `name` ASC');
+        SELECT *
+        FROM `' . _DB_PREFIX_ . 'order_state` os
+        LEFT JOIN `' . _DB_PREFIX_ . 'order_state_lang` osl ON (os.`id_order_state` = osl.`id_order_state` AND osl.`id_lang` = ' . (int) $id_lang . ')
+        WHERE deleted = 0
+        ORDER BY `name` ASC');
     }
     /**
      * Check if we can make a facture when order is in this state
      *
-     * @param integer $id_order_state State ID
+     * @param  integer $id_order_state State ID
      * @return boolean availability
      */
     public static function invoiceAvailable($id_order_state)
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow('
-		SELECT `invoice` AS ok
-		FROM `' . _DB_PREFIX_ . 'order_state`
-		WHERE `id_order_state` = ' . (int) $id_order_state);
+        SELECT `invoice` AS ok
+        FROM `' . _DB_PREFIX_ . 'order_state`
+        WHERE `id_order_state` = ' . (int) $id_order_state);
+
         return $result['ok'];
     }
     public function isRemovable()

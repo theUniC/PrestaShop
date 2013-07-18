@@ -69,17 +69,17 @@ class AdminWarehousesController extends AdminController
         $this->addRowAction('delete');
         // query: select
         $this->_select = '
-			reference,
-			name,
-			management_type,
-			CONCAT(e.lastname, \' \', e.firstname) as employee,
-			ad.phone as contact,
-			CONCAT(ad.city, \' - \', c.iso_code) as location';
+            reference,
+            name,
+            management_type,
+            CONCAT(e.lastname, \' \', e.firstname) as employee,
+            ad.phone as contact,
+            CONCAT(ad.city, \' - \', c.iso_code) as location';
         // query: join
         $this->_join = '
-			LEFT JOIN `' . _DB_PREFIX_ . 'employee` e ON (e.id_employee = a.id_employee)
-			LEFT JOIN `' . _DB_PREFIX_ . 'address` ad ON (ad.id_address = a.id_address)
-			LEFT JOIN `' . _DB_PREFIX_ . 'country` c ON (c.id_country = ad.id_country)';
+            LEFT JOIN `' . _DB_PREFIX_ . 'employee` e ON (e.id_employee = a.id_employee)
+            LEFT JOIN `' . _DB_PREFIX_ . 'address` ad ON (ad.id_address = a.id_address)
+            LEFT JOIN `' . _DB_PREFIX_ . 'country` c ON (c.id_country = ad.id_country)';
         // display help informations
         $this->displayInformation($this->l('This interface allows you to manage your warehouses.') . '<br />');
         $this->displayInformation($this->l('Before adding stock in your warehouses, you should check the default currency used.') . '<br />');
@@ -87,6 +87,7 @@ class AdminWarehousesController extends AdminController
         $this->displayInformation($this->l('the management type (according to the law in your country), the valuation currency and its associated carriers and shops.') . '<br />');
         $this->displayInformation($this->l('You can also see detailed information about your stock, such as its overall value, the number of products and quantities stored, etc...') . '<br /><br />');
         $this->displayInformation($this->l('Be careful! Products from different warehouses will need to be shipped in different packages.'));
+
         return parent::renderList();
     }
     /**
@@ -154,6 +155,7 @@ class AdminWarehousesController extends AdminController
         if (!Validate::isLoadedObject($obj)) {
             $this->fields_value['id_currency'] = (int) Configuration::get('PS_CURRENCY_DEFAULT');
         }
+
         return parent::renderForm();
     }
     /**
@@ -174,6 +176,7 @@ class AdminWarehousesController extends AdminController
         }
         // assigns to our view
         $this->tpl_view_vars = array('warehouse' => $warehouse, 'employee' => $employee, 'currency' => $currency, 'address' => $address, 'shops' => $shops, 'warehouse_num_products' => $warehouse->getNumberOfProducts(), 'warehouse_value' => Tools::displayPrice(Tools::ps_round($warehouse->getStockValue(), 2), $currency), 'warehouse_quantities' => $warehouse->getQuantitiesofProducts());
+
         return parent::renderView();
     }
     /**
@@ -193,6 +196,7 @@ class AdminWarehousesController extends AdminController
         if (Tools::isSubmit('ids_carriers')) {
             $object->setCarriers(Tools::getValue('ids_carriers'));
         }
+
         return true;
     }
     /**
@@ -224,6 +228,7 @@ class AdminWarehousesController extends AdminController
     {
         if (!Configuration::get('PS_ADVANCED_STOCK_MANAGEMENT')) {
             $this->warnings[md5('PS_ADVANCED_STOCK_MANAGEMENT')] = $this->l('You need to activate advanced stock management before using this feature.');
+
             return false;
         }
         parent::initContent();
@@ -232,6 +237,7 @@ class AdminWarehousesController extends AdminController
     {
         if (!Configuration::get('PS_ADVANCED_STOCK_MANAGEMENT')) {
             $this->warnings[md5('PS_ADVANCED_STOCK_MANAGEMENT')] = $this->l('You need to activate advanced stock management before using this feature.');
+
             return false;
         }
         parent::initProcess();
@@ -248,6 +254,7 @@ class AdminWarehousesController extends AdminController
             $this->updateAddress();
             // hack for enable the possibility to update a warehouse without recreate new id
             $this->deleted = false;
+
             return parent::processAdd();
         }
     }
@@ -315,6 +322,7 @@ class AdminWarehousesController extends AdminController
                         // removes associations with carriers/shops/products location
                         $obj->setCarriers(array());
                         $obj->resetProductsLocations();
+
                         return parent::processDelete();
                     }
                 }
@@ -333,6 +341,7 @@ class AdminWarehousesController extends AdminController
         $this->updateAddress();
         // handles carriers associations
         $obj->setCarriers(Tools::getValue('ids_carriers'), array());
+
         return parent::processUpdate();
     }
     protected function updateAssoShop($id_object)

@@ -88,11 +88,13 @@ class Employee extends ObjectModel
         if (empty($this->stats_date_to)) {
             $this->stats_date_to = date('Y-m-d 23:59:59');
         }
+
         return parent::getFields();
     }
     public function add($autodate = true, $null_values = true)
     {
         $this->last_passwd_gen = date('Y-m-d H:i:s', strtotime('-' . Configuration::get('PS_PASSWD_TIME_BACK') . 'minutes'));
+
         return parent::add($autodate, $null_values);
     }
     /**
@@ -101,17 +103,17 @@ class Employee extends ObjectModel
     public static function getEmployees()
     {
         return Db::getInstance()->executeS('
-			SELECT `id_employee`, `firstname`, `lastname`
-			FROM `' . _DB_PREFIX_ . 'employee`
-			WHERE `active` = 1
-			ORDER BY `lastname` ASC
-		');
+            SELECT `id_employee`, `firstname`, `lastname`
+            FROM `' . _DB_PREFIX_ . 'employee`
+            WHERE `active` = 1
+            ORDER BY `lastname` ASC
+        ');
     }
     /**
      * Return employee instance from its e-mail (optionnaly check password)
      *
-     * @param string $email e-mail
-     * @param string $passwd Password is also checked if specified
+     * @param  string   $email  e-mail
+     * @param  string   $passwd Password is also checked if specified
      * @return Employee instance
      */
     public function getByEmail($email, $passwd = null)
@@ -120,11 +122,11 @@ class Employee extends ObjectModel
             die(Tools::displayError());
         }
         $result = Db::getInstance()->getRow('
-		SELECT *
-		FROM `' . _DB_PREFIX_ . 'employee`
-		WHERE `active` = 1
-		AND `email` = \'' . pSQL($email) . '\'
-		' . ($passwd ? 'AND `passwd` = \'' . Tools::encrypt($passwd) . '\'' : ''));
+        SELECT *
+        FROM `' . _DB_PREFIX_ . 'employee`
+        WHERE `active` = 1
+        AND `email` = \'' . pSQL($email) . '\'
+        ' . ($passwd ? 'AND `passwd` = \'' . Tools::encrypt($passwd) . '\'' : ''));
         if (!$result) {
             return false;
         }
@@ -135,6 +137,7 @@ class Employee extends ObjectModel
                 $this->{$key} = $value;
             }
         }
+
         return $this;
     }
     public static function employeeExists($email)
@@ -142,15 +145,16 @@ class Employee extends ObjectModel
         if (!Validate::isEmail($email)) {
             die(Tools::displayError());
         }
+
         return (bool) Db::getInstance()->getValue('
-		SELECT `id_employee`
-		FROM `' . _DB_PREFIX_ . 'employee`
-		WHERE `email` = \'' . pSQL($email) . '\'');
+        SELECT `id_employee`
+        FROM `' . _DB_PREFIX_ . 'employee`
+        WHERE `email` = \'' . pSQL($email) . '\'');
     }
     /**
      * Check if employee password is the right one
      *
-     * @param string $passwd Password
+     * @param  string  $passwd Password
      * @return boolean result
      */
     public static function checkPassword($id_employee, $passwd)
@@ -158,20 +162,21 @@ class Employee extends ObjectModel
         if (!Validate::isUnsignedId($id_employee) || !Validate::isPasswd($passwd, 8)) {
             die(Tools::displayError());
         }
+
         return Db::getInstance()->getValue('
-		SELECT `id_employee`
-		FROM `' . _DB_PREFIX_ . 'employee`
-		WHERE `id_employee` = ' . (int) $id_employee . '
-		AND `passwd` = \'' . pSQL($passwd) . '\'
-		AND active = 1');
+        SELECT `id_employee`
+        FROM `' . _DB_PREFIX_ . 'employee`
+        WHERE `id_employee` = ' . (int) $id_employee . '
+        AND `passwd` = \'' . pSQL($passwd) . '\'
+        AND active = 1');
     }
     public static function countProfile($id_profile, $active_only = false)
     {
         return Db::getInstance()->getValue('
-		SELECT COUNT(*)
-		FROM `' . _DB_PREFIX_ . 'employee`
-		WHERE `id_profile` = ' . (int) $id_profile . '
-		' . ($active_only ? ' AND `active` = 1' : ''));
+        SELECT COUNT(*)
+        FROM `' . _DB_PREFIX_ . 'employee`
+        WHERE `id_profile` = ' . (int) $id_profile . '
+        ' . ($active_only ? ' AND `active` = 1' : ''));
     }
     public function isLastAdmin()
     {
@@ -186,6 +191,7 @@ class Employee extends ObjectModel
         } else {
             $this->passwd = Tools::encrypt($passwd);
         }
+
         return true;
     }
     /**
@@ -196,6 +202,7 @@ class Employee extends ObjectModel
     public function isLoggedBack()
     {
         /* Employee is valid only if it can be load and if cookie password is the same as database one */
+
         return $this->id && Validate::isUnsignedId($this->id) && Employee::checkPassword($this->id, $this->passwd) && (!isset($this->remote_addr) || $this->remote_addr == ip2long(Tools::getRemoteAddr()) || !Configuration::get('PS_COOKIE_CHECKIP'));
     }
     /**
@@ -212,7 +219,7 @@ class Employee extends ObjectModel
      * Check if the employee is associated to a specific shop
      *
      * @since 1.5.0
-     * @param int $id_shop
+     * @param  int  $id_shop
      * @return bool
      */
     public function hasAuthOnShop($id_shop)
@@ -223,7 +230,7 @@ class Employee extends ObjectModel
      * Check if the employee is associated to a specific shop group
      *
      * @since 1.5.0
-     * @param int $id_shop_shop
+     * @param  int  $id_shop_shop
      * @return bool
      */
     public function hasAuthOnShopGroup($id_shop_group)
@@ -236,6 +243,7 @@ class Employee extends ObjectModel
                 return true;
             }
         }
+
         return false;
     }
     /**
@@ -249,15 +257,16 @@ class Employee extends ObjectModel
         if ($this->isSuperAdmin() || in_array(Configuration::get('PS_SHOP_DEFAULT'), $this->associated_shops)) {
             return Configuration::get('PS_SHOP_DEFAULT');
         }
+
         return $this->associated_shops[0];
     }
     public static function getEmployeesByProfile($id_profile, $active_only = false)
     {
         return Db::getInstance()->executeS('
-		SELECT *
-		FROM `' . _DB_PREFIX_ . 'employee`
-		WHERE `id_profile` = ' . (int) $id_profile . '
-		' . ($active_only ? ' AND `active` = 1' : ''));
+        SELECT *
+        FROM `' . _DB_PREFIX_ . 'employee`
+        WHERE `id_profile` = ' . (int) $id_profile . '
+        ' . ($active_only ? ' AND `active` = 1' : ''));
     }
     /**
      * Check if current employee is super administrator

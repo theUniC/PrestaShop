@@ -133,18 +133,19 @@ abstract class ObjectModel
     /**
      * Returns object validation rules (fields validity)
      *
-     * @param string $class Child class name for static use (optional)
-     * @return array Validation rules (fields validity)
+     * @param  string $class Child class name for static use (optional)
+     * @return array  Validation rules (fields validity)
      */
     public static function getValidationRules($class = __CLASS__)
     {
         $object = new $class();
+
         return array('required' => $object->fieldsRequired, 'size' => $object->fieldsSize, 'validate' => $object->fieldsValidate, 'requiredLang' => $object->fieldsRequiredLang, 'sizeLang' => $object->fieldsSizeLang, 'validateLang' => $object->fieldsValidateLang);
     }
     /**
      * Build object
      *
-     * @param int $id Existing object id in order to load object (optional)
+     * @param int $id      Existing object id in order to load object (optional)
      * @param int $id_lang Required if object is multilingual (optional)
      * @param int $id_shop ID shop for objects with multishop on langs
      */
@@ -189,7 +190,7 @@ abstract class ObjectModel
                 if ($object_datas = ObjectModel::$db->getRow($sql)) {
                     if (!$id_lang && isset($this->def['multilang']) && $this->def['multilang']) {
                         $sql = 'SELECT * FROM `' . pSQL(_DB_PREFIX_ . $this->def['table']) . '_lang`
-								WHERE `' . $this->def['primary'] . '` = ' . (int) $id . ($this->id_shop && $this->isLangMultishop() ? ' AND `id_shop` = ' . $this->id_shop : '');
+                                WHERE `' . $this->def['primary'] . '` = ' . (int) $id . ($this->id_shop && $this->isLangMultishop() ? ' AND `id_shop` = ' . $this->id_shop : '');
                         if ($object_datas_lang = ObjectModel::$db->executeS($sql)) {
                             foreach ($object_datas_lang as $row) {
                                 foreach ($row as $key => $value) {
@@ -246,6 +247,7 @@ abstract class ObjectModel
         if (!$fields && isset($this->id) && Validate::isUnsignedId($this->id)) {
             $fields[$this->def['primary']] = $this->id;
         }
+
         return $fields;
     }
     /**
@@ -262,6 +264,7 @@ abstract class ObjectModel
         if (!$fields && isset($this->id) && Validate::isUnsignedId($this->id)) {
             $fields[$this->def['primary']] = $this->id;
         }
+
         return $fields;
     }
     /**
@@ -294,12 +297,13 @@ abstract class ObjectModel
                 $fields[$this->id_lang]['id_shop'] = (int) $this->id_shop;
             }
         }
+
         return $fields;
     }
     /**
      * @since 1.5.0
-     * @param int $type FORMAT_COMMON or FORMAT_LANG or FORMAT_SHOP
-     * @param int $id_lang If this parameter is given, only take lang fields
+     * @param  int   $type    FORMAT_COMMON or FORMAT_LANG or FORMAT_SHOP
+     * @param  int   $id_lang If this parameter is given, only take lang fields
      * @return array
      */
     protected function formatFields($type, $id_lang = null)
@@ -336,13 +340,14 @@ abstract class ObjectModel
             // Format field value
             $fields[$field] = ObjectModel::formatValue($value, $data['type']);
         }
+
         return $fields;
     }
     /**
      * Format a data
      *
      * @param mixed $value
-     * @param int $type
+     * @param int   $type
      */
     public static function formatValue($value, $type, $with_quotes = false)
     {
@@ -360,11 +365,13 @@ abstract class ObjectModel
                 if ($with_quotes) {
                     return '\'' . pSQL($value) . '\'';
                 }
+
                 return pSQL($value);
             case self::TYPE_HTML:
                 if ($with_quotes) {
                     return '\'' . pSQL($value, true) . '\'';
                 }
+
                 return pSQL($value, true);
             case self::TYPE_NOTHING:
                 return $value;
@@ -373,14 +380,15 @@ abstract class ObjectModel
                 if ($with_quotes) {
                     return '\'' . pSQL($value) . '\'';
                 }
+
                 return pSQL($value);
         }
     }
     /**
      * Save current object to database (add or update)
      *
-     * @param bool $null_values
-     * @param bool $autodate
+     * @param  bool    $null_values
+     * @param  bool    $autodate
      * @return boolean Insertion result
      */
     public function save($null_values = false, $autodate = true)
@@ -390,8 +398,8 @@ abstract class ObjectModel
     /**
      * Add current object to database
      *
-     * @param bool $null_values
-     * @param bool $autodate
+     * @param  bool    $null_values
+     * @param  bool    $autodate
      * @return boolean Insertion result
      */
     public function add($autodate = true, $null_values = false)
@@ -466,6 +474,7 @@ abstract class ObjectModel
         // @hook actionObject*AddAfter
         Hook::exec('actionObjectAddAfter', array('object' => $this));
         Hook::exec('actionObject' . get_class($this) . 'AddAfter', array('object' => $this));
+
         return $result;
     }
     /**
@@ -477,9 +486,9 @@ abstract class ObjectModel
     {
         $definition = ObjectModel::getDefinition($this);
         $res = Db::getInstance()->getRow('
-					SELECT * 
-					FROM `' . _DB_PREFIX_ . bqSQL($definition['table']) . '`
-					WHERE `' . bqSQL($definition['primary']) . '` = ' . (int) $this->id);
+                    SELECT *
+                    FROM `' . _DB_PREFIX_ . bqSQL($definition['table']) . '`
+                    WHERE `' . bqSQL($definition['primary']) . '` = ' . (int) $this->id);
         if (!$res) {
             return false;
         }
@@ -495,9 +504,9 @@ abstract class ObjectModel
         $object_id = Db::getInstance()->Insert_ID();
         if (isset($definition['multilang']) && $definition['multilang']) {
             $res = Db::getInstance()->executeS('
-						SELECT * 
-						FROM `' . _DB_PREFIX_ . bqSQL($definition['table']) . '_lang`
-						WHERE `' . bqSQL($definition['primary']) . '` = ' . (int) $this->id);
+                        SELECT *
+                        FROM `' . _DB_PREFIX_ . bqSQL($definition['table']) . '_lang`
+                        WHERE `' . bqSQL($definition['primary']) . '` = ' . (int) $this->id);
             if (!$res) {
                 return false;
             }
@@ -515,12 +524,13 @@ abstract class ObjectModel
         }
         $object_duplicated = new $definition['classname']((int) $object_id);
         $object_duplicated->duplicateShops((int) $this->id);
+
         return $object_duplicated;
     }
     /**
      * Update current object to database
      *
-     * @param bool $null_values
+     * @param  bool    $null_values
      * @return boolean Update result
      */
     public function update($null_values = false)
@@ -613,6 +623,7 @@ abstract class ObjectModel
         // @hook actionObject*UpdateAfter
         Hook::exec('actionObjectUpdateAfter', array('object' => $this));
         Hook::exec('actionObject' . get_class($this) . 'UpdateAfter', array('object' => $this));
+
         return $result;
     }
     /**
@@ -653,13 +664,14 @@ abstract class ObjectModel
         // @hook actionObject*DeleteAfter
         Hook::exec('actionObjectDeleteAfter', array('object' => $this));
         Hook::exec('actionObject' . get_class($this) . 'DeleteAfter', array('object' => $this));
+
         return $result;
     }
     /**
      * Delete several objects from database
      *
-     * @param array $selection
-     * @return bool Deletion result
+     * @param  array $selection
+     * @return bool  Deletion result
      */
     public function deleteSelection($selection)
     {
@@ -668,6 +680,7 @@ abstract class ObjectModel
             $this->id = (int) $id;
             $result = $result && $this->delete();
         }
+
         return $result;
     }
     /**
@@ -701,6 +714,7 @@ abstract class ObjectModel
         } else {
             $this->makeTranslationFields($fields, $fields_array, $this->id_lang);
         }
+
         return $fields;
     }
     /**
@@ -739,8 +753,8 @@ abstract class ObjectModel
     /**
      * Check for fields validity before database interaction
      *
-     * @param bool $die
-     * @param bool $error_return
+     * @param  bool        $die
+     * @param  bool        $error_return
      * @return bool|string
      */
     public function validateFields($die = true, $error_return = false)
@@ -757,16 +771,18 @@ abstract class ObjectModel
                 if ($die) {
                     throw new PrestaShopException($message);
                 }
+
                 return $error_return ? $message : false;
             }
         }
+
         return true;
     }
     /**
      * Check for multilingual fields validity before database interaction
      *
-     * @param bool $die
-     * @param bool $error_return
+     * @param  bool        $die
+     * @param  bool        $error_return
      * @return bool|string
      */
     public function validateFieldsLang($die = true, $error_return = false)
@@ -791,19 +807,21 @@ abstract class ObjectModel
                     if ($die) {
                         throw new PrestaShopException($message);
                     }
+
                     return $error_return ? $message : false;
                 }
             }
         }
+
         return true;
     }
     /**
      * Validate a single field
      *
      * @since 1.5.0
-     * @param string $field Field name
-     * @param mixed $value Field value
-     * @param int $id_lang
+     * @param  string      $field   Field name
+     * @param  mixed       $value   Field value
+     * @param  int         $id_lang
      * @return bool|string
      */
     public function validateField($field, $value, $id_lang = null)
@@ -847,6 +865,7 @@ abstract class ObjectModel
                 return 'Property ' . get_class($this) . '->' . $field . ' is not valid';
             }
         }
+
         return true;
     }
     public static function displayFieldName($field, $class = __CLASS__, $htmlentities = true, Context $context = null)
@@ -856,6 +875,7 @@ abstract class ObjectModel
             include_once _PS_TRANSLATIONS_DIR_ . Context::getContext()->language->iso_code . '/fields.php';
         }
         $key = $class . '_' . md5($field);
+
         return is_array($_FIELDS) && array_key_exists($key, $_FIELDS) ? $htmlentities ? htmlentities($_FIELDS[$key], ENT_QUOTES, 'utf-8') : $_FIELDS[$key] : $field;
     }
     /**
@@ -865,6 +885,7 @@ abstract class ObjectModel
     public function validateControler($htmlentities = true)
     {
         Tools::displayAsDeprecated();
+
         return $this->validateController($htmlentities);
     }
     public function validateController($htmlentities = true)
@@ -905,6 +926,7 @@ abstract class ObjectModel
                 }
             }
         }
+
         return $errors;
     }
     public function getWebserviceParameters($ws_params_attribute_name = null)
@@ -969,6 +991,7 @@ abstract class ObjectModel
                 $resource_parameters['fields'][$key]['sqlId'] = $key;
             }
         }
+
         return $resource_parameters;
     }
     public function getWebserviceObjectList($sql_join, $sql_filter, $sql_sort, $sql_limit)
@@ -979,8 +1002,8 @@ abstract class ObjectModel
         if ($assoc !== false) {
             if ($assoc['type'] !== 'fk_shop') {
                 $multi_shop_join = ' LEFT JOIN `' . _DB_PREFIX_ . bqSQL($this->def['table']) . '_' . bqSQL($assoc['type']) . '`
-										AS `multi_shop_' . bqSQL($this->def['table']) . '`
-										ON (main.`' . bqSQL($this->def['primary']) . '` = `multi_shop_' . bqSQL($this->def['table']) . '`.`' . bqSQL($this->def['primary']) . '`)';
+                                        AS `multi_shop_' . bqSQL($this->def['table']) . '`
+                                        ON (main.`' . bqSQL($this->def['primary']) . '` = `multi_shop_' . bqSQL($this->def['table']) . '`.`' . bqSQL($this->def['primary']) . '`)';
                 $sql_filter = 'AND `multi_shop_' . bqSQL($this->def['table']) . '`.id_shop = ' . Context::getContext()->shop->id . ' ' . $sql_filter;
                 $sql_join = $multi_shop_join . ' ' . $sql_join;
             } else {
@@ -996,11 +1019,12 @@ abstract class ObjectModel
             }
         }
         $query = '
-		SELECT DISTINCT main.`' . bqSQL($this->def['primary']) . '` FROM `' . _DB_PREFIX_ . bqSQL($this->def['table']) . '` AS main
-		' . $sql_join . '
-		WHERE 1 ' . $sql_filter . '
-		' . ($sql_sort != '' ? $sql_sort : '') . '
-		' . ($sql_limit != '' ? $sql_limit : '');
+        SELECT DISTINCT main.`' . bqSQL($this->def['primary']) . '` FROM `' . _DB_PREFIX_ . bqSQL($this->def['table']) . '` AS main
+        ' . $sql_join . '
+        WHERE 1 ' . $sql_filter . '
+        ' . ($sql_sort != '' ? $sql_sort : '') . '
+        ' . ($sql_limit != '' ? $sql_limit : '');
+
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
     }
     public function validateFieldsRequiredDatabase($htmlentities = true)
@@ -1019,14 +1043,15 @@ abstract class ObjectModel
                 $errors[$field] = sprintf(Tools::displayError('The field %s is required.'), self::displayFieldName($field, get_class($this), $htmlentities));
             }
         }
+
         return $errors;
     }
     public function getFieldsRequiredDatabase($all = false)
     {
         return Db::getInstance()->executeS('
-		SELECT id_required_field, object_name, field_name
-		FROM ' . _DB_PREFIX_ . 'required_field
-		' . (!$all ? 'WHERE object_name = \'' . pSQL(get_class($this)) . '\'' : ''));
+        SELECT id_required_field, object_name, field_name
+        FROM ' . _DB_PREFIX_ . 'required_field
+        ' . (!$all ? 'WHERE object_name = \'' . pSQL(get_class($this)) . '\'' : ''));
     }
     public function addFieldsRequiredDatabase($fields)
     {
@@ -1041,6 +1066,7 @@ abstract class ObjectModel
                 return false;
             }
         }
+
         return true;
     }
     public function clearCache($all = false)
@@ -1055,7 +1081,7 @@ abstract class ObjectModel
      * Check if current object is associated to a shop
      *
      * @since 1.5.0
-     * @param int $id_shop
+     * @param  int  $id_shop
      * @return bool
      */
     public function isAssociatedToShop($id_shop = null)
@@ -1064,15 +1090,16 @@ abstract class ObjectModel
             $id_shop = Context::getContext()->shop->id;
         }
         $sql = 'SELECT id_shop
-				FROM `' . pSQL(_DB_PREFIX_ . $this->def['table']) . '_shop`
-				WHERE `' . $this->def['primary'] . '` = ' . (int) $this->id . '
-					AND id_shop = ' . (int) $id_shop;
+                FROM `' . pSQL(_DB_PREFIX_ . $this->def['table']) . '_shop`
+                WHERE `' . $this->def['primary'] . '` = ' . (int) $this->id . '
+                    AND id_shop = ' . (int) $id_shop;
+
         return (bool) Db::getInstance()->getValue($sql);
     }
     /**
      * This function associate an item to its context
      *
-     * @param int|array $id_shops
+     * @param  int|array $id_shops
      * @return boolean
      */
     public function associateTo($id_shops)
@@ -1092,6 +1119,7 @@ abstract class ObjectModel
         if ($data) {
             return Db::getInstance()->insert($this->def['table'] . '_shop', $data);
         }
+
         return true;
     }
     /**
@@ -1110,6 +1138,7 @@ abstract class ObjectModel
         foreach (Db::getInstance()->executeS($sql) as $row) {
             $list[] = $row['id_shop'];
         }
+
         return $list;
     }
     /**
@@ -1121,15 +1150,17 @@ abstract class ObjectModel
             return false;
         }
         $sql = 'SELECT id_shop
-				FROM ' . _DB_PREFIX_ . $this->def['table'] . '_shop
-				WHERE ' . $this->def['primary'] . ' = ' . (int) $id;
+                FROM ' . _DB_PREFIX_ . $this->def['table'] . '_shop
+                WHERE ' . $this->def['primary'] . ' = ' . (int) $id;
         if ($results = Db::getInstance()->executeS($sql)) {
             $ids = array();
             foreach ($results as $row) {
                 $ids[] = $row['id_shop'];
             }
+
             return $this->associateTo($ids);
         }
+
         return false;
     }
     /**
@@ -1143,6 +1174,7 @@ abstract class ObjectModel
         if (!Shop::isTableAssociated($this->def['table']) || !Shop::isFeatureActive()) {
             return false;
         }
+
         return (bool) Db::getInstance()->getValue('SELECT COUNT(*) FROM `' . _DB_PREFIX_ . $this->def['table'] . '_shop` WHERE `' . $this->def['primary'] . '` = ' . (int) $this->id);
     }
     public function isMultishop()
@@ -1161,10 +1193,10 @@ abstract class ObjectModel
      * Update a table and splits the common datas and the shop datas
      *
      * @since 1.5.0
-     * @param string $classname
-     * @param array $data
-     * @param string $where
-     * @param string $specific_where Only executed for common table
+     * @param  string $classname
+     * @param  array  $data
+     * @param  string $where
+     * @param  string $specific_where Only executed for common table
      * @return bool
      */
     public static function updateMultishopTable($classname, $data, $where, $specific_where = '')
@@ -1183,9 +1215,10 @@ abstract class ObjectModel
             }
         }
         $sql = 'UPDATE ' . _DB_PREFIX_ . $def['table'] . ' a
-				' . Shop::addSqlAssociation($def['table'], 'a', true, null, true) . '
-				SET ' . implode(', ', $update_data) . '
-				WHERE ' . $where;
+                ' . Shop::addSqlAssociation($def['table'], 'a', true, null, true) . '
+                SET ' . implode(', ', $update_data) . '
+                WHERE ' . $where;
+
         return Db::getInstance()->execute($sql);
     }
     /**
@@ -1218,28 +1251,30 @@ abstract class ObjectModel
                 }
             }
         }
+
         return true;
     }
     /**
      * Specify if an ObjectModel is already in database
      *
-     * @param int $id_entity
-     * @param string $table
+     * @param  int     $id_entity
+     * @param  string  $table
      * @return boolean
      */
     public static function existsInDatabase($id_entity, $table)
     {
         $row = Db::getInstance()->getRow('
-			SELECT `id_' . $table . '` as id
-			FROM `' . _DB_PREFIX_ . $table . '` e
-			WHERE e.`id_' . $table . '` = ' . (int) $id_entity);
+            SELECT `id_' . $table . '` as id
+            FROM `' . _DB_PREFIX_ . $table . '` e
+            WHERE e.`id_' . $table . '` = ' . (int) $id_entity);
+
         return isset($row['id']);
     }
     /**
      * This method is allow to know if a entity is currently used
      * @since 1.5.0.1
-     * @param string $table name of table linked to entity
-     * @param bool $has_active_column true if the table has an active column
+     * @param  string $table             name of table linked to entity
+     * @param  bool   $has_active_column true if the table has an active column
      * @return bool
      */
     public static function isCurrentlyUsed($table = null, $has_active_column = false)
@@ -1253,6 +1288,7 @@ abstract class ObjectModel
         if ($has_active_column) {
             $query->where('`active` = 1');
         }
+
         return (bool) Db::getInstance()->getValue($query);
     }
     /**
@@ -1260,7 +1296,7 @@ abstract class ObjectModel
      *
      * @since 1.5.0
      * @param array $data
-     * @param int $id_lang
+     * @param int   $id_lang
      */
     public function hydrate(array $data, $id_lang = null)
     {
@@ -1278,9 +1314,9 @@ abstract class ObjectModel
      * Fill (hydrate) a list of objects in order to get a collection of these objects
      *
      * @since 1.5.0
-     * @param string $class Class of objects to hydrate
-     * @param array $datas List of data (multi-dimensional array)
-     * @param int $id_lang
+     * @param  string $class   Class of objects to hydrate
+     * @param  array  $datas   List of data (multi-dimensional array)
+     * @param  int    $id_lang
      * @return array
      */
     public static function hydrateCollection($class, array $datas, $id_lang = null)
@@ -1320,13 +1356,14 @@ abstract class ObjectModel
             $obj->hydrate($row, $id_lang);
             $collection[] = $obj;
         }
+
         return $collection;
     }
     /**
      * Get object definition
      *
-     * @param string $class Name of object
-     * @param string $field Name of field if we want the definition of one field only
+     * @param  string $class Name of object
+     * @param  string $field Name of field if we want the definition of one field only
      * @return array
      */
     public static function getDefinition($class, $field = null)
@@ -1348,8 +1385,10 @@ abstract class ObjectModel
                 return isset($definition['fields'][$field]) ? $definition['fields'][$field] : null;
             }
             Cache::store($cache_id, $definition);
+
             return $definition;
         }
+
         return Cache::retrieve($cache_id);
     }
     /**
@@ -1419,7 +1458,7 @@ abstract class ObjectModel
      * Return the field value for the specified language if the field is multilang, else the field value.
      *
      * @param $field_name
-     * @param null $id_lang
+     * @param  null                $id_lang
      * @return mixed
      * @throws PrestaShopException
      * @since 1.5
@@ -1436,6 +1475,7 @@ abstract class ObjectModel
                     return $this->{$field_name}[$id_lang ? $id_lang : Context::getContext()->language->id];
                 }
             }
+
             return $this->{$field_name};
         } else {
             throw new PrestaShopException('Could not load field from definition.');

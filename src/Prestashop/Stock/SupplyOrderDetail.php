@@ -239,6 +239,7 @@ class SupplyOrderDetail extends ObjectModel
         if ($this->discount_rate < 0 || $this->discount_rate > 100) {
             $errors[] = '<b>' . SupplyOrderDetail::displayFieldName('discount_rate', get_class($this)) . '</b> ' . Tools::displayError('is invalid.');
         }
+
         return $errors;
     }
     /**

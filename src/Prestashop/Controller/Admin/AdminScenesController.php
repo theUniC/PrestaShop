@@ -72,6 +72,7 @@ class AdminScenesController extends AdminController
                 }
             }
         }
+
         return true;
     }
     public function renderForm()
@@ -81,6 +82,7 @@ class AdminScenesController extends AdminController
             return;
         }
         $this->tpl_form_vars['products'] = $obj->getProducts(true, $this->context->language->id, false, $this->context);
+
         return parent::renderForm();
     }
     public function initToolbar()
@@ -114,17 +116,17 @@ class AdminScenesController extends AdminController
             $this->addJs(_PS_JS_DIR_ . 'admin-scene-cropping.js');
             $image_to_map_desc .= '<br /><img id="large_scene_image" alt="" src="' . _THEME_SCENE_DIR_ . $obj->id . '-scene_default.jpg?rand=' . (int) rand() . '" /><br />';
             $image_to_map_desc .= '
-						<div id="ajax_choose_product" style="display:none; padding:6px; padding-top:2px; width:600px;">
-							' . $this->l('Begin typing the first few letters of the product name, then select the product you are looking for from the drop-down list:') . '
-								<br /><input type="text" value="" id="product_autocomplete_input" style="width: 450px"/> 
-								<input type="button" class="button" value="' . $this->l('OK') . '" onclick="$(this).prev().search();" />
-								<input type="button" class="button" value="' . $this->l('Delete') . '" onclick="undoEdit();" />
-						</div>
-				';
+                        <div id="ajax_choose_product" style="display:none; padding:6px; padding-top:2px; width:600px;">
+                            ' . $this->l('Begin typing the first few letters of the product name, then select the product you are looking for from the drop-down list:') . '
+                                <br /><input type="text" value="" id="product_autocomplete_input" style="width: 450px"/>
+                                <input type="button" class="button" value="' . $this->l('OK') . '" onclick="$(this).prev().search();" />
+                                <input type="button" class="button" value="' . $this->l('Delete') . '" onclick="undoEdit();" />
+                        </div>
+                ';
             if ($obj->id && file_exists(_PS_SCENE_IMG_DIR_ . 'thumbs/' . $obj->id . '-m_scene_default.jpg')) {
                 $image_to_map_desc .= '<br/>
-					<img id="large_scene_image" style="clear:both;border:1px solid black;" alt="" src="' . _THEME_SCENE_DIR_ . 'thumbs/' . $obj->id . '-m_scene_default.jpg?rand=' . (int) rand() . '" />
-					<br />';
+                    <img id="large_scene_image" style="clear:both;border:1px solid black;" alt="" src="' . _THEME_SCENE_DIR_ . 'thumbs/' . $obj->id . '-m_scene_default.jpg?rand=' . (int) rand() . '" />
+                    <br />';
             }
             $img_alt_desc = '';
             $img_alt_desc .= $this->l('If you want to use a thumbnail other than one generated from simply reducing the mapped image, please upload it here.') . '<br />' . $this->l('Format:') . ' JPG, GIF, PNG. ' . $this->l('File size:') . ' ' . Tools::getMaxUploadSize() / 1024 . '' . $this->l('Kb max.') . ' ' . sprintf($this->l('Automatically resized to %1$d x %2$dpx (width x height).'), $thumb_scene_image_type['width'], $thumb_scene_image_type['height']) . '.<br />' . $this->l('Note: To change image dimensions, please change the \'m_scene_default\' image type settings to the desired size (in Back Office > Preferences > Images).');

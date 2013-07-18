@@ -60,30 +60,30 @@ class AdminStockMvtController extends AdminController
         $this->toolbar_btn = array();
         // overrides select
         $this->_select = '
-			CONCAT(pl.name, \' \', GROUP_CONCAT(IFNULL(al.name, \'\'), \'\')) product_name,
-			CONCAT(a.employee_lastname, \' \', a.employee_firstname) as employee,
-			mrl.name as reason,
-			stock.reference as product_reference,
-			stock.ean13 as product_ean13,
-			stock.upc as product_upc,
-			w.id_currency as id_currency,
-			w.name as warehouse_name';
+            CONCAT(pl.name, \' \', GROUP_CONCAT(IFNULL(al.name, \'\'), \'\')) product_name,
+            CONCAT(a.employee_lastname, \' \', a.employee_firstname) as employee,
+            mrl.name as reason,
+            stock.reference as product_reference,
+            stock.ean13 as product_ean13,
+            stock.upc as product_upc,
+            w.id_currency as id_currency,
+            w.name as warehouse_name';
         // overrides join
         $this->_join = 'INNER JOIN ' . _DB_PREFIX_ . 'stock stock ON a.id_stock = stock.id_stock
-							LEFT JOIN `' . _DB_PREFIX_ . 'product_lang` pl ON (
-								stock.id_product = pl.id_product
-								AND pl.id_lang = ' . (int) $this->context->language->id . Shop::addSqlRestrictionOnLang('pl') . '
-							)
-							LEFT JOIN `' . _DB_PREFIX_ . 'stock_mvt_reason_lang` mrl ON (
-								a.id_stock_mvt_reason = mrl.id_stock_mvt_reason
-								AND mrl.id_lang = ' . (int) $this->context->language->id . '
-							)
-							LEFT JOIN `' . _DB_PREFIX_ . 'warehouse` w ON (w.id_warehouse = stock.id_warehouse)
-							LEFT JOIN `' . _DB_PREFIX_ . 'product_attribute_combination` pac ON (pac.id_product_attribute = stock.id_product_attribute)
-							LEFT JOIN `' . _DB_PREFIX_ . 'attribute_lang` al ON (
-								al.id_attribute = pac.id_attribute
-								AND al.id_lang = ' . (int) $this->context->language->id . '
-							)';
+                            LEFT JOIN `' . _DB_PREFIX_ . 'product_lang` pl ON (
+                                stock.id_product = pl.id_product
+                                AND pl.id_lang = ' . (int) $this->context->language->id . Shop::addSqlRestrictionOnLang('pl') . '
+                            )
+                            LEFT JOIN `' . _DB_PREFIX_ . 'stock_mvt_reason_lang` mrl ON (
+                                a.id_stock_mvt_reason = mrl.id_stock_mvt_reason
+                                AND mrl.id_lang = ' . (int) $this->context->language->id . '
+                            )
+                            LEFT JOIN `' . _DB_PREFIX_ . 'warehouse` w ON (w.id_warehouse = stock.id_warehouse)
+                            LEFT JOIN `' . _DB_PREFIX_ . 'product_attribute_combination` pac ON (pac.id_product_attribute = stock.id_product_attribute)
+                            LEFT JOIN `' . _DB_PREFIX_ . 'attribute_lang` al ON (
+                                al.id_attribute = pac.id_attribute
+                                AND al.id_lang = ' . (int) $this->context->language->id . '
+                            )';
         // overrides group
         $this->_group = 'GROUP BY a.id_stock_mvt';
         // overrides where depending on the warehouse
@@ -111,6 +111,7 @@ class AdminStockMvtController extends AdminController
                 $this->displayWarning($this->l('There is nothing to export as a CSV.'));
             }
         }
+
         return $list;
     }
     /**
@@ -127,6 +128,7 @@ class AdminStockMvtController extends AdminController
                 $warehouse = (int) Tools::getValue('id_warehouse');
             }
         }
+
         return $warehouse;
     }
     /**
@@ -196,6 +198,7 @@ class AdminStockMvtController extends AdminController
     {
         if (!Configuration::get('PS_ADVANCED_STOCK_MANAGEMENT')) {
             $this->warnings[md5('PS_ADVANCED_STOCK_MANAGEMENT')] = $this->l('You need to activate advanced stock management before using this feature.');
+
             return false;
         }
         parent::initContent();
@@ -204,6 +207,7 @@ class AdminStockMvtController extends AdminController
     {
         if (!Configuration::get('PS_ADVANCED_STOCK_MANAGEMENT')) {
             $this->warnings[md5('PS_ADVANCED_STOCK_MANAGEMENT')] = $this->l('You need to activate advanced stock management before using this feature.');
+
             return false;
         }
         parent::initProcess();

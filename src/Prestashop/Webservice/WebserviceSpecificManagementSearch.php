@@ -42,11 +42,13 @@ class WebserviceSpecificManagementSearch implements WebserviceSpecificManagement
     public function setObjectOutput(WebserviceOutputBuilderCore $obj)
     {
         $this->objOutput = $obj;
+
         return $this;
     }
     public function setWsObject(WebserviceRequestCore $obj)
     {
         $this->wsObject = $obj;
+
         return $this;
     }
     public function getWsObject()
@@ -60,6 +62,7 @@ class WebserviceSpecificManagementSearch implements WebserviceSpecificManagement
     public function setUrlSegment($segments)
     {
         $this->urlSegment = $segments;
+
         return $this;
     }
     public function getUrlSegment()

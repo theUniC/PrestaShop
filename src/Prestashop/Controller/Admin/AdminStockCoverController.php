@@ -79,16 +79,16 @@ class AdminStockCoverController extends AdminController
             }
             $query = new DbQuery();
             $query->select('pa.id_product_attribute as id, pa.id_product, stock_view.reference, stock_view.ean13,
-							stock_view.upc, stock_view.usable_quantity as stock');
+                            stock_view.upc, stock_view.usable_quantity as stock');
             $query->from('product_attribute', 'pa');
             $query->join('INNER JOIN
-						  (
-						  	SELECT SUM(s.usable_quantity) as usable_quantity, s.id_product_attribute, s.reference, s.ean13, s.upc
-						   	FROM ' . _DB_PREFIX_ . 'stock s
-						   	WHERE s.id_product = ' . $id_product . $where_warehouse . '
-						   	GROUP BY s.id_product_attribute
-						   )
-						   stock_view ON (stock_view.id_product_attribute = pa.id_product_attribute)');
+                          (
+                              SELECT SUM(s.usable_quantity) as usable_quantity, s.id_product_attribute, s.reference, s.ean13, s.upc
+                               FROM ' . _DB_PREFIX_ . 'stock s
+                               WHERE s.id_product = ' . $id_product . $where_warehouse . '
+                               GROUP BY s.id_product_attribute
+                           )
+                           stock_view ON (stock_view.id_product_attribute = pa.id_product_attribute)');
             $query->where('pa.id_product = ' . $id_product);
             $query->groupBy('pa.id_product_attribute');
             $datas = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
@@ -131,8 +131,8 @@ class AdminStockCoverController extends AdminController
         // query
         $this->_select = 'a.id_product as id, COUNT(pa.id_product_attribute) as variations, SUM(s.usable_quantity) as stock';
         $this->_join = 'LEFT JOIN `' . _DB_PREFIX_ . 'product_attribute` pa ON (pa.id_product = a.id_product)
-						' . Shop::addSqlAssociation('product_attribute', 'pa', false) . '
-						INNER JOIN `' . _DB_PREFIX_ . 'stock` s ON (s.id_product = a.id_product)';
+                        ' . Shop::addSqlAssociation('product_attribute', 'pa', false) . '
+                        INNER JOIN `' . _DB_PREFIX_ . 'stock` s ON (s.id_product = a.id_product)';
         $this->_group = 'GROUP BY a.id_product';
         self::$currentIndex .= '&coverage_period=' . (int) $this->getCurrentCoveragePeriod() . '&warn_days=' . (int) $this->getCurrentWarning();
         if ($this->getCurrentCoverageWarehouse() != -1) {
@@ -149,6 +149,7 @@ class AdminStockCoverController extends AdminController
         $this->ajax_params = array('period' => $this->getCurrentCoveragePeriod(), 'id_warehouse' => $this->getCurrentCoverageWarehouse(), 'warn_days' => $this->getCurrentWarning());
         $this->displayInformation($this->l('Considering the coverage period chosen and the quantity of products/combinations that you sold.'));
         $this->displayInformation($this->l('this interface gives you an idea of when a product will run out of stock.'));
+
         return parent::renderList();
     }
     /**
@@ -205,6 +206,7 @@ class AdminStockCoverController extends AdminController
                 $coverage_period = (int) Tools::getValue('coverage_period');
             }
         }
+
         return $coverage_period;
     }
     /**
@@ -222,6 +224,7 @@ class AdminStockCoverController extends AdminController
                 $warehouse = (int) Tools::getValue('id_warehouse');
             }
         }
+
         return $warehouse;
     }
     /**
@@ -238,14 +241,15 @@ class AdminStockCoverController extends AdminController
                 $warning = (int) Tools::getValue('warn_days');
             }
         }
+
         return $warning;
     }
     /**
      * For a given product, and a given period, returns the quantity sold
      *
-     * @param int $id_product
-     * @param int $id_product_attribute
-     * @param int $coverage
+     * @param  int $id_product
+     * @param  int $id_product_attribute
+     * @param  int $coverage
      * @return int $quantity
      */
     protected function getQuantitySold($id_product, $id_product_attribute, $coverage)
@@ -262,12 +266,14 @@ class AdminStockCoverController extends AdminController
         $query->where('o.valid = 1');
         $query->where('os.logable = 1 AND os.delivery = 1 AND os.shipped = 1');
         $quantity = Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($query);
+
         return $quantity;
     }
     public function initContent()
     {
         if (!Configuration::get('PS_ADVANCED_STOCK_MANAGEMENT')) {
             $this->warnings[md5('PS_ADVANCED_STOCK_MANAGEMENT')] = $this->l('You need to activate advanced stock management before using this feature.');
+
             return false;
         }
         parent::initContent();
@@ -276,6 +282,7 @@ class AdminStockCoverController extends AdminController
     {
         if (!Configuration::get('PS_ADVANCED_STOCK_MANAGEMENT')) {
             $this->warnings[md5('PS_ADVANCED_STOCK_MANAGEMENT')] = $this->l('You need to activate advanced stock management before using this feature.');
+
             return false;
         }
         parent::initProcess();

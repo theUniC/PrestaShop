@@ -86,16 +86,16 @@ class AdminOrdersController extends AdminController
         $this->deleted = false;
         $this->context = Context::getContext();
         $this->_select = '
-		a.id_currency,
-		a.id_order AS id_pdf,
-		CONCAT(LEFT(c.`firstname`, 1), \'. \', c.`lastname`) AS `customer`,
-		osl.`name` AS `osname`,
-		os.`color`,
-		IF((SELECT COUNT(so.id_order) FROM `' . _DB_PREFIX_ . 'orders` so WHERE so.id_customer = a.id_customer) > 1, 0, 1) as new';
+        a.id_currency,
+        a.id_order AS id_pdf,
+        CONCAT(LEFT(c.`firstname`, 1), \'. \', c.`lastname`) AS `customer`,
+        osl.`name` AS `osname`,
+        os.`color`,
+        IF((SELECT COUNT(so.id_order) FROM `' . _DB_PREFIX_ . 'orders` so WHERE so.id_customer = a.id_customer) > 1, 0, 1) as new';
         $this->_join = '
-		LEFT JOIN `' . _DB_PREFIX_ . 'customer` c ON (c.`id_customer` = a.`id_customer`)
-		LEFT JOIN `' . _DB_PREFIX_ . 'order_state` os ON (os.`id_order_state` = a.`current_state`)
-		LEFT JOIN `' . _DB_PREFIX_ . 'order_state_lang` osl ON (os.`id_order_state` = osl.`id_order_state` AND osl.`id_lang` = ' . (int) $this->context->language->id . ')';
+        LEFT JOIN `' . _DB_PREFIX_ . 'customer` c ON (c.`id_customer` = a.`id_customer`)
+        LEFT JOIN `' . _DB_PREFIX_ . 'order_state` os ON (os.`id_order_state` = a.`current_state`)
+        LEFT JOIN `' . _DB_PREFIX_ . 'order_state_lang` osl ON (os.`id_order_state` = osl.`id_order_state` AND osl.`id_lang` = ' . (int) $this->context->language->id . ')';
         $this->_orderBy = 'id_order';
         $this->_orderWay = 'DESC';
         $statuses_array = array();
@@ -169,6 +169,7 @@ class AdminOrdersController extends AdminController
         if (Context::getContext()->shop->getContext() != Shop::CONTEXT_SHOP && isset($this->toolbar_btn['new']) && Shop::isFeatureActive()) {
             unset($this->toolbar_btn['new']);
         }
+
         return $res;
     }
     public function setMedia()
@@ -189,6 +190,7 @@ class AdminOrdersController extends AdminController
             return '';
         }
         $this->context->smarty->assign(array('order' => $order, 'order_state' => $order_state, 'tr' => $tr));
+
         return $this->createTemplate('_print_pdf_icon.tpl')->fetch();
     }
     public function postProcess()
@@ -1044,6 +1046,7 @@ class AdminOrdersController extends AdminController
         }
         // Smarty assign
         $this->tpl_view_vars = array('order' => $order, 'cart' => new Cart($order->id_cart), 'customer' => $customer, 'customer_addresses' => $customer->getAddresses($this->context->language->id), 'addresses' => array('delivery' => $addressDelivery, 'deliveryState' => isset($deliveryState) ? $deliveryState : null, 'invoice' => $addressInvoice, 'invoiceState' => isset($invoiceState) ? $invoiceState : null), 'customerStats' => $customer->getStats(), 'products' => $products, 'discounts' => $order->getCartRules(), 'orders_total_paid_tax_incl' => $order->getOrdersTotalPaid(), 'total_paid' => $order->getTotalPaid(), 'returns' => OrderReturn::getOrdersReturn($order->id_customer, $order->id), 'customer_thread_message' => CustomerThread::getCustomerMessages($order->id_customer, 0), 'orderMessages' => OrderMessage::getOrderMessages($order->id_lang), 'messages' => Message::getMessagesByOrderId($order->id, true), 'carrier' => new Carrier($order->id_carrier), 'history' => $order->getHistory($this->context->language->id), 'states' => OrderState::getOrderStates($this->context->language->id), 'warehouse_list' => $warehouse_list, 'sources' => ConnectionsSource::getOrderSources($order->id), 'currentState' => $order->getCurrentOrderState(), 'currency' => new Currency($order->id_currency), 'currencies' => Currency::getCurrencies(), 'previousOrder' => $order->getPreviousOrderId(), 'nextOrder' => $order->getNextOrderId(), 'current_index' => self::$currentIndex, 'carrierModuleCall' => $carrier_module_call, 'iso_code_lang' => $this->context->language->iso_code, 'id_lang' => $this->context->language->id, 'can_edit' => $this->tabAccess['edit'] == 1, 'current_id_lang' => $this->context->language->id, 'invoices_collection' => $order->getInvoicesCollection(), 'not_paid_invoices_collection' => $order->getNotPaidInvoicesCollection(), 'payment_methods' => $payment_methods, 'invoice_management_active' => Configuration::get('PS_INVOICE', null, null, $order->id_shop));
+
         return parent::renderView();
     }
     public function ajaxProcessSearchCustomers()
@@ -1598,6 +1601,7 @@ class AdminOrdersController extends AdminController
                 }
             }
         }
+
         return $products;
     }
     protected function reinjectQuantity($order_detail, $qty_cancel_product)

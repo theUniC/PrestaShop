@@ -64,24 +64,24 @@ class AdminStockInstantStateController extends AdminController
     {
         // query
         $this->_select = '
-			IFNULL(CONCAT(pl.name, \' : \', GROUP_CONCAT(DISTINCT agl.`name`, \' - \', al.name SEPARATOR \', \')),pl.name) as name,
-			w.id_currency';
+            IFNULL(CONCAT(pl.name, \' : \', GROUP_CONCAT(DISTINCT agl.`name`, \' - \', al.name SEPARATOR \', \')),pl.name) as name,
+            w.id_currency';
         $this->_group = 'GROUP BY a.id_product, a.id_product_attribute';
         $this->_join = 'LEFT JOIN `' . _DB_PREFIX_ . 'warehouse` w ON (w.id_warehouse = a.id_warehouse)';
         $this->_join .= ' LEFT JOIN `' . _DB_PREFIX_ . 'product_lang` pl ON (
-			a.id_product = pl.id_product
-			AND pl.id_lang = ' . (int) $this->context->language->id . '
-		)';
+            a.id_product = pl.id_product
+            AND pl.id_lang = ' . (int) $this->context->language->id . '
+        )';
         $this->_join .= ' LEFT JOIN `' . _DB_PREFIX_ . 'product_attribute_combination` pac ON (pac.id_product_attribute = a.id_product_attribute)';
         $this->_join .= ' LEFT JOIN `' . _DB_PREFIX_ . 'attribute` atr ON (atr.id_attribute = pac.id_attribute)';
         $this->_join .= ' LEFT JOIN `' . _DB_PREFIX_ . 'attribute_lang` al ON (
-			al.id_attribute = pac.id_attribute
-			AND al.id_lang = ' . (int) $this->context->language->id . '
-		)';
+            al.id_attribute = pac.id_attribute
+            AND al.id_lang = ' . (int) $this->context->language->id . '
+        )';
         $this->_join .= ' LEFT JOIN `' . _DB_PREFIX_ . 'attribute_group_lang` agl ON (
-			agl.id_attribute_group = atr.id_attribute_group
-			AND agl.id_lang = ' . (int) $this->context->language->id . '
-		)';
+            agl.id_attribute_group = atr.id_attribute_group
+            AND agl.id_lang = ' . (int) $this->context->language->id . '
+        )';
         if ($this->getCurrentCoverageWarehouse() != -1) {
             $this->_where .= ' AND a.id_warehouse = ' . $this->getCurrentCoverageWarehouse();
             self::$currentIndex .= '&id_warehouse=' . (int) $this->getCurrentCoverageWarehouse();
@@ -109,6 +109,7 @@ class AdminStockInstantStateController extends AdminController
                 $this->displayWarning($this->l('There is nothing to export as CSV.'));
             }
         }
+
         return $list;
     }
     /**
@@ -212,6 +213,7 @@ class AdminStockInstantStateController extends AdminController
                 $warehouse = (int) Tools::getValue('id_warehouse');
             }
         }
+
         return $warehouse;
     }
     /**
@@ -232,7 +234,7 @@ class AdminStockInstantStateController extends AdminController
             $id_warehouse = Tools::getValue('id_warehouse', -1);
             $query = new DbQuery();
             $query->select('w.id_currency, s.price_te, SUM(s.physical_quantity) as physical_quantity, SUM(s.usable_quantity) as usable_quantity,
-							(s.price_te * SUM(s.physical_quantity)) as valuation');
+                            (s.price_te * SUM(s.physical_quantity)) as valuation');
             $query->from('stock', 's');
             $query->leftJoin('warehouse', 'w', 'w.id_warehouse = s.id_warehouse');
             $query->where('s.id_product = ' . (int) $id_product . ' AND s.id_product_attribute = ' . (int) $id_product_attribute);
@@ -333,6 +335,7 @@ class AdminStockInstantStateController extends AdminController
     {
         if (!Configuration::get('PS_ADVANCED_STOCK_MANAGEMENT')) {
             $this->warnings[md5('PS_ADVANCED_STOCK_MANAGEMENT')] = $this->l('You need to activate advanced stock management before using this feature.');
+
             return false;
         }
         parent::initContent();
@@ -341,6 +344,7 @@ class AdminStockInstantStateController extends AdminController
     {
         if (!Configuration::get('PS_ADVANCED_STOCK_MANAGEMENT')) {
             $this->warnings[md5('PS_ADVANCED_STOCK_MANAGEMENT')] = $this->l('You need to activate advanced stock management before using this feature.');
+
             return false;
         }
         parent::initProcess();

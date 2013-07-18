@@ -81,14 +81,15 @@ class ProductSupplier extends ObjectModel
                 }
             }
         }
+
         return $res;
     }
     /**
      * For a given product and supplier, gets the product supplier reference
      *
-     * @param int $id_product
-     * @param int $id_product_attribute
-     * @param int $id_supplier
+     * @param  int    $id_product
+     * @param  int    $id_product_attribute
+     * @param  int    $id_supplier
      * @return string
      */
     public static function getProductSupplierReference($id_product, $id_product_attribute, $id_supplier)
@@ -98,17 +99,18 @@ class ProductSupplier extends ObjectModel
         $query->select('ps.product_supplier_reference');
         $query->from('product_supplier', 'ps');
         $query->where('ps.id_product = ' . (int) $id_product . '
-			AND ps.id_product_attribute = ' . (int) $id_product_attribute . '
-			AND ps.id_supplier = ' . (int) $id_supplier);
+            AND ps.id_product_attribute = ' . (int) $id_product_attribute . '
+            AND ps.id_supplier = ' . (int) $id_supplier);
+
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($query);
     }
     /**
      * For a given product and supplier, gets the product supplier unit price
      *
-     * @param int $id_product
-     * @param int $id_product_attribute
-     * @param int $id_supplier
-     * @param bool $with_currency Optional
+     * @param  int   $id_product
+     * @param  int   $id_product_attribute
+     * @param  int   $id_supplier
+     * @param  bool  $with_currency        Optional
      * @return array
      */
     public static function getProductSupplierPrice($id_product, $id_product_attribute, $id_supplier, $with_currency = false)
@@ -121,8 +123,8 @@ class ProductSupplier extends ObjectModel
         }
         $query->from('product_supplier', 'ps');
         $query->where('ps.id_product = ' . (int) $id_product . '
-			AND ps.id_product_attribute = ' . (int) $id_product_attribute . '
-			AND ps.id_supplier = ' . (int) $id_supplier);
+            AND ps.id_product_attribute = ' . (int) $id_product_attribute . '
+            AND ps.id_supplier = ' . (int) $id_supplier);
         if (!$with_currency) {
             return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($query);
         }
@@ -130,14 +132,15 @@ class ProductSupplier extends ObjectModel
         if (isset($res[0])) {
             return $res[0];
         }
+
         return $res;
     }
     /**
      * For a given product and supplier, gets corresponding ProductSupplier ID
      *
-     * @param int $id_product
-     * @param int $id_product_attribute
-     * @param int $id_supplier
+     * @param  int   $id_product
+     * @param  int   $id_product_attribute
+     * @param  int   $id_supplier
      * @return array
      */
     public static function getIdByProductAndSupplier($id_product, $id_product_attribute, $id_supplier)
@@ -147,15 +150,16 @@ class ProductSupplier extends ObjectModel
         $query->select('ps.id_product_supplier');
         $query->from('product_supplier', 'ps');
         $query->where('ps.id_product = ' . (int) $id_product . '
-			AND ps.id_product_attribute = ' . (int) $id_product_attribute . '
-			AND ps.id_supplier = ' . (int) $id_supplier);
+            AND ps.id_product_attribute = ' . (int) $id_product_attribute . '
+            AND ps.id_supplier = ' . (int) $id_supplier);
+
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($query);
     }
     /**
      * For a given product, retrieves its suppliers
      *
-     * @param int $id_product
-     * @param int $group_by_supplier
+     * @param  int        $id_product
+     * @param  int        $group_by_supplier
      * @return Collection
      */
     public static function getSupplierCollection($id_product, $group_by_supplier = true)
@@ -165,14 +169,15 @@ class ProductSupplier extends ObjectModel
         if ($group_by_supplier) {
             $suppliers->groupBy('id_supplier');
         }
+
         return $suppliers;
     }
     /**
      * For a given Supplier, Product, returns the purchased price
      *
-     * @param int $id_product
-     * @param int $id_product_attribute Optional
-     * @param bool $converted_price Optional
+     * @param  int   $id_product
+     * @param  int   $id_product_attribute Optional
+     * @param  bool  $converted_price      Optional
      * @return Array keys: price_te, id_currency
      */
     public static function getProductPrice($id_supplier, $id_product, $id_product_attribute = 0, $converted_price = false)
@@ -189,6 +194,7 @@ class ProductSupplier extends ObjectModel
         if ($converted_price) {
             return Tools::convertPrice($row['price_te'], $row['id_currency']);
         }
+
         return $row['price_te'];
     }
 }

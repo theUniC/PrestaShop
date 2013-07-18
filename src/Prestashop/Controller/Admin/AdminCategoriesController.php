@@ -156,6 +156,7 @@ class AdminCategoriesController extends AdminController
             $this->tpl_list_vars['REQUEST_URI'] = $_SERVER['REQUEST_URI'];
             $this->tpl_list_vars['POST'] = $_POST;
         }
+
         return parent::renderList();
     }
     public function getList($id_lang, $order_by = null, $order_way = null, $start = 0, $limit = null, $id_lang_shop = false)
@@ -174,6 +175,7 @@ class AdminCategoriesController extends AdminController
     public function renderView()
     {
         $this->initToolbar();
+
         return $this->renderList();
     }
     public function initToolbar()
@@ -285,6 +287,7 @@ class AdminCategoriesController extends AdminController
         foreach ($groups as $group) {
             $this->fields_value['groupBox_' . $group['id_group']] = Tools::getValue('groupBox_' . $group['id_group'], in_array($group['id_group'], $category_groups_ids));
         }
+
         return parent::renderForm();
     }
     public function postProcess()
@@ -298,6 +301,7 @@ class AdminCategoriesController extends AdminController
                 Tools::redirectAdmin(self::$currentIndex . '&token=' . Tools::getAdminTokenLite('AdminCategories') . '&conf=7');
             }
         }
+
         return parent::postProcess();
     }
     public function processForceDeleteImage()
@@ -330,6 +334,7 @@ class AdminCategoriesController extends AdminController
         if ($object && Tools::getValue('is_root_category')) {
             Tools::redirectAdmin(self::$currentIndex . '&token=' . Tools::getAdminTokenLite('AdminCategories') . '&conf=3');
         }
+
         return $object;
     }
     protected function setDeleteMode()
@@ -360,6 +365,7 @@ class AdminCategoriesController extends AdminController
                 foreach ($cats_ids as $id => $id_parent) {
                     $this->processFatherlessProducts((int) $id_parent);
                 }
+
                 return true;
             } else {
                 return false;
@@ -378,6 +384,7 @@ class AdminCategoriesController extends AdminController
                 if (parent::processDelete()) {
                     $this->setDeleteMode();
                     $this->processFatherlessProducts((int) $category->id_parent);
+
                     return true;
                 } else {
                     return false;
@@ -391,9 +398,9 @@ class AdminCategoriesController extends AdminController
     {
         /* Delete or link products which were not in others categories */
         $fatherless_products = Db::getInstance()->executeS('
-			SELECT p.`id_product` FROM `' . _DB_PREFIX_ . 'product` p
-			' . Shop::addSqlAssociation('product', 'p') . '
-			WHERE p.`id_product` NOT IN (SELECT DISTINCT(cp.`id_product`) FROM `' . _DB_PREFIX_ . 'category_product` cp)');
+            SELECT p.`id_product` FROM `' . _DB_PREFIX_ . 'product` p
+            ' . Shop::addSqlAssociation('product', 'p') . '
+            WHERE p.`id_product` NOT IN (SELECT DISTINCT(cp.`id_product`) FROM `' . _DB_PREFIX_ . 'category_product` cp)');
         foreach ($fatherless_products as $id_poor_product) {
             $poor_product = new Product((int) $id_poor_product['id_product']);
             if (Validate::isLoadedObject($poor_product)) {
@@ -435,6 +442,7 @@ class AdminCategoriesController extends AdminController
                 ImageManager::resize(_PS_CAT_IMG_DIR_ . $id_category . '.jpg', _PS_CAT_IMG_DIR_ . $id_category . '-' . stripslashes($image_type['name']) . '.jpg', (int) $image_type['width'], (int) $image_type['height']);
             }
         }
+
         return $ret;
     }
     /**

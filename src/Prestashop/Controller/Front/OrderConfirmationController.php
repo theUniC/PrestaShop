@@ -108,9 +108,11 @@ class OrderConfirmationController extends FrontController
                 $params['currency'] = $currency->sign;
                 $params['objOrder'] = $order;
                 $params['currencyObj'] = $currency;
+
                 return Hook::exec('displayPaymentReturn', $params, $this->id_module);
             }
         }
+
         return false;
     }
     /**
@@ -127,9 +129,11 @@ class OrderConfirmationController extends FrontController
                 $params['currency'] = $currency->sign;
                 $params['objOrder'] = $order;
                 $params['currencyObj'] = $currency;
+
                 return Hook::exec('displayOrderConfirmation', $params);
             }
         }
+
         return false;
     }
 }

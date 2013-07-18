@@ -51,6 +51,7 @@ class AdminAdminPreferencesController extends AdminController
         $max_size = $upload_max_size < $post_max_size ? $upload_max_size : $post_max_size;
         if (Tools::getValue('PS_LIMIT_UPLOAD_FILE_VALUE') > $max_size || Tools::getValue('PS_LIMIT_UPLOAD_IMAGE_VALUE') > $max_size) {
             $this->errors[] = Tools::displayError('The limit chosen is larger than the server\'s maximum upload limit. Please increase the limits of your server.');
+
             return;
         }
         if (Tools::getIsset('PS_LIMIT_UPLOAD_FILE_VALUE') && !Tools::getValue('PS_LIMIT_UPLOAD_FILE_VALUE')) {

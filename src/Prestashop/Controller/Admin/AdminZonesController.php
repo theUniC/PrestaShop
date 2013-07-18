@@ -44,6 +44,7 @@ class AdminZonesController extends AdminController
     {
         $this->addRowAction('edit');
         $this->addRowAction('delete');
+
         return parent::renderList();
     }
     public function renderForm()
@@ -53,6 +54,7 @@ class AdminZonesController extends AdminController
             $this->fields_form['input'][] = array('type' => 'shop', 'label' => $this->l('Group shop association:'), 'name' => 'checkBoxShopAsso');
         }
         $this->fields_form['submit'] = array('title' => $this->l('Save   '), 'class' => 'button');
+
         return parent::renderForm();
     }
 }

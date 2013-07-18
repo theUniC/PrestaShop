@@ -100,6 +100,7 @@ class Dispatcher
         if (!self::$instance) {
             self::$instance = new Dispatcher();
         }
+
         return self::$instance;
     }
     /**
@@ -213,6 +214,7 @@ class Dispatcher
                     include_once $retrocompatibility_admin_tab;
                     include_once _PS_ADMIN_DIR_ . '/functions.php';
                     runAdminTab($this->controller, !empty($_REQUEST['ajaxMode']));
+
                     return;
                 }
                 break;
@@ -292,9 +294,9 @@ class Dispatcher
             }
             // Load routes from meta table
             $sql = 'SELECT m.page, ml.url_rewrite, ml.id_lang
-					FROM `' . _DB_PREFIX_ . 'meta` m
-					LEFT JOIN `' . _DB_PREFIX_ . 'meta_lang` ml ON (m.id_meta = ml.id_meta' . Shop::addSqlRestrictionOnLang('ml', $id_shop) . ')
-					ORDER BY LENGTH(ml.url_rewrite) DESC';
+                    FROM `' . _DB_PREFIX_ . 'meta` m
+                    LEFT JOIN `' . _DB_PREFIX_ . 'meta_lang` ml ON (m.id_meta = ml.id_meta' . Shop::addSqlRestrictionOnLang('ml', $id_shop) . ')
+                    ORDER BY LENGTH(ml.url_rewrite) DESC';
             if ($results = Db::getInstance()->executeS($sql)) {
                 foreach ($results as $row) {
                     if ($row['url_rewrite']) {
@@ -318,11 +320,11 @@ class Dispatcher
     }
     /**
      *
-     * @param string $route_id Name of the route (need to be uniq, a second route with same name will override the first)
-     * @param string $rule Url rule
+     * @param string $route_id   Name of the route (need to be uniq, a second route with same name will override the first)
+     * @param string $rule       Url rule
      * @param string $controller Controller to call if request uri match the rule
-     * @param int $id_lang
-     * @param int $id_shop
+     * @param int    $id_lang
+     * @param int    $id_shop
      */
     public function addRoute($route_id, $rule, $controller, $id_lang = null, array $keywords = array(), array $params = array(), $id_shop = null)
     {
@@ -366,9 +368,9 @@ class Dispatcher
     /**
      * Check if a route exists
      *
-     * @param string $route_id
-     * @param int $id_lang
-     * @param int $id_shop
+     * @param  string $route_id
+     * @param  int    $id_lang
+     * @param  int    $id_shop
      * @return bool
      */
     public function hasRoute($route_id, $id_lang = null, $id_shop = null)
@@ -379,15 +381,16 @@ class Dispatcher
         if ($id_shop === null) {
             $id_shop = (int) Context::getContext()->shop->id;
         }
+
         return isset($this->routes[$id_shop]) && isset($this->routes[$id_shop][$id_lang]) && isset($this->routes[$id_shop][$id_lang][$route_id]);
     }
     /**
      * Check if a keyword is written in a route rule
      *
-     * @param string $route_id
-     * @param int $id_lang
-     * @param string $keyword
-     * @param int $id_shop
+     * @param  string $route_id
+     * @param  int    $id_lang
+     * @param  string $keyword
+     * @param  int    $id_shop
      * @return bool
      */
     public function hasKeyword($route_id, $id_lang, $keyword, $id_shop = null)
@@ -398,14 +401,15 @@ class Dispatcher
         if (!isset($this->routes[$id_shop]) || !isset($this->routes[$id_shop][$id_lang]) || !isset($this->routes[$id_shop][$id_lang][$route_id])) {
             return false;
         }
+
         return preg_match('#\\{([^{}]*:)?' . preg_quote($keyword, '#') . '(:[^{}]*)?\\}#', $this->routes[$id_shop][$id_lang][$route_id]['rule']);
     }
     /**
      * Check if a route rule contain all required keywords of default route definition
      *
      * @param string $route_id
-     * @param string $rule Rule to verify
-     * @param array $errors List of missing keywords
+     * @param string $rule     Rule to verify
+     * @param array  $errors   List of missing keywords
      */
     public function validateRoute($route_id, $rule, &$errors = array())
     {
@@ -418,16 +422,17 @@ class Dispatcher
                 $errors[] = $keyword;
             }
         }
+
         return count($errors) ? false : true;
     }
     /**
      * Create an url from
      *
-     * @param string $route_id Name the route
-     * @param int $id_lang
-     * @param array $params
-     * @param bool $use_routes If false, don't use to create this url
-     * @param string $anchor Optional anchor to add at the end of this url
+     * @param string $route_id   Name the route
+     * @param int    $id_lang
+     * @param array  $params
+     * @param bool   $use_routes If false, don't use to create this url
+     * @param string $anchor     Optional anchor to add at the end of this url
      */
     public function createUrl($route_id, $id_lang = null, array $params = array(), $force_routes = false, $anchor = '', $id_shop = null)
     {
@@ -443,6 +448,7 @@ class Dispatcher
         if (!isset($this->routes[$id_shop][$id_lang][$route_id])) {
             $query = http_build_query($params, '', '&');
             $index_link = $this->use_routes ? '' : 'index.php';
+
             return $route_id == 'index' ? $index_link . ($query ? '?' . $query : '') : 'index.php?controller=' . $route_id . ($query ? '&' . $query : '') . $anchor;
         }
         $route = $this->routes[$id_shop][$id_lang][$route_id];
@@ -497,6 +503,7 @@ class Dispatcher
             }
             $url = 'index.php?' . $query;
         }
+
         return $url . $anchor;
     }
     /**
@@ -511,6 +518,7 @@ class Dispatcher
         }
         if ($this->controller) {
             $_GET['controller'] = $this->controller;
+
             return $this->controller;
         }
         if ($id_shop === null) {
@@ -580,6 +588,7 @@ class Dispatcher
         }
         $this->controller = str_replace('-', '', $this->controller);
         $_GET['controller'] = $this->controller;
+
         return $this->controller;
     }
     /**
@@ -597,6 +606,7 @@ class Dispatcher
         foreach ($dirs as $dir) {
             $controllers = array_merge($controllers, Dispatcher::getControllersInDirectory($dir));
         }
+
         return $controllers;
     }
     /**
@@ -622,6 +632,7 @@ class Dispatcher
                 }
             }
         }
+
         return $controllers;
     }
 }

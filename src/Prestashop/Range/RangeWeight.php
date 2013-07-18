@@ -42,9 +42,9 @@ class RangeWeight extends ObjectModel
     /**
      * Override add to create delivery value for all zones
      * @see classes/ObjectModelCore::add()
-     * 
-     * @param bool $null_values
-     * @param bool $autodate
+     *
+     * @param  bool    $null_values
+     * @param  bool    $autodate
      * @return boolean Insertion result
      */
     public function add($autodate = true, $null_values = false)
@@ -58,6 +58,7 @@ class RangeWeight extends ObjectModel
             $price_list[] = array('id_range_price' => 0, 'id_range_weight' => (int) $this->id, 'id_carrier' => (int) $this->id_carrier, 'id_zone' => (int) $zone['id_zone'], 'price' => 0);
         }
         $carrier->addDeliveryPrice($price_list);
+
         return true;
     }
     /**
@@ -68,30 +69,30 @@ class RangeWeight extends ObjectModel
     public static function getRanges($id_carrier)
     {
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
-			SELECT * 
-			FROM `' . _DB_PREFIX_ . 'range_weight` 
-			WHERE `id_carrier` = ' . (int) $id_carrier . '
-			ORDER BY `delimiter1` ASC');
+            SELECT *
+            FROM `' . _DB_PREFIX_ . 'range_weight`
+            WHERE `id_carrier` = ' . (int) $id_carrier . '
+            ORDER BY `delimiter1` ASC');
     }
     public static function rangeExist($id_carrier, $delimiter1, $delimiter2)
     {
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('
-			SELECT count(*)
-			FROM `' . _DB_PREFIX_ . 'range_weight`
-			WHERE `id_carrier` = ' . (int) $id_carrier . '
-			AND `delimiter1` = ' . (double) $delimiter1 . ' AND `delimiter2`=' . (double) $delimiter2);
+            SELECT count(*)
+            FROM `' . _DB_PREFIX_ . 'range_weight`
+            WHERE `id_carrier` = ' . (int) $id_carrier . '
+            AND `delimiter1` = ' . (double) $delimiter1 . ' AND `delimiter2`=' . (double) $delimiter2);
     }
     public static function isOverlapping($id_carrier, $delimiter1, $delimiter2, $id_rang = null)
     {
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('
-			SELECT count(*)
-			FROM `' . _DB_PREFIX_ . 'range_weight`
-			WHERE `id_carrier` = ' . (int) $id_carrier . '
-			AND ((`delimiter1` >= ' . (double) $delimiter1 . ' AND `delimiter1` < ' . (double) $delimiter2 . ')
-			    OR (`delimiter2` > ' . (double) $delimiter1 . ' AND `delimiter2` < ' . (double) $delimiter2 . ')
-			    OR (' . (double) $delimiter1 . ' > `delimiter1` AND ' . (double) $delimiter1 . ' < `delimiter2`)
-			    OR (' . (double) $delimiter2 . ' < `delimiter1` AND ' . (double) $delimiter2 . ' > `delimiter2`)
-			    )
-			' . (!is_null($id_rang) ? ' AND `id_range_weight` != ' . (int) $id_rang : ''));
+            SELECT count(*)
+            FROM `' . _DB_PREFIX_ . 'range_weight`
+            WHERE `id_carrier` = ' . (int) $id_carrier . '
+            AND ((`delimiter1` >= ' . (double) $delimiter1 . ' AND `delimiter1` < ' . (double) $delimiter2 . ')
+                OR (`delimiter2` > ' . (double) $delimiter1 . ' AND `delimiter2` < ' . (double) $delimiter2 . ')
+                OR (' . (double) $delimiter1 . ' > `delimiter1` AND ' . (double) $delimiter1 . ' < `delimiter2`)
+                OR (' . (double) $delimiter2 . ' < `delimiter1` AND ' . (double) $delimiter2 . ' > `delimiter2`)
+                )
+            ' . (!is_null($id_rang) ? ' AND `id_range_weight` != ' . (int) $id_rang : ''));
     }
 }

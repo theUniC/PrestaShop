@@ -56,15 +56,18 @@ class CacheFs extends Cache
     {
         if ($this->keys[$key] > 0 && $this->keys[$key] < time()) {
             $this->delete($key);
+
             return false;
         }
         $filename = $this->getFilename($key);
         if (!file_exists($filename)) {
             unset($this->keys[$key]);
             $this->_writeKeys();
+
             return false;
         }
         $file = file_get_contents($filename);
+
         return unserialize($file);
     }
     /**
@@ -74,8 +77,10 @@ class CacheFs extends Cache
     {
         if ($this->keys[$key] > 0 && $this->keys[$key] < time()) {
             $this->delete($key);
+
             return false;
         }
+
         return isset($this->keys[$key]) && file_exists($this->getFilename($key));
     }
     /**
@@ -87,6 +92,7 @@ class CacheFs extends Cache
         if (!file_exists($filename)) {
             return true;
         }
+
         return unlink($filename);
     }
     /**
@@ -102,6 +108,7 @@ class CacheFs extends Cache
     public function flush()
     {
         $this->delete('*');
+
         return true;
     }
     /**
@@ -114,7 +121,7 @@ class CacheFs extends Cache
     /**
      * Create cache directory
      *
-     * @param int $level_depth
+     * @param int    $level_depth
      * @param string $directory
      */
     public static function createCacheDirectories($level_depth, $directory = false)
@@ -137,7 +144,7 @@ class CacheFs extends Cache
     /**
      * Transform a key into its absolute path
      *
-     * @param string $key
+     * @param  string $key
      * @return string
      */
     protected function getFilename($key)
@@ -147,6 +154,7 @@ class CacheFs extends Cache
         for ($i = 0; $i < $this->depth; $i++) {
             $path .= $key[$i] . '/';
         }
+
         return $path . $key;
     }
 }

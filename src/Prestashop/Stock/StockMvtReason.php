@@ -54,8 +54,8 @@ class StockMvtReason extends ObjectModel
     /**
      * Gets Stock Mvt Reasons
      *
-     * @param int $id_lang
-     * @param int $sign Optionnal
+     * @param  int   $id_lang
+     * @param  int   $sign    Optionnal
      * @return array
      */
     public static function getStockMvtReasons($id_lang, $sign = null)
@@ -68,15 +68,16 @@ class StockMvtReason extends ObjectModel
         if ($sign != null) {
             $query->where('smr.sign = ' . (int) $sign);
         }
+
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
     }
     /**
      * Same as StockMvtReason::getStockMvtReasons(), ignoring a specific lists of ids
      *
      * @since 1.5.0
-     * @param int $id_lang
+     * @param int   $id_lang
      * @param array $ids_ignore
-     * @param int $sign optional
+     * @param int   $sign       optional
      */
     public static function getStockMvtReasonsWithFilter($id_lang, $ids_ignore, $sign = null)
     {
@@ -92,13 +93,14 @@ class StockMvtReason extends ObjectModel
             $ids_ignore = array_map('intval', $ids_ignore);
             $query->where('smr.id_stock_mvt_reason NOT IN(' . implode(', ', $ids_ignore) . ')');
         }
+
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
     }
     /**
      * For a given id_stock_mvt_reason, tells if it exists
      *
      * @since 1.5.0
-     * @param int $id_stock_mvt_reason
+     * @param  int  $id_stock_mvt_reason
      * @return bool
      */
     public static function exists($id_stock_mvt_reason)
@@ -108,6 +110,7 @@ class StockMvtReason extends ObjectModel
         $query->from('stock_mvt_reason', 'smr');
         $query->where('smr.id_stock_mvt_reason = ' . (int) $id_stock_mvt_reason);
         $query->where('smr.deleted = 0');
+
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($query);
     }
 }

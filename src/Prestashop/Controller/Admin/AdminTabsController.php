@@ -74,6 +74,7 @@ class AdminTabsController extends AdminController
         if ($display_parent) {
             $this->fields_form['input'][] = array('type' => 'select', 'label' => $this->l('Parent:'), 'name' => 'id_parent', 'options' => array('query' => $tabs, 'id' => 'id_tab', 'name' => 'name'));
         }
+
         return parent::renderForm();
     }
     /**
@@ -87,6 +88,7 @@ class AdminTabsController extends AdminController
         $this->addRowAction('details');
         $this->_where = 'AND a.`id_parent` = 0';
         $this->_orderBy = 'position';
+
         return parent::renderList();
     }
     /**
@@ -135,6 +137,7 @@ class AdminTabsController extends AdminController
         /* PrestaShop demo mode */
         if (_PS_MODE_DEMO_) {
             $this->errors[] = Tools::displayError('This functionality has been disabled.');
+
             return;
         }
         /* PrestaShop demo mode*/

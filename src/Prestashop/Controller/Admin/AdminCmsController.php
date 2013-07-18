@@ -57,7 +57,7 @@ class AdminCmsController extends AdminController
         }
         $this->_category = AdminCmsContentController::getCurrentCMSCategory();
         $this->_join = '
-		LEFT JOIN `' . _DB_PREFIX_ . 'cms_category` c ON (c.`id_cms_category` = a.`id_cms_category`)';
+        LEFT JOIN `' . _DB_PREFIX_ . 'cms_category` c ON (c.`id_cms_category` = a.`id_cms_category`)';
         $this->_select = 'a.position ';
         $this->_filter = 'AND c.id_cms_category = ' . (int) $this->_category->id;
         parent::__construct();
@@ -82,12 +82,14 @@ class AdminCmsController extends AdminController
             $this->fields_form['input'][] = array('type' => 'shop', 'label' => $this->l('Shop association:'), 'name' => 'checkBoxShopAsso');
         }
         $this->tpl_form_vars = array('active' => $this->object->active, 'PS_ALLOW_ACCENTED_CHARS_URL', (int) Configuration::get('PS_ALLOW_ACCENTED_CHARS_URL'));
+
         return parent::renderForm();
     }
     public function renderList()
     {
         $this->toolbar_title = $this->l('Pages in this category');
         $this->toolbar_btn['new'] = array('href' => self::$currentIndex . '&amp;add' . $this->table . '&amp;id_cms_category=' . (int) $this->id_cms_category . '&amp;token=' . $this->token, 'desc' => $this->l('Add new'));
+
         return parent::renderList();
     }
     public function displayList($token = null)

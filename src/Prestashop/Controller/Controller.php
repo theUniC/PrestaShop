@@ -73,11 +73,11 @@ abstract class Controller
     /**
      * check that the controller is available for the current user/visitor
      */
-    public abstract function checkAccess();
+    abstract public function checkAccess();
     /**
      * check that the current user/visitor has valid view permissions
      */
-    public abstract function viewAccess();
+    abstract public function viewAccess();
     /**
      * Initialize the page
      */
@@ -93,25 +93,25 @@ abstract class Controller
     /**
      * Do the page treatment : post process, ajax process, etc.
      */
-    public abstract function postProcess();
+    abstract public function postProcess();
     /**
      * Display page view
      */
-    public abstract function display();
+    abstract public function display();
     /**
      * Redirect after process if no error
      */
-    protected abstract function redirect();
+    abstract protected function redirect();
     /**
      * Set default media list for controller
      */
-    public abstract function setMedia();
+    abstract public function setMedia();
     /**
      * Get an instance of a controller
      *
      * @param string $class_name
-     * @param bool $auth
-     * @param bool $ssl
+     * @param bool   $auth
+     * @param bool   $ssl
      */
     public static function getController($class_name, $auth = false, $ssl = false)
     {
@@ -189,24 +189,24 @@ abstract class Controller
     /**
      * Assign smarty variables for the page header
      */
-    public abstract function initHeader();
+    abstract public function initHeader();
     /**
      * Assign smarty variables for the page main content
      */
-    public abstract function initContent();
+    abstract public function initContent();
     /**
      * Assign smarty variables when access is forbidden
      */
-    public abstract function initCursedPage();
+    abstract public function initCursedPage();
     /**
      * Assign smarty variables for the page footer
      */
-    public abstract function initFooter();
+    abstract public function initFooter();
     /**
      * Add a new stylesheet in page header.
      *
-     * @param mixed $css_uri Path to css file, or list of css files like this : array(array(uri => media_type), ...)
-     * @param string $css_media_type
+     * @param  mixed  $css_uri        Path to css file, or list of css files like this : array(array(uri => media_type), ...)
+     * @param  string $css_media_type
      * @return true
      */
     public function addCSS($css_uri, $css_media_type = 'all')
@@ -237,7 +237,7 @@ abstract class Controller
     /**
      * Add a new javascript file in page header.
      *
-     * @param mixed $js_uri
+     * @param  mixed $js_uri
      * @return void
      */
     public function addJS($js_uri)
@@ -259,7 +259,7 @@ abstract class Controller
     /**
      * Add a new javascript file in page header.
      *
-     * @param mixed $js_uri
+     * @param  mixed $js_uri
      * @return void
      */
     public function addJquery($version = null, $folder = null, $minifier = true)
@@ -269,7 +269,7 @@ abstract class Controller
     /**
      * Add a new javascript file in page header.
      *
-     * @param mixed $js_uri
+     * @param  mixed $js_uri
      * @return void
      */
     public function addJqueryUI($component, $theme = 'base', $check_dependencies = true)
@@ -287,7 +287,7 @@ abstract class Controller
     /**
      * Add a new javascript file in page header.
      *
-     * @param mixed $js_uri
+     * @param  mixed $js_uri
      * @return void
      */
     public function addJqueryPlugin($name, $folder = null)

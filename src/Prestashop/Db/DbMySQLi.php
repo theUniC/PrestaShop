@@ -53,6 +53,7 @@ class DbMySQLi extends Db
         if (!$this->link->query('SET NAMES \'utf8\'')) {
             throw new PrestaShopDatabaseException(Tools::displayError('PrestaShop Fatal error: no utf-8 support. Please check your server configuration.'));
         }
+
         return $this->link;
     }
     public static function createDatabase($host, $user, $password, $dbname, $dropit = false)
@@ -67,6 +68,7 @@ class DbMySQLi extends Db
         if ($dropit && $link->query('DROP DATABASE `' . str_replace('`', '\\`', $dbname) . '`') !== false) {
             return true;
         }
+
         return $success;
     }
     /**
@@ -91,6 +93,7 @@ class DbMySQLi extends Db
         if (!$result) {
             $result = $this->result;
         }
+
         return $result->fetch_assoc();
     }
     /**
@@ -160,6 +163,7 @@ class DbMySQLi extends Db
         }
         $sql = 'SHOW TABLES LIKE \'' . $prefix . '%\'';
         $result = $link->query($sql);
+
         return (bool) $result->fetch_assoc();
     }
     /**
@@ -179,6 +183,7 @@ class DbMySQLi extends Db
             return mysqli_connect_errno() == 1049 ? 2 : 1;
         }
         $link->close();
+
         return 0;
     }
     public function getBestEngine()
@@ -204,6 +209,7 @@ class DbMySQLi extends Db
                 break;
             }
         }
+
         return $value;
     }
     public static function checkCreatePrivilege($server, $user, $pwd, $db, $prefix, $engine = null)
@@ -213,14 +219,15 @@ class DbMySQLi extends Db
             return false;
         }
         $sql = '
-			CREATE TABLE `' . $prefix . 'test` (
-			`test` tinyint(1) unsigned NOT NULL
-			) ENGINE=MyISAM';
+            CREATE TABLE `' . $prefix . 'test` (
+            `test` tinyint(1) unsigned NOT NULL
+            ) ENGINE=MyISAM';
         $result = $link->query($sql);
         if (!$result) {
             return $link->error;
         }
         $link->query('DROP TABLE `' . $prefix . 'test`');
+
         return true;
     }
     /**
@@ -231,6 +238,7 @@ class DbMySQLi extends Db
         $link = @new mysqli($server, $user, $pwd, $db);
         $ret = $link->query('SET NAMES \'UTF8\'');
         $link->close();
+
         return $ret;
     }
 }

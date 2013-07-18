@@ -82,6 +82,7 @@ class PDF
             if (ob_get_level() && ob_get_length() > 0) {
                 ob_clean();
             }
+
             return $this->pdf_renderer->render($this->filename, $display);
         }
     }
@@ -95,6 +96,7 @@ class PDF
                 throw new PrestaShopException('Invalid class. It should be an instance of HTMLTemplate');
             }
         }
+
         return $class;
     }
 }

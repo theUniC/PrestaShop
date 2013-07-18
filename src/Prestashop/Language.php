@@ -76,6 +76,7 @@ class Language extends ObjectModel
         if (empty($this->language_code)) {
             $this->language_code = $this->iso_code;
         }
+
         return parent::getFields();
     }
     /**
@@ -96,16 +97,17 @@ class Language extends ObjectModel
 
 namespace Prestashop;
 
-	global $' . $var . ';
-	$' . $var . ' = array();
+    global $' . $var . ';
+    $' . $var . ' = array();
 ?>');
                 } else {
                     file_put_contents($path_file, '<?php
 
 namespace Prestashop;
 
-	$' . $var . ' = array();
-	return $' . $var . ';
+    $' . $var . ' = array();
+
+    return $' . $var . ';
 ?>');
                 }
             }
@@ -151,7 +153,7 @@ namespace Prestashop;
         }
     }
     /**
-     * Return an array of theme 
+     * Return an array of theme
      *
      * @return array([theme dir] => array('name' => [theme name]))
      * @deprecated will be removed in 1.6
@@ -166,6 +168,7 @@ namespace Prestashop;
                 $themes[$theme->directory] = array('name' => $theme->name);
             }
         }
+
         return $themes;
     }
     public function add($autodate = true, $nullValues = false, $only_add = false)
@@ -182,6 +185,7 @@ namespace Prestashop;
         $resUpdateSQL = $this->loadUpdateSQL();
         $resUpdateSQL = true;
         Tools::generateHtaccess();
+
         return $resUpdateSQL;
     }
     public function toggleStatus()
@@ -189,6 +193,7 @@ namespace Prestashop;
         if (!parent::toggleStatus()) {
             return false;
         }
+
         return Tools::generateHtaccess();
     }
     public function checkFiles()
@@ -214,6 +219,7 @@ namespace Prestashop;
             }
         }
         self::$_checkedLangs[$iso_code] = true;
+
         return true;
     }
     public static function getFilesList($iso_from, $theme_from, $iso_to = false, $theme_to = false, $select = false, $check = false, $modules = false)
@@ -372,6 +378,7 @@ namespace Prestashop;
                 $return &= Db::getInstance()->execute(pSQL($sql));
             }
         }
+
         return $return;
     }
     public static function recurseDeleteDir($dir)
@@ -459,6 +466,7 @@ namespace Prestashop;
                 }
             }
         }
+
         return Tools::generateHtaccess();
     }
     public function deleteSelection($selection)
@@ -472,13 +480,14 @@ namespace Prestashop;
             $result = $result && $this->delete();
         }
         Tools::generateHtaccess();
+
         return $result;
     }
     /**
      * Return available languages
      *
-     * @param boolean $active Select only active languages
-     * @return array Languages
+     * @param  boolean $active Select only active languages
+     * @return array   Languages
      */
     public static function getLanguages($active = true, $id_shop = false)
     {
@@ -492,6 +501,7 @@ namespace Prestashop;
             }
             $languages[] = $language;
         }
+
         return $languages;
     }
     public static function getLanguage($id_lang)
@@ -499,25 +509,27 @@ namespace Prestashop;
         if (!array_key_exists((int) $id_lang, self::$_LANGUAGES)) {
             return false;
         }
+
         return self::$_LANGUAGES[(int) $id_lang];
     }
     /**
      * Return iso code from id
      *
-     * @param integer $id_lang Language ID
-     * @return string Iso code
+     * @param  integer $id_lang Language ID
+     * @return string  Iso code
      */
     public static function getIsoById($id_lang)
     {
         if (isset(self::$_LANGUAGES[(int) $id_lang]['iso_code'])) {
             return self::$_LANGUAGES[(int) $id_lang]['iso_code'];
         }
+
         return false;
     }
     /**
      * Return id from iso code
      *
-     * @param string $iso_code Iso code
+     * @param  string  $iso_code Iso code
      * @return integer Language ID
      */
     public static function getIdByIso($iso_code)
@@ -525,6 +537,7 @@ namespace Prestashop;
         if (!Validate::isLanguageIsoCode($iso_code)) {
             die(Tools::displayError('Fatal error: ISO code is not correct') . ' ' . $iso_code);
         }
+
         return Db::getInstance()->getValue('SELECT `id_lang` FROM `' . _DB_PREFIX_ . 'lang` WHERE `iso_code` = \'' . pSQL(strtolower($iso_code)) . '\'');
     }
     public static function getLanguageCodeByIso($iso_code)
@@ -532,12 +545,13 @@ namespace Prestashop;
         if (!Validate::isLanguageIsoCode($iso_code)) {
             die(Tools::displayError('Fatal error: ISO code is not correct') . ' ' . $iso_code);
         }
+
         return Db::getInstance()->getValue('SELECT `language_code` FROM `' . _DB_PREFIX_ . 'lang` WHERE `iso_code` = \'' . pSQL(strtolower($iso_code)) . '\'');
     }
     /**
      * Return array (id_lang, iso_code)
      *
-     * @param string $iso_code Iso code
+     * @param  string $iso_code Iso code
      * @return array  Language (id_lang, iso_code)
      */
     public static function getIsoIds($active = true)
@@ -567,6 +581,7 @@ namespace Prestashop;
                 Db::getInstance()->execute($query);
             }
         }
+
         return true;
     }
     /**
@@ -576,8 +591,8 @@ namespace Prestashop;
     {
         self::$_LANGUAGES = array();
         $sql = 'SELECT l.*, ls.`id_shop`
-				FROM `' . _DB_PREFIX_ . 'lang` l
-				LEFT JOIN `' . _DB_PREFIX_ . 'lang_shop` ls ON (l.id_lang = ls.id_lang)';
+                FROM `' . _DB_PREFIX_ . 'lang` l
+                LEFT JOIN `' . _DB_PREFIX_ . 'lang_shop` ls ON (l.id_lang = ls.id_lang)';
         $result = Db::getInstance()->executeS($sql);
         foreach ($result as $row) {
             if (!isset(self::$_LANGUAGES[(int) $row['id_lang']])) {
@@ -591,6 +606,7 @@ namespace Prestashop;
         if (!parent::update($nullValues)) {
             return false;
         }
+
         return Tools::generateHtaccess();
     }
     public static function checkAndAddLanguage($iso_code, $lang_pack = false, $only_add = false, $params_lang = null)
@@ -636,6 +652,7 @@ namespace Prestashop;
                 @copy(dirname(__FILE__) . '/../img/l' . $file, $to . str_replace('/en', '/' . $iso_code, $file));
             }
         }
+
         return true;
     }
     protected static function _copyNoneFlag($id)
@@ -652,17 +669,19 @@ namespace Prestashop;
                 self::$_cache_language_installation[$row['iso_code']] = $row['id_lang'];
             }
         }
+
         return isset(self::$_cache_language_installation[$iso_code]) ? self::$_cache_language_installation[$iso_code] : false;
     }
     public static function countActiveLanguages()
     {
         if (!self::$countActiveLanguages) {
             self::$countActiveLanguages = Db::getInstance()->getValue('
-				SELECT COUNT(DISTINCT l.id_lang) FROM `' . _DB_PREFIX_ . 'lang` l
-				' . Shop::addSqlAssociation('lang', 'l') . '
-				WHERE l.`active` = 1
-			');
+                SELECT COUNT(DISTINCT l.id_lang) FROM `' . _DB_PREFIX_ . 'lang` l
+                ' . Shop::addSqlAssociation('lang', 'l') . '
+                WHERE l.`active` = 1
+            ');
         }
+
         return self::$countActiveLanguages;
     }
     public static function downloadAndInstallLanguagePack($iso, $version = null, $params = null)
@@ -707,6 +726,7 @@ namespace Prestashop;
         } else {
             $errors[] = Tools::displayError('No language pack is available for your version.');
         }
+
         return count($errors) ? $errors : true;
     }
     /**

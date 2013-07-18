@@ -41,6 +41,7 @@ class OrderDiscount extends OrderCartRule
         if ($key == 'id_discount') {
             return $this->id_cart_rule;
         }
+
         return $this->{$key};
     }
     public function __set($key, $value)
@@ -57,6 +58,7 @@ class OrderDiscount extends OrderCartRule
     public function __call($method, $args)
     {
         Tools::displayAsDeprecated();
+
         return call_user_func_array(array($this->parent, $method), $args);
     }
 }

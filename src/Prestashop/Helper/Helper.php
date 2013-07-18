@@ -74,7 +74,7 @@ class Helper
     /**
      * Create a template from the override file, else from the base file.
      *
-     * @param string $tpl_name filename
+     * @param  string   $tpl_name filename
      * @return Template
      */
     public function createTemplate($tpl_name)
@@ -114,6 +114,7 @@ class Helper
     public function generate()
     {
         $this->tpl->assign($this->tpl_vars);
+
         return $this->tpl->fetch();
     }
     /**
@@ -132,12 +133,13 @@ class Helper
                 throw new PrestaShopException('Missing root category parameter.');
             }
         }
+
         return $helper->renderCategoryTree($root, $selected_cat, $input_name, $use_radio, $use_search, $disabled_categories, $use_in_popup);
     }
     /**
      *
-     * @param array $root array with the name and ID of the tree root category, if null the Shop's root category will be used
-     * @param type $selected_cat array of selected categories
+     * @param array $root         array with the name and ID of the tree root category, if null the Shop's root category will be used
+     * @param type  $selected_cat array of selected categories
      *					Format
      *						Array
      * 					(
@@ -153,12 +155,12 @@ class Helper
      *									[name] => Home page
      *							  )
      *					)
-     * @param string $input_name name of input
-     * @param bool $use_radio use radio tree or checkbox tree
-     * @param bool $use_search display a find category search box
-     * @param array $disabled_categories
-     * @param bool $use_in_popup
-     * @param bool $use_shop_context
+     * @param  string $input_name          name of input
+     * @param  bool   $use_radio           use radio tree or checkbox tree
+     * @param  bool   $use_search          display a find category search box
+     * @param  array  $disabled_categories
+     * @param  bool   $use_in_popup
+     * @param  bool   $use_shop_context
      * @return string
      */
     public function renderCategoryTree($root = null, $selected_cat = array(), $input_name = 'categoryBox', $use_radio = false, $use_search = false, $disabled_categories = array(), $use_in_popup = false, $use_shop_context = false)
@@ -193,9 +195,9 @@ class Helper
             $this->context->controller->addJs(_PS_JS_DIR_ . 'jquery/plugins/autocomplete/jquery.autocomplete.js');
         }
         $html = '
-		<script type="text/javascript">
-			var inputName = "' . $input_name . '";
-		';
+        <script type="text/javascript">
+            var inputName = "' . $input_name . '";
+        ';
         if (count($selected_cat) > 0) {
             if (isset($selected_cat[0])) {
                 $html .= 'var selectedCat = "' . implode(',', $selected_cat) . '";';
@@ -206,26 +208,26 @@ class Helper
             $html .= 'var selectedCat = "";';
         }
         $html .= '
-			var selectedLabel = \'' . $translations['selected'] . '\';
-			var home = \'' . $root['name'] . '\';
-			var use_radio = ' . (int) $use_radio . ';';
+            var selectedLabel = \'' . $translations['selected'] . '\';
+            var home = \'' . $root['name'] . '\';
+            var use_radio = ' . (int) $use_radio . ';';
         if (!$use_in_popup) {
             $html .= '
-			$(document).ready(function(){
-				buildTreeView(' . $use_shop_context . ');
-			});';
+            $(document).ready(function(){
+                buildTreeView(' . $use_shop_context . ');
+            });';
         } else {
             $html .= 'buildTreeView(' . $use_shop_context . ');';
         }
         $html .= '</script>';
         $html .= '
-		<div class="category-filter">
-			<span><a href="#" id="collapse_all">' . $translations['Collapse All'] . '</a>|&nbsp;</span>
-			<span><a href="#" id="expand_all">' . $translations['Expand All'] . '</a>|&nbsp;</span>
-			' . (!$use_radio ? '
-				<span><a href="#" id="check_all">' . $translations['Check All'] . '</a>|&nbsp;</span>
-				<span><a href="#" id="uncheck_all">' . $translations['Uncheck All'] . '</a>|&nbsp;</span>' : '') . ($use_search ? '
-				<span>' . $translations['search'] . ': <input type="text" name="search_cat" id="search_cat"/></span>' : '') . '</div>';
+        <div class="category-filter">
+            <span><a href="#" id="collapse_all">' . $translations['Collapse All'] . '</a>|&nbsp;</span>
+            <span><a href="#" id="expand_all">' . $translations['Expand All'] . '</a>|&nbsp;</span>
+            ' . (!$use_radio ? '
+                <span><a href="#" id="check_all">' . $translations['Check All'] . '</a>|&nbsp;</span>
+                <span><a href="#" id="uncheck_all">' . $translations['Uncheck All'] . '</a>|&nbsp;</span>' : '') . ($use_search ? '
+                <span>' . $translations['search'] . ': <input type="text" name="search_cat" id="search_cat"/></span>' : '') . '</div>';
         $home_is_selected = false;
         foreach ($selected_cat as $cat) {
             if (is_array($cat)) {
@@ -247,30 +249,31 @@ class Helper
         $root_input = '&nbsp;';
         if ($root['id_category'] != $top_category->id || Tools::isSubmit('ajax') && Tools::getValue('action') == 'getCategoriesFromRootCategory') {
             $root_input = '<input type="' . (!$use_radio ? 'checkbox' : 'radio') . '" name="' . $input_name . '" value="' . $root['id_category'] . '" ' . ($home_is_selected ? 'checked' : '') . ' onclick="clickOnCategoryBox($(this));" />
-							<span class="category_label">' . $root['name'] . '</span>';
+                            <span class="category_label">' . $root['name'] . '</span>';
         }
         $html .= '
-			<ul id="categories-treeview" class="filetree">
-				<li id="' . $root['id_category'] . '" class="hasChildren">
-					<span class="folder">' . $root_input . ' </span>
-					<ul>
-						<li><span class="placeholder">&nbsp;</span></li>
-				  </ul>
-				</li>
-			</ul>';
+            <ul id="categories-treeview" class="filetree">
+                <li id="' . $root['id_category'] . '" class="hasChildren">
+                    <span class="folder">' . $root_input . ' </span>
+                    <ul>
+                        <li><span class="placeholder">&nbsp;</span></li>
+                  </ul>
+                </li>
+            </ul>';
         if ($use_search) {
             $html .= '<script type="text/javascript">searchCategory();</script>';
         }
+
         return $html;
     }
     /**
      * use translations files to replace english expression.
      *
-     * @param mixed $string term or expression in english
-     * @param string $class
-     * @param boolan $addslashes if set to true, the return value will pass through addslashes(). Otherwise, stripslashes().
-     * @param boolean $htmlentities if set to true(default), the return value will pass through htmlentities($string, ENT_QUOTES, 'utf-8')
-     * @return string the translation if available, or the english default text.
+     * @param  mixed   $string       term or expression in english
+     * @param  string  $class
+     * @param  boolan  $addslashes   if set to true, the return value will pass through addslashes(). Otherwise, stripslashes().
+     * @param  boolean $htmlentities if set to true(default), the return value will pass through htmlentities($string, ENT_QUOTES, 'utf-8')
+     * @return string  the translation if available, or the english default text.
      */
     protected function l($string, $class = 'AdminTab', $addslashes = false, $htmlentities = true)
     {
@@ -279,14 +282,15 @@ class Helper
         if (Module::getModuleNameFromClass($currentClass)) {
             return Translate::getModuleTranslation(Module::$classInModule[$currentClass], $string, $currentClass);
         }
+
         return Translate::getAdminTranslation($string, get_class($this), $addslashes, $htmlentities);
     }
     /**
      * Render a form with potentials required fields
      *
-     * @param string $class_name
-     * @param string $identifier
-     * @param array $table_fields
+     * @param  string $class_name
+     * @param  string $identifier
+     * @param  array  $table_fields
      * @return string
      */
     public function renderRequiredFields($class_name, $identifier, $table_fields)
@@ -305,6 +309,7 @@ class Helper
         $this->tpl_vars = array('table_fields' => $table_fields, 'irow' => 0, 'required_class_fields' => $required_class_fields, 'required_fields' => $required_fields, 'current' => $this->currentIndex, 'token' => $this->token);
         $tpl = $this->createTemplate('helpers/required_fields.tpl');
         $tpl->assign($this->tpl_vars);
+
         return $tpl->fetch();
     }
     public function renderModulesList($modules_list)
@@ -312,6 +317,7 @@ class Helper
         $this->tpl_vars = array('modules_list' => $modules_list);
         $tpl = $this->createTemplate('helpers/modules_list/list.tpl');
         $tpl->assign($this->tpl_vars);
+
         return $tpl->fetch();
     }
     public static function renderShopList()
@@ -354,6 +360,7 @@ class Helper
             }
         }
         $html .= '</select>';
+
         return $html;
     }
 }

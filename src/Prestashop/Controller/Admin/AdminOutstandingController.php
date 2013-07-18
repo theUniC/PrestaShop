@@ -44,15 +44,15 @@ class AdminOutstandingController extends AdminController
         $this->addRowAction('view');
         $this->context = Context::getContext();
         $this->_select = '`id_order_invoice` AS `id_invoice`,
-		`id_order_invoice` AS `outstanding`,
-		CONCAT(LEFT(c.`firstname`, 1), \'. \', c.`lastname`) AS `customer`,
-		c.`outstanding_allow_amount`,
-		r.`color`,
-		rl.`name` AS `risk`';
+        `id_order_invoice` AS `outstanding`,
+        CONCAT(LEFT(c.`firstname`, 1), \'. \', c.`lastname`) AS `customer`,
+        c.`outstanding_allow_amount`,
+        r.`color`,
+        rl.`name` AS `risk`';
         $this->_join = 'LEFT JOIN `' . _DB_PREFIX_ . 'orders` o ON (o.`id_order` = a.`id_order`)
-		LEFT JOIN `' . _DB_PREFIX_ . 'customer` c ON (c.`id_customer` = o.`id_customer`)
-		LEFT JOIN `' . _DB_PREFIX_ . 'risk` r ON (r.`id_risk` = c.`id_risk`)
-		LEFT JOIN `' . _DB_PREFIX_ . 'risk_lang` rl ON (r.`id_risk` = rl.`id_risk` AND rl.`id_lang` = ' . (int) $this->context->language->id . ')';
+        LEFT JOIN `' . _DB_PREFIX_ . 'customer` c ON (c.`id_customer` = o.`id_customer`)
+        LEFT JOIN `' . _DB_PREFIX_ . 'risk` r ON (r.`id_risk` = c.`id_risk`)
+        LEFT JOIN `' . _DB_PREFIX_ . 'risk_lang` rl ON (r.`id_risk` = rl.`id_risk` AND rl.`id_lang` = ' . (int) $this->context->language->id . ')';
         $risks = array();
         foreach (Risk::getRisks() as $risk) {
             $risks[$risk->id] = $risk->name;
@@ -77,6 +77,7 @@ class AdminOutstandingController extends AdminController
     public function printPDFIcons($id_invoice, $tr)
     {
         $this->context->smarty->assign(array('id_invoice' => $id_invoice));
+
         return $this->createTemplate('_print_pdf_icon.tpl')->fetch();
     }
     public function printOutstandingCalculation($id_invoice, $tr)
@@ -93,6 +94,7 @@ class AdminOutstandingController extends AdminController
         if (!Validate::isLoadedObject($order_invoice)) {
             throw new PrestaShopException('object Customer can\'t be loaded');
         }
+
         return '<b>' . $customer->getOutstanding() . '</b>';
     }
     /**

@@ -299,8 +299,8 @@ class AdminModulesController extends AdminController
             if (is_array($values) && count($values)) {
                 foreach ($values as $value) {
                     Db::getInstance()->execute('
-						INSERT INTO `' . _DB_PREFIX_ . 'tab_module_preference` (`id_tab_module_preference`, `id_employee`, `id_tab`, `module`) 
-						VALUES (NULL, ' . (int) $this->id_employee . ', ' . (int) $value . ', \'' . pSQL($module) . '\');');
+                        INSERT INTO `' . _DB_PREFIX_ . 'tab_module_preference` (`id_tab_module_preference`, `id_employee`, `id_tab`, `module`)
+                        VALUES (NULL, ' . (int) $this->id_employee . ', ' . (int) $value . ', \'' . pSQL($module) . '\');');
                 }
             }
         }
@@ -326,6 +326,7 @@ class AdminModulesController extends AdminController
         if ($url[$len - 1] == '&') {
             $url = substr($url, 0, $len - 1);
         }
+
         return $url;
     }
     protected function extractArchive($file, $redirect = true)
@@ -364,6 +365,7 @@ class AdminModulesController extends AdminController
         if ($success && $redirect) {
             Tools::redirectAdmin(self::$currentIndex . '&conf=8&anchor=anchor' . ucfirst($folder) . '&token=' . $this->token);
         }
+
         return $success;
     }
     protected function recursiveDeleteOnDisk($dir)
@@ -466,6 +468,7 @@ class AdminModulesController extends AdminController
         // PrestaShop demo mode
         if (_PS_MODE_DEMO_) {
             $this->errors[] = Tools::displayError('This functionality has been disabled.');
+
             return;
         }
         // Try to upload and unarchive the module
@@ -629,10 +632,10 @@ class AdminModulesController extends AdminController
                                 $hooklink = 'index.php?tab=AdminModulesPositions&token=' . Tools::getAdminTokenLite('AdminModulesPositions') . '&show_modules=' . (int) $module->id;
                                 $tradlink = 'index.php?tab=AdminTranslations&token=' . Tools::getAdminTokenLite('AdminTranslations') . '&type=modules&lang=';
                                 $toolbar = '<table class="table" cellpadding="0" cellspacing="0" style="margin:auto;text-align:center"><tr>
-									<th>' . $this->l('Module') . ' <span style="color: green;">' . $module->name . '</span></th>
-									<th><a href="' . $backlink . '" style="padding:5px 10px">' . $this->l('Back') . '</a></th>
-									<th><a href="' . $hooklink . '" style="padding:5px 10px">' . $this->l('Manage hooks') . '</a></th>
-									<th style="padding:5px 10px">' . $this->l('Manage translations') . ' ';
+                                    <th>' . $this->l('Module') . ' <span style="color: green;">' . $module->name . '</span></th>
+                                    <th><a href="' . $backlink . '" style="padding:5px 10px">' . $this->l('Back') . '</a></th>
+                                    <th><a href="' . $hooklink . '" style="padding:5px 10px">' . $this->l('Manage hooks') . '</a></th>
+                                    <th style="padding:5px 10px">' . $this->l('Manage translations') . ' ';
                                 foreach (Language::getLanguages(false) as $language) {
                                     $toolbar .= '<a href="' . $tradlink . $language['iso_code'] . '#' . $module->name . '" style="margin-left:5px"><img src="' . _THEME_LANG_DIR_ . $language['id_lang'] . '.jpg" alt="' . $language['iso_code'] . '" title="' . $language['iso_code'] . '" /></a>';
                                 }
@@ -641,8 +644,8 @@ class AdminModulesController extends AdminController
                                 if (Shop::isFeatureActive()) {
                                     $activateOnclick = 'onclick="location.href = \'' . $this->getCurrentUrl('enable') . '&enable=\'+(($(this).attr(\'checked\')) ? 1 : 0)"';
                                     $toolbar .= '<tr>
-										<th colspan="4">
-											<input type="checkbox" name="activateModule" value="1" ' . ($module->active ? 'checked="checked"' : '') . ' ' . $activateOnclick . ' /> ' . $this->l('Activate module for') . ' ';
+                                        <th colspan="4">
+                                            <input type="checkbox" name="activateModule" value="1" ' . ($module->active ? 'checked="checked"' : '') . ' ' . $activateOnclick . ' /> ' . $this->l('Activate module for') . ' ';
                                     if (Shop::getContext() == Shop::CONTEXT_SHOP) {
                                         $toolbar .= 'shop <b>' . $this->context->shop->name . '</b>';
                                     } elseif (Shop::getContext() == Shop::CONTEXT_GROUP) {
@@ -652,7 +655,7 @@ class AdminModulesController extends AdminController
                                         $toolbar .= 'all shops';
                                     }
                                     $toolbar .= '</th>
-								</tr>';
+                                </tr>';
                                 }
                                 $toolbar .= '</table>';
                                 if (Shop::isFeatureActive() && isset(Context::getContext()->tmpOldShop)) {
@@ -751,6 +754,7 @@ class AdminModulesController extends AdminController
             }
             $html_error .= '</ul>';
         }
+
         return $html_error;
     }
     public function initModulesList(&$modules)
@@ -810,6 +814,7 @@ class AdminModulesController extends AdminController
             if (stristr($module->name, $filter_name) === false && stristr($module->displayName, $filter_name) === false && stristr($module->description, $filter_name) === false) {
                 return true;
             }
+
             return false;
         }
         // Filter on interest

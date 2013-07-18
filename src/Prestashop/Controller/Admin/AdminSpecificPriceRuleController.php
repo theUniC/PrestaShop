@@ -54,9 +54,9 @@ class AdminSpecificPriceRuleController extends AdminController
         $this->context = Context::getContext();
         $this->_select = 's.name shop_name, cu.name currency_name, cl.name country_name, gl.name group_name';
         $this->_join = 'LEFT JOIN ' . _DB_PREFIX_ . 'shop s ON (s.id_shop = a.id_shop)
-		LEFT JOIN ' . _DB_PREFIX_ . 'currency cu ON (cu.id_currency = a.id_currency)
-		LEFT JOIN ' . _DB_PREFIX_ . 'country_lang cl ON (cl.id_country = a.id_country AND cl.id_lang=' . (int) $this->context->language->id . ')
-		LEFT JOIN ' . _DB_PREFIX_ . 'group_lang gl ON (gl.id_group = a.id_group AND gl.id_lang=' . (int) $this->context->language->id . ')';
+        LEFT JOIN ' . _DB_PREFIX_ . 'currency cu ON (cu.id_currency = a.id_currency)
+        LEFT JOIN ' . _DB_PREFIX_ . 'country_lang cl ON (cl.id_country = a.id_country AND cl.id_lang=' . (int) $this->context->language->id . ')
+        LEFT JOIN ' . _DB_PREFIX_ . 'group_lang gl ON (gl.id_group = a.id_group AND gl.id_lang=' . (int) $this->context->language->id . ')';
         $this->bulk_actions = array('delete' => array('text' => $this->l('Delete selected'), 'confirm' => $this->l('Delete selected items?')));
         $this->fields_list = array('id_specific_price_rule' => array('title' => $this->l('ID'), 'align' => 'center', 'width' => 25), 'name' => array('title' => $this->l('Name'), 'filter_key' => 'a!name', 'width' => 'auto'), 'shop_name' => array('title' => $this->l('Shop'), 'filter_key' => 's!name'), 'currency_name' => array('title' => $this->l('Currency'), 'align' => 'center', 'filter_key' => 'cu!name'), 'country_name' => array('title' => $this->l('Country'), 'align' => 'center', 'filter_key' => 'cl!name'), 'group_name' => array('title' => $this->l('Group'), 'align' => 'center', 'filter_key' => 'gl!name'), 'from_quantity' => array('title' => $this->l('From quantity'), 'align' => 'center'), 'reduction_type' => array('title' => $this->l('Reduction type'), 'align' => 'center', 'type' => 'select', 'filter_key' => 'a!reduction_type', 'list' => $this->list_reduction_type), 'reduction' => array('title' => $this->l('Reduction'), 'align' => 'center', 'type' => 'decimal'), 'from' => array('title' => $this->l('Beginning'), 'align' => 'right', 'type' => 'date'), 'to' => array('title' => $this->l('End'), 'align' => 'right', 'type' => 'date'));
         parent::__construct();
@@ -103,6 +103,7 @@ class AdminSpecificPriceRuleController extends AdminController
             $feature['values'] = FeatureValue::getFeatureValuesWithLang((int) $this->context->language->id, $feature['id_feature'], true);
         }
         $this->tpl_form_vars = array('manufacturers' => Manufacturer::getManufacturers(), 'suppliers' => Supplier::getSuppliers(), 'attributes_group' => $attribute_groups, 'features' => $features, 'categories' => Category::getSimpleCategories((int) $this->context->language->id), 'conditions' => $this->object->getConditions(), 'is_multishop' => Shop::isFeatureActive());
+
         return parent::renderForm();
     }
     public function processSave()
@@ -121,6 +122,7 @@ class AdminSpecificPriceRuleController extends AdminController
                 }
             }
             $object->apply();
+
             return $object;
         }
     }

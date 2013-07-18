@@ -117,6 +117,7 @@ class Cookie
         if (!$domain) {
             $domain = $out[4];
         }
+
         return $domain;
     }
     /**
@@ -195,6 +196,7 @@ class Cookie
         if ($this->logged == 1 && $this->id_customer && Validate::isUnsignedId($this->id_customer) && Customer::checkPassword((int) $this->id_customer, $this->passwd)) {
             return true;
         }
+
         return false;
     }
     /**
@@ -207,6 +209,7 @@ class Cookie
     {
         Tools::displayAsDeprecated();
         /* Employee is valid only if it can be load and if cookie password is the same as database one */
+
         return $this->id_employee && Validate::isUnsignedId($this->id_employee) && Employee::checkPassword((int) $this->id_employee, $this->passwd) && (!isset($this->_content['remote_addr']) || $this->_content['remote_addr'] == ip2long(Tools::getRemoteAddr()) || !Configuration::get('PS_COOKIE_CHECKIP'));
     }
     /**
@@ -304,6 +307,7 @@ class Cookie
         }
         if (PHP_VERSION_ID <= 50200) {
             /* PHP version > 5.2.0 */
+
             return setcookie($this->_name, $content, $time, $this->_path, $this->_domain, 0);
         } else {
             return setcookie($this->_name, $content, $time, $this->_path, $this->_domain, 0, true);
@@ -333,6 +337,7 @@ class Cookie
         $cookie .= 'checksum|' . crc32($this->_salt . $cookie);
         $this->_modified = false;
         /* Cookies are encrypted for evident security reasons */
+
         return $this->_setcookie($cookie);
     }
     /**
@@ -349,6 +354,7 @@ class Cookie
                 $result[$key] = $value;
             }
         }
+
         return $result;
     }
     /**

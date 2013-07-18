@@ -43,9 +43,10 @@ class ProductSale
     public static function fillProductSales()
     {
         $sql = 'REPLACE INTO ' . _DB_PREFIX_ . 'product_sale
-				(`id_product`, `quantity`, `sale_nbr`, `date_upd`)
-				SELECT od.product_id, SUM(od.product_quantity), COUNT(od.product_id), NOW()
-							FROM ' . _DB_PREFIX_ . 'order_detail od GROUP BY od.product_id';
+                (`id_product`, `quantity`, `sale_nbr`, `date_upd`)
+                SELECT od.product_id, SUM(od.product_quantity), COUNT(od.product_id), NOW()
+                            FROM ' . _DB_PREFIX_ . 'order_detail od GROUP BY od.product_id';
+
         return Db::getInstance()->execute($sql);
     }
     /*
@@ -55,10 +56,11 @@ class ProductSale
     public static function getNbSales()
     {
         $sql = 'SELECT COUNT(ps.`id_product`) AS nb
-				FROM `' . _DB_PREFIX_ . 'product_sale` ps
-				LEFT JOIN `' . _DB_PREFIX_ . 'product` p ON p.`id_product` = ps.`id_product`
-				' . Shop::addSqlAssociation('product', 'p', false) . '
-				WHERE product_shop.`active` = 1';
+                FROM `' . _DB_PREFIX_ . 'product_sale` ps
+                LEFT JOIN `' . _DB_PREFIX_ . 'product` p ON p.`id_product` = ps.`id_product`
+                ' . Shop::addSqlAssociation('product', 'p', false) . '
+                WHERE product_shop.`active` = 1';
+
         return (int) Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
     }
     /*
@@ -92,38 +94,38 @@ class ProductSale
             $prefix = 'p.';
         }
         $sql = 'SELECT p.*, product_shop.*, stock.out_of_stock, IFNULL(stock.quantity, 0) as quantity,
-					pl.`description`, pl.`description_short`, pl.`link_rewrite`, pl.`meta_description`,
-					pl.`meta_keywords`, pl.`meta_title`, pl.`name`,
-					m.`name` AS manufacturer_name, p.`id_manufacturer` as id_manufacturer,
-					MAX(image_shop.`id_image`) id_image, il.`legend`,
-					ps.`quantity` AS sales, t.`rate`, pl.`meta_keywords`, pl.`meta_title`, pl.`meta_description`,
-					DATEDIFF(p.`date_add`, DATE_SUB(NOW(),
-					INTERVAL ' . $interval . ' DAY)) > 0 AS new
-				FROM `' . _DB_PREFIX_ . 'product_sale` ps
-				LEFT JOIN `' . _DB_PREFIX_ . 'product` p ON ps.`id_product` = p.`id_product`
-				' . Shop::addSqlAssociation('product', 'p', false) . '
-				LEFT JOIN `' . _DB_PREFIX_ . 'product_lang` pl
-					ON p.`id_product` = pl.`id_product`
-					AND pl.`id_lang` = ' . (int) $id_lang . Shop::addSqlRestrictionOnLang('pl') . '
-				LEFT JOIN `' . _DB_PREFIX_ . 'image` i ON (i.`id_product` = p.`id_product`)' . Shop::addSqlAssociation('image', 'i', false, 'image_shop.cover=1') . '
-				LEFT JOIN `' . _DB_PREFIX_ . 'image_lang` il ON (i.`id_image` = il.`id_image` AND il.`id_lang` = ' . (int) $id_lang . ')
-				LEFT JOIN `' . _DB_PREFIX_ . 'manufacturer` m ON (m.`id_manufacturer` = p.`id_manufacturer`)
-				LEFT JOIN `' . _DB_PREFIX_ . 'tax_rule` tr ON (product_shop.`id_tax_rules_group` = tr.`id_tax_rules_group`)
-					AND tr.`id_country` = ' . (int) Context::getContext()->country->id . '
-					AND tr.`id_state` = 0
-				LEFT JOIN `' . _DB_PREFIX_ . 'tax` t ON (t.`id_tax` = tr.`id_tax`)
-				' . Product::sqlStock('p') . '
-				WHERE product_shop.`active` = 1
-					AND p.`visibility` != \'none\'
-					AND p.`id_product` IN (
-						SELECT cp.`id_product`
-						FROM `' . _DB_PREFIX_ . 'category_group` cg
-						LEFT JOIN `' . _DB_PREFIX_ . 'category_product` cp ON (cp.`id_category` = cg.`id_category`)
-						WHERE cg.`id_group` ' . $sql_groups . '
-					)
-				GROUP BY product_shop.id_product
-				ORDER BY ' . $prefix . '`' . pSQL($order_by) . '` ' . pSQL($order_way) . '
-				LIMIT ' . (int) ($page_number * $nb_products) . ', ' . (int) $nb_products;
+                    pl.`description`, pl.`description_short`, pl.`link_rewrite`, pl.`meta_description`,
+                    pl.`meta_keywords`, pl.`meta_title`, pl.`name`,
+                    m.`name` AS manufacturer_name, p.`id_manufacturer` as id_manufacturer,
+                    MAX(image_shop.`id_image`) id_image, il.`legend`,
+                    ps.`quantity` AS sales, t.`rate`, pl.`meta_keywords`, pl.`meta_title`, pl.`meta_description`,
+                    DATEDIFF(p.`date_add`, DATE_SUB(NOW(),
+                    INTERVAL ' . $interval . ' DAY)) > 0 AS new
+                FROM `' . _DB_PREFIX_ . 'product_sale` ps
+                LEFT JOIN `' . _DB_PREFIX_ . 'product` p ON ps.`id_product` = p.`id_product`
+                ' . Shop::addSqlAssociation('product', 'p', false) . '
+                LEFT JOIN `' . _DB_PREFIX_ . 'product_lang` pl
+                    ON p.`id_product` = pl.`id_product`
+                    AND pl.`id_lang` = ' . (int) $id_lang . Shop::addSqlRestrictionOnLang('pl') . '
+                LEFT JOIN `' . _DB_PREFIX_ . 'image` i ON (i.`id_product` = p.`id_product`)' . Shop::addSqlAssociation('image', 'i', false, 'image_shop.cover=1') . '
+                LEFT JOIN `' . _DB_PREFIX_ . 'image_lang` il ON (i.`id_image` = il.`id_image` AND il.`id_lang` = ' . (int) $id_lang . ')
+                LEFT JOIN `' . _DB_PREFIX_ . 'manufacturer` m ON (m.`id_manufacturer` = p.`id_manufacturer`)
+                LEFT JOIN `' . _DB_PREFIX_ . 'tax_rule` tr ON (product_shop.`id_tax_rules_group` = tr.`id_tax_rules_group`)
+                    AND tr.`id_country` = ' . (int) Context::getContext()->country->id . '
+                    AND tr.`id_state` = 0
+                LEFT JOIN `' . _DB_PREFIX_ . 'tax` t ON (t.`id_tax` = tr.`id_tax`)
+                ' . Product::sqlStock('p') . '
+                WHERE product_shop.`active` = 1
+                    AND p.`visibility` != \'none\'
+                    AND p.`id_product` IN (
+                        SELECT cp.`id_product`
+                        FROM `' . _DB_PREFIX_ . 'category_group` cg
+                        LEFT JOIN `' . _DB_PREFIX_ . 'category_product` cp ON (cp.`id_category` = cg.`id_category`)
+                        WHERE cg.`id_group` ' . $sql_groups . '
+                    )
+                GROUP BY product_shop.id_product
+                ORDER BY ' . $prefix . '`' . pSQL($order_by) . '` ' . pSQL($order_way) . '
+                LIMIT ' . (int) ($page_number * $nb_products) . ', ' . (int) $nb_products;
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
         if ($final_order_by == 'price') {
             Tools::orderbyPrice($result, $order_way);
@@ -131,6 +133,7 @@ class ProductSale
         if (!$result) {
             return false;
         }
+
         return Product::getProductsProperties($id_lang, $result);
     }
     /*
@@ -155,29 +158,29 @@ class ProductSale
         $groups = FrontController::getCurrentCustomerGroups();
         $sql_groups = count($groups) ? 'IN (' . implode(',', $groups) . ')' : '= 1';
         $sql = 'SELECT p.id_product, pl.`link_rewrite`, pl.`name`, pl.`description_short`, MAX(image_shop.`id_image`) id_image, il.`legend`,
-					ps.`quantity` AS sales, p.`ean13`, p.`upc`, cl.`link_rewrite` AS category
-				FROM `' . _DB_PREFIX_ . 'product_sale` ps
-				LEFT JOIN `' . _DB_PREFIX_ . 'product` p ON ps.`id_product` = p.`id_product`
-				' . Shop::addSqlAssociation('product', 'p') . '
-				LEFT JOIN `' . _DB_PREFIX_ . 'product_lang` pl
-					ON p.`id_product` = pl.`id_product`
-					AND pl.`id_lang` = ' . (int) $id_lang . Shop::addSqlRestrictionOnLang('pl') . '
-				LEFT JOIN `' . _DB_PREFIX_ . 'image` i ON (i.`id_product` = p.`id_product`)' . Shop::addSqlAssociation('image', 'i', false, 'image_shop.cover=1') . '
-				LEFT JOIN `' . _DB_PREFIX_ . 'image_lang` il ON (i.`id_image` = il.`id_image` AND il.`id_lang` = ' . (int) $id_lang . ')
-				LEFT JOIN `' . _DB_PREFIX_ . 'category_lang` cl
-					ON cl.`id_category` = product_shop.`id_category_default`
-					AND cl.`id_lang` = ' . (int) $id_lang . Shop::addSqlRestrictionOnLang('cl') . '
-				WHERE product_shop.`active` = 1
-					AND p.`visibility` != \'none\'
-					AND p.`id_product` IN (
-						SELECT cp.`id_product`
-						FROM `' . _DB_PREFIX_ . 'category_group` cg
-						LEFT JOIN `' . _DB_PREFIX_ . 'category_product` cp ON (cp.`id_category` = cg.`id_category`)
-						WHERE cg.`id_group` ' . $sql_groups . '
-					)
-				GROUP BY product_shop.id_product
-				ORDER BY sales DESC
-				LIMIT ' . (int) ($page_number * $nb_products) . ', ' . (int) $nb_products;
+                    ps.`quantity` AS sales, p.`ean13`, p.`upc`, cl.`link_rewrite` AS category
+                FROM `' . _DB_PREFIX_ . 'product_sale` ps
+                LEFT JOIN `' . _DB_PREFIX_ . 'product` p ON ps.`id_product` = p.`id_product`
+                ' . Shop::addSqlAssociation('product', 'p') . '
+                LEFT JOIN `' . _DB_PREFIX_ . 'product_lang` pl
+                    ON p.`id_product` = pl.`id_product`
+                    AND pl.`id_lang` = ' . (int) $id_lang . Shop::addSqlRestrictionOnLang('pl') . '
+                LEFT JOIN `' . _DB_PREFIX_ . 'image` i ON (i.`id_product` = p.`id_product`)' . Shop::addSqlAssociation('image', 'i', false, 'image_shop.cover=1') . '
+                LEFT JOIN `' . _DB_PREFIX_ . 'image_lang` il ON (i.`id_image` = il.`id_image` AND il.`id_lang` = ' . (int) $id_lang . ')
+                LEFT JOIN `' . _DB_PREFIX_ . 'category_lang` cl
+                    ON cl.`id_category` = product_shop.`id_category_default`
+                    AND cl.`id_lang` = ' . (int) $id_lang . Shop::addSqlRestrictionOnLang('cl') . '
+                WHERE product_shop.`active` = 1
+                    AND p.`visibility` != \'none\'
+                    AND p.`id_product` IN (
+                        SELECT cp.`id_product`
+                        FROM `' . _DB_PREFIX_ . 'category_group` cg
+                        LEFT JOIN `' . _DB_PREFIX_ . 'category_product` cp ON (cp.`id_category` = cg.`id_category`)
+                        WHERE cg.`id_group` ' . $sql_groups . '
+                    )
+                GROUP BY product_shop.id_product
+                ORDER BY sales DESC
+                LIMIT ' . (int) ($page_number * $nb_products) . ', ' . (int) $nb_products;
         if (!($result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql))) {
             return false;
         }
@@ -185,15 +188,16 @@ class ProductSale
             $row['link'] = $context->link->getProductLink($row['id_product'], $row['link_rewrite'], $row['category'], $row['ean13']);
             $row['id_image'] = Product::defineProductImage($row, $id_lang);
         }
+
         return $result;
     }
     public static function addProductSale($product_id, $qty = 1)
     {
         return Db::getInstance()->execute('
-			INSERT INTO ' . _DB_PREFIX_ . 'product_sale
-			(`id_product`, `quantity`, `sale_nbr`, `date_upd`)
-			VALUES (' . (int) $product_id . ', ' . (int) $qty . ', 1, NOW())
-			ON DUPLICATE KEY UPDATE `quantity` = `quantity` + ' . (int) $qty . ', `sale_nbr` = `sale_nbr` + 1, `date_upd` = NOW()');
+            INSERT INTO ' . _DB_PREFIX_ . 'product_sale
+            (`id_product`, `quantity`, `sale_nbr`, `date_upd`)
+            VALUES (' . (int) $product_id . ', ' . (int) $qty . ', 1, NOW())
+            ON DUPLICATE KEY UPDATE `quantity` = `quantity` + ' . (int) $qty . ', `sale_nbr` = `sale_nbr` + 1, `date_upd` = NOW()');
     }
     public static function getNbrSales($id_product)
     {
@@ -201,6 +205,7 @@ class ProductSale
         if (!$result || empty($result) || !key_exists('sale_nbr', $result)) {
             return -1;
         }
+
         return (int) $result['sale_nbr'];
     }
     public static function removeProductSale($id_product, $qty = 1)
@@ -208,12 +213,13 @@ class ProductSale
         $total_sales = ProductSale::getNbrSales($id_product);
         if ($total_sales > 1) {
             return Db::getInstance()->execute('
-				UPDATE ' . _DB_PREFIX_ . 'product_sale
-				SET `quantity` = `quantity` - ' . (int) $qty . ', `sale_nbr` = `sale_nbr` - 1, `date_upd` = NOW()
-				WHERE `id_product` = ' . (int) $id_product);
+                UPDATE ' . _DB_PREFIX_ . 'product_sale
+                SET `quantity` = `quantity` - ' . (int) $qty . ', `sale_nbr` = `sale_nbr` - 1, `date_upd` = NOW()
+                WHERE `id_product` = ' . (int) $id_product);
         } elseif ($total_sales == 1) {
             return Db::getInstance()->delete('product_sale', 'id_product = ' . (int) $id_product);
         }
+
         return true;
     }
 }

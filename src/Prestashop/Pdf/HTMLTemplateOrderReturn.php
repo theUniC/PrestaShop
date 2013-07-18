@@ -65,6 +65,7 @@ class HTMLTemplateOrderReturn extends HTMLTemplate
             $formatted_invoice_address = AddressFormat::generateAddress($invoice_address, array(), '<br />', ' ');
         }
         $this->smarty->assign(array('order_return' => $this->order_return, 'return_nb_days' => (int) Configuration::get('PS_ORDER_RETURN_NB_DAYS'), 'products' => OrderReturn::getOrdersReturnProducts((int) $this->order_return->id, $this->order), 'delivery_address' => $formatted_delivery_address, 'invoice_address' => $formatted_invoice_address, 'shop_address' => AddressFormat::generateAddress($this->shop->getAddress(), array(), '<br />', ' ')));
+
         return $this->smarty->fetch($this->getTemplate('order-return'));
     }
     /**

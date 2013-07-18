@@ -45,9 +45,9 @@ class AdminShippingController extends AdminController
             }
         }
         $this->fields_options = array('handling' => array('title' => $this->l('Handling'), 'icon' => 'delivery', 'fields' => array('PS_SHIPPING_HANDLING' => array('title' => $this->l('Handling charges'), 'suffix' => $this->context->currency->getSign() . ' ' . $this->l('(tax excl.)'), 'cast' => 'floatval', 'type' => 'text', 'validation' => 'isPrice'), 'PS_SHIPPING_FREE_PRICE' => array('title' => $this->l('Free shipping starts at'), 'suffix' => $this->context->currency->getSign(), 'cast' => 'floatval', 'type' => 'text', 'validation' => 'isPrice'), 'PS_SHIPPING_FREE_WEIGHT' => array('title' => $this->l('Free shipping starts at'), 'suffix' => Configuration::get('PS_WEIGHT_UNIT'), 'cast' => 'floatval', 'type' => 'text', 'validation' => 'isUnsignedFloat')), 'description' => '<ul>
-						<li>' . $this->l('If you set these parameters to 0, they will be disabled.') . '</li>
-						<li>' . $this->l('Coupons are not taken into account when calculating free shipping') . '</li>
-					</ul>', 'submit' => array()), 'billing' => array('title' => $this->l('Billing'), 'icon' => 'money', 'fields' => array('PS_SHIPPING_METHOD' => array('title' => $this->l('Billing'), 'cast' => 'intval', 'type' => 'radio', 'choices' => array(0 => $this->l('According to total price'), 1 => $this->l('According to total weight')), 'validation' => 'isBool'))));
+                        <li>' . $this->l('If you set these parameters to 0, they will be disabled.') . '</li>
+                        <li>' . $this->l('Coupons are not taken into account when calculating free shipping') . '</li>
+                    </ul>', 'submit' => array()), 'billing' => array('title' => $this->l('Billing'), 'icon' => 'money', 'fields' => array('PS_SHIPPING_METHOD' => array('title' => $this->l('Billing'), 'cast' => 'intval', 'type' => 'radio', 'choices' => array(0 => $this->l('According to total price'), 1 => $this->l('According to total weight')), 'validation' => 'isBool'))));
     }
     public function initContent()
     {

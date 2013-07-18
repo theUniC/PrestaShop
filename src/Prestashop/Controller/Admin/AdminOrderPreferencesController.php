@@ -53,7 +53,7 @@ class AdminOrderPreferencesController extends AdminController
     public function beforeUpdateOptions()
     {
         $sql = 'SELECT `id_cms` FROM `' . _DB_PREFIX_ . 'cms`
-				WHERE id_cms = ' . (int) Tools::getValue('PS_CONDITIONS_CMS_ID');
+                WHERE id_cms = ' . (int) Tools::getValue('PS_CONDITIONS_CMS_ID');
         if (Tools::getValue('PS_CONDITIONS') && (Tools::getValue('PS_CONDITIONS_CMS_ID') == 0 || !Db::getInstance()->getValue($sql))) {
             $this->errors[] = Tools::displayError('Assign a valid CMS page if you want it to be read.');
         }

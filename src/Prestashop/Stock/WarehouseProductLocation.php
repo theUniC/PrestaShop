@@ -61,9 +61,9 @@ class WarehouseProductLocation extends ObjectModel
     /**
      * For a given product and warehouse, gets the location
      *
-     * @param int $id_product product ID
-     * @param int $id_product_attribute product attribute ID
-     * @param int $id_warehouse warehouse ID
+     * @param  int    $id_product           product ID
+     * @param  int    $id_product_attribute product attribute ID
+     * @param  int    $id_warehouse         warehouse ID
      * @return string $location Location of the product
      */
     public static function getProductLocation($id_product, $id_product_attribute, $id_warehouse)
@@ -73,16 +73,17 @@ class WarehouseProductLocation extends ObjectModel
         $query->select('wpl.location');
         $query->from('warehouse_product_location', 'wpl');
         $query->where('wpl.id_product = ' . (int) $id_product . '
-			AND wpl.id_product_attribute = ' . (int) $id_product_attribute . '
-			AND wpl.id_warehouse = ' . (int) $id_warehouse);
+            AND wpl.id_product_attribute = ' . (int) $id_product_attribute . '
+            AND wpl.id_warehouse = ' . (int) $id_warehouse);
+
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($query);
     }
     /**
      * For a given product and warehouse, gets the WarehouseProductLocation corresponding ID
      *
-     * @param int $id_product
-     * @param int $id_product_attribute
-     * @param int $id_supplier
+     * @param  int $id_product
+     * @param  int $id_product_attribute
+     * @param  int $id_supplier
      * @return int $id_warehouse_product_location ID of the WarehouseProductLocation
      */
     public static function getIdByProductAndWarehouse($id_product, $id_product_attribute, $id_warehouse)
@@ -92,20 +93,22 @@ class WarehouseProductLocation extends ObjectModel
         $query->select('wpl.id_warehouse_product_location');
         $query->from('warehouse_product_location', 'wpl');
         $query->where('wpl.id_product = ' . (int) $id_product . '
-			AND wpl.id_product_attribute = ' . (int) $id_product_attribute . '
-			AND wpl.id_warehouse = ' . (int) $id_warehouse);
+            AND wpl.id_product_attribute = ' . (int) $id_product_attribute . '
+            AND wpl.id_warehouse = ' . (int) $id_warehouse);
+
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($query);
     }
     /**
      * For a given product, gets its warehouses
      *
-     * @param int $id_product
+     * @param  int        $id_product
      * @return Collection The type of the collection is WarehouseProductLocation
      */
     public static function getCollection($id_product)
     {
         $collection = new Collection('WarehouseProductLocation');
         $collection->where('id_product', '=', (int) $id_product);
+
         return $collection;
     }
     public static function getProducts($id_warehouse)

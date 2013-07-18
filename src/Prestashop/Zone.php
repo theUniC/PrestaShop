@@ -41,31 +41,31 @@ class Zone extends ObjectModel
     /**
      * Get all available geographical zones
      *
-     * @param bool $active
+     * @param  bool  $active
      * @return array Zones
      */
     public static function getZones($active = false)
     {
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
-			SELECT *
-			FROM `' . _DB_PREFIX_ . 'zone`
-			' . ($active ? 'WHERE active = 1' : '') . '
-			ORDER BY `name` ASC
-		');
+            SELECT *
+            FROM `' . _DB_PREFIX_ . 'zone`
+            ' . ($active ? 'WHERE active = 1' : '') . '
+            ORDER BY `name` ASC
+        ');
     }
     /**
      * Get a zone ID from its default language name
      *
-     * @param string $name
+     * @param  string  $name
      * @return integer id_zone
      */
     public static function getIdByName($name)
     {
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('
-			SELECT `id_zone`
-			FROM `' . _DB_PREFIX_ . 'zone`
-			WHERE `name` = \'' . pSQL($name) . '\'
-		');
+            SELECT `id_zone`
+            FROM `' . _DB_PREFIX_ . 'zone`
+            WHERE `name` = \'' . pSQL($name) . '\'
+        ');
     }
     /**
      * Delete a zone
@@ -81,8 +81,10 @@ class Zone extends ObjectModel
             // Update Country & state zone with 0
             $result &= Db::getInstance()->execute('UPDATE ' . _DB_PREFIX_ . 'country SET id_zone = 0 WHERE id_zone = ' . (int) $this->id);
             $result &= Db::getInstance()->execute('UPDATE ' . _DB_PREFIX_ . 'state SET id_zone = 0 WHERE id_zone = ' . (int) $this->id);
+
             return $result;
         }
+
         return false;
     }
 }

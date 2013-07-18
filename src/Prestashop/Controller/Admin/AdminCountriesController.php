@@ -68,6 +68,7 @@ class AdminCountriesController extends AdminController
         $this->_select = 'z.`name` AS zone';
         $this->_join = 'LEFT JOIN `' . _DB_PREFIX_ . 'zone` z ON (z.`id_zone` = a.`id_zone`)';
         $this->tpl_list_vars['zones'] = Zone::getZones();
+
         return parent::renderList();
     }
     public function renderForm()
@@ -86,8 +87,8 @@ class AdminCountriesController extends AdminController
 ';
         }
         $this->fields_form = array('legend' => array('title' => $this->l('Countries'), 'image' => '../img/admin/world.gif'), 'input' => array(array('type' => 'text', 'label' => $this->l('Country:'), 'name' => 'name', 'lang' => true, 'size' => 30, 'required' => true, 'hint' => $this->l('Invalid characters:') . ' <>;=#{}', 'desc' => $this->l('Country name')), array('type' => 'text', 'label' => $this->l('ISO code:'), 'name' => 'iso_code', 'size' => 4, 'maxlength' => 3, 'class' => 'uppercase', 'required' => true, 'desc' => $this->l('Two -- or three -- letter ISO code (e.g. U.S. for United States)') . '.
-							<a href="http://www.iso.org/iso/country_codes/iso_3166_code_lists/country_names_and_code_elements.htm" target="_blank">' . $this->l('Official list here') . '
-							</a>.'), array('type' => 'text', 'label' => $this->l('Call prefix:'), 'name' => 'call_prefix', 'size' => 4, 'maxlength' => 3, 'class' => 'uppercase', 'required' => true, 'desc' => $this->l('International call prefix, (e.g. 1 for United States)')), array('type' => 'select', 'label' => $this->l('Default currency:'), 'name' => 'id_currency', 'options' => array('query' => Currency::getCurrencies(), 'id' => 'id_currency', 'name' => 'name', 'default' => array('label' => $this->l('Default store currency'), 'value' => 0))), array('type' => 'select', 'label' => $this->l('Zone:'), 'name' => 'id_zone', 'options' => array('query' => Zone::getZones(), 'id' => 'id_zone', 'name' => 'name'), 'desc' => $this->l('Geographical region')), array('type' => 'radio', 'label' => $this->l('Need zip/postal code:'), 'name' => 'need_zip_code', 'required' => false, 'class' => 't', 'is_bool' => true, 'values' => array(array('id' => 'need_zip_code_on', 'value' => 1, 'label' => $this->l('Yes')), array('id' => 'need_zip_code_off', 'value' => 0, 'label' => $this->l('No')))), array('type' => 'text', 'label' => $this->l('Zip/post code format:'), 'name' => 'zip_code_format', 'class' => 'uppercase', 'required' => true, 'desc' => $this->l('Zip Code format (L for a letter, N for a number and C for the ISO code). For example, NNNNN for the United States. No verification if undefined.')), array('type' => 'address_layout', 'label' => $this->l('Address format:'), 'name' => 'address_layout', 'address_layout' => $address_layout, 'encoding_address_layout' => urlencode($address_layout), 'encoding_default_layout' => urlencode($default_layout), 'display_valid_fields' => $this->displayValidFields()), array('type' => 'radio', 'label' => $this->l('Address Standardization:'), 'name' => 'standardization', 'required' => false, 'class' => 't', 'is_bool' => true, 'values' => array(array('id' => 'standardization_on', 'value' => 1, 'label' => $this->l('Enabled')), array('id' => 'standardization_off', 'value' => 0, 'label' => $this->l('Disabled')))), array('type' => 'radio', 'label' => $this->l('Active:'), 'name' => 'active', 'required' => false, 'class' => 't', 'is_bool' => true, 'values' => array(array('id' => 'active_on', 'value' => 1, 'label' => $this->l('Enabled')), array('id' => 'active_off', 'value' => 0, 'label' => $this->l('Disabled'))), 'desc' => $this->l('Display this country to your customers (the selected country will always be displayed in the Back Office)')), array('type' => 'radio', 'label' => $this->l('Contains following  states:'), 'name' => 'contains_states', 'required' => false, 'class' => 't', 'values' => array(array('id' => 'contains_states_on', 'value' => 1, 'label' => '<img src="../img/admin/enabled.gif" alt="' . $this->l('Yes') . '" title="' . $this->l('Yes') . '" />' . $this->l('Yes')), array('id' => 'contains_states_off', 'value' => 0, 'label' => '<img src="../img/admin/disabled.gif" alt="' . $this->l('No') . '" title="' . $this->l('No') . '" />' . $this->l('No')))), array('type' => 'radio', 'label' => $this->l('Do you need a tax identification number?'), 'name' => 'need_identification_number', 'required' => false, 'class' => 't', 'values' => array(array('id' => 'need_identification_number_on', 'value' => 1, 'label' => '<img src="../img/admin/enabled.gif" alt="' . $this->l('Yes') . '" title="' . $this->l('Yes') . '" />' . $this->l('Yes')), array('id' => 'need_identification_number_off', 'value' => 0, 'label' => '<img src="../img/admin/disabled.gif" alt="' . $this->l('No') . '" title="' . $this->l('No') . '" />' . $this->l('No')))), array('type' => 'radio', 'label' => $this->l('Display tax label (e.g. "Tax incl."):'), 'name' => 'display_tax_label', 'required' => false, 'class' => 't', 'values' => array(array('id' => 'display_tax_label_on', 'value' => 1, 'label' => '<img src="../img/admin/enabled.gif" alt="' . $this->l('Yes') . '" title="' . $this->l('Yes') . '" />' . $this->l('Yes')), array('id' => 'display_tax_label_off', 'value' => 0, 'label' => '<img src="../img/admin/disabled.gif" alt="' . $this->l('No') . '" title="' . $this->l('No') . '" />' . $this->l('No'))))));
+                            <a href="http://www.iso.org/iso/country_codes/iso_3166_code_lists/country_names_and_code_elements.htm" target="_blank">' . $this->l('Official list here') . '
+                            </a>.'), array('type' => 'text', 'label' => $this->l('Call prefix:'), 'name' => 'call_prefix', 'size' => 4, 'maxlength' => 3, 'class' => 'uppercase', 'required' => true, 'desc' => $this->l('International call prefix, (e.g. 1 for United States)')), array('type' => 'select', 'label' => $this->l('Default currency:'), 'name' => 'id_currency', 'options' => array('query' => Currency::getCurrencies(), 'id' => 'id_currency', 'name' => 'name', 'default' => array('label' => $this->l('Default store currency'), 'value' => 0))), array('type' => 'select', 'label' => $this->l('Zone:'), 'name' => 'id_zone', 'options' => array('query' => Zone::getZones(), 'id' => 'id_zone', 'name' => 'name'), 'desc' => $this->l('Geographical region')), array('type' => 'radio', 'label' => $this->l('Need zip/postal code:'), 'name' => 'need_zip_code', 'required' => false, 'class' => 't', 'is_bool' => true, 'values' => array(array('id' => 'need_zip_code_on', 'value' => 1, 'label' => $this->l('Yes')), array('id' => 'need_zip_code_off', 'value' => 0, 'label' => $this->l('No')))), array('type' => 'text', 'label' => $this->l('Zip/post code format:'), 'name' => 'zip_code_format', 'class' => 'uppercase', 'required' => true, 'desc' => $this->l('Zip Code format (L for a letter, N for a number and C for the ISO code). For example, NNNNN for the United States. No verification if undefined.')), array('type' => 'address_layout', 'label' => $this->l('Address format:'), 'name' => 'address_layout', 'address_layout' => $address_layout, 'encoding_address_layout' => urlencode($address_layout), 'encoding_default_layout' => urlencode($default_layout), 'display_valid_fields' => $this->displayValidFields()), array('type' => 'radio', 'label' => $this->l('Address Standardization:'), 'name' => 'standardization', 'required' => false, 'class' => 't', 'is_bool' => true, 'values' => array(array('id' => 'standardization_on', 'value' => 1, 'label' => $this->l('Enabled')), array('id' => 'standardization_off', 'value' => 0, 'label' => $this->l('Disabled')))), array('type' => 'radio', 'label' => $this->l('Active:'), 'name' => 'active', 'required' => false, 'class' => 't', 'is_bool' => true, 'values' => array(array('id' => 'active_on', 'value' => 1, 'label' => $this->l('Enabled')), array('id' => 'active_off', 'value' => 0, 'label' => $this->l('Disabled'))), 'desc' => $this->l('Display this country to your customers (the selected country will always be displayed in the Back Office)')), array('type' => 'radio', 'label' => $this->l('Contains following  states:'), 'name' => 'contains_states', 'required' => false, 'class' => 't', 'values' => array(array('id' => 'contains_states_on', 'value' => 1, 'label' => '<img src="../img/admin/enabled.gif" alt="' . $this->l('Yes') . '" title="' . $this->l('Yes') . '" />' . $this->l('Yes')), array('id' => 'contains_states_off', 'value' => 0, 'label' => '<img src="../img/admin/disabled.gif" alt="' . $this->l('No') . '" title="' . $this->l('No') . '" />' . $this->l('No')))), array('type' => 'radio', 'label' => $this->l('Do you need a tax identification number?'), 'name' => 'need_identification_number', 'required' => false, 'class' => 't', 'values' => array(array('id' => 'need_identification_number_on', 'value' => 1, 'label' => '<img src="../img/admin/enabled.gif" alt="' . $this->l('Yes') . '" title="' . $this->l('Yes') . '" />' . $this->l('Yes')), array('id' => 'need_identification_number_off', 'value' => 0, 'label' => '<img src="../img/admin/disabled.gif" alt="' . $this->l('No') . '" title="' . $this->l('No') . '" />' . $this->l('No')))), array('type' => 'radio', 'label' => $this->l('Display tax label (e.g. "Tax incl."):'), 'name' => 'display_tax_label', 'required' => false, 'class' => 't', 'values' => array(array('id' => 'display_tax_label_on', 'value' => 1, 'label' => '<img src="../img/admin/enabled.gif" alt="' . $this->l('Yes') . '" title="' . $this->l('Yes') . '" />' . $this->l('Yes')), array('id' => 'display_tax_label_off', 'value' => 0, 'label' => '<img src="../img/admin/disabled.gif" alt="' . $this->l('No') . '" title="' . $this->l('No') . '" />' . $this->l('No'))))));
         if (Shop::isFeatureActive()) {
             $this->fields_form['input'][] = array('type' => 'shop', 'label' => $this->l('Shop association:'), 'name' => 'checkBoxShopAsso');
         }
@@ -95,6 +96,7 @@ class AdminCountriesController extends AdminController
         if ($this->object->iso_code == 'US') {
             $this->object->standardization = Configuration::get('PS_TAASC');
         }
+
         return parent::renderForm();
     }
     public function postProcess()
@@ -144,6 +146,7 @@ class AdminCountriesController extends AdminController
             }
             unset($tmp_addr_format);
         }
+
         return $res;
     }
     public function processStatus()
@@ -152,6 +155,7 @@ class AdminCountriesController extends AdminController
         if (Validate::isLoadedObject($object = $this->loadObject()) && $object->active == 1) {
             $return &= Country::addModuleRestrictions(array(), array(array('id_country' => $object->id)), array());
         }
+
         return $return;
     }
     public function processBulkStatusSelection($way)
@@ -176,16 +180,17 @@ class AdminCountriesController extends AdminController
         foreach ($object_list as $class_name => &$object) {
             $fields = array();
             $html .= '<li>
-				<a href="javascript:void(0);" onClick="displayAvailableFields(\'' . $class_name . '\')">' . $class_name . '</a>';
+                <a href="javascript:void(0);" onClick="displayAvailableFields(\'' . $class_name . '\')">' . $class_name . '</a>';
             foreach (AddressFormat::getValidateFields($class_name) as $name) {
                 $fields[] = '<a style="color:#4B8;" href="javascript:void(0);" class="addPattern" id="' . ($class_name == 'Address' ? $name : $class_name . ':' . $name) . '">
-					' . $name . '</a>';
+                    ' . $name . '</a>';
             }
             $html .= '
-				<div class="availableFieldsList" id="availableListFieldsFor_' . $class_name . '" style="width:300px;">
-				' . implode(', ', $fields) . '</div></li>';
+                <div class="availableFieldsList" id="availableListFieldsFor_' . $class_name . '" style="width:300px;">
+                ' . implode(', ', $fields) . '</div></li>';
             unset($object);
         }
+
         return $html .= '</ul>';
     }
     public static function displayCallPrefix($prefix)

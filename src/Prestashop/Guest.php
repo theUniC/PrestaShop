@@ -82,12 +82,14 @@ class Guest extends ObjectModel
         foreach ($browserArray as $k => $value) {
             if (strstr($userAgent, $value)) {
                 $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow('
-				SELECT `id_web_browser`
-				FROM `' . _DB_PREFIX_ . 'web_browser` wb
-				WHERE wb.`name` = \'' . pSQL($k) . '\'');
+                SELECT `id_web_browser`
+                FROM `' . _DB_PREFIX_ . 'web_browser` wb
+                WHERE wb.`name` = \'' . pSQL($k) . '\'');
+
                 return $result['id_web_browser'];
             }
         }
+
         return null;
     }
     protected function getOs($userAgent)
@@ -96,12 +98,14 @@ class Guest extends ObjectModel
         foreach ($osArray as $k => $value) {
             if (strstr($userAgent, $value)) {
                 $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow('
-				SELECT `id_operating_system`
-				FROM `' . _DB_PREFIX_ . 'operating_system` os
-				WHERE os.`name` = \'' . pSQL($k) . '\'');
+                SELECT `id_operating_system`
+                FROM `' . _DB_PREFIX_ . 'operating_system` os
+                WHERE os.`name` = \'' . pSQL($k) . '\'');
+
                 return $result['id_operating_system'];
             }
         }
+
         return null;
     }
     public static function getFromCustomer($id_customer)
@@ -110,18 +114,19 @@ class Guest extends ObjectModel
             return false;
         }
         $result = Db::getInstance()->getRow('
-		SELECT `id_guest`
-		FROM `' . _DB_PREFIX_ . 'guest`
-		WHERE `id_customer` = ' . (int) $id_customer);
+        SELECT `id_guest`
+        FROM `' . _DB_PREFIX_ . 'guest`
+        WHERE `id_customer` = ' . (int) $id_customer);
+
         return $result['id_guest'];
     }
     public function mergeWithCustomer($id_guest, $id_customer)
     {
         // Since the guests are merged, the guest id in the connections table must be changed too
         Db::getInstance()->execute('
-		UPDATE `' . _DB_PREFIX_ . 'connections` c
-		SET c.`id_guest` = ' . (int) $id_guest . '
-		WHERE c.`id_guest` = ' . (int) $this->id);
+        UPDATE `' . _DB_PREFIX_ . 'connections` c
+        SET c.`id_guest` = ' . (int) $id_guest . '
+        WHERE c.`id_guest` = ' . (int) $this->id);
         // The current guest is removed from the database
         $this->delete();
         // $this is still filled with values, so it's id is changed for the old guest

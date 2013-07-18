@@ -55,6 +55,7 @@ class Pack extends Product
             $result = Db::getInstance()->getValue('SELECT COUNT(*) FROM ' . _DB_PREFIX_ . 'pack WHERE id_product_pack = ' . (int) $id_product);
             self::$cacheIsPack[$id_product] = $result > 0;
         }
+
         return self::$cacheIsPack[$id_product];
     }
     /**
@@ -73,6 +74,7 @@ class Pack extends Product
             $result = Db::getInstance()->getValue('SELECT COUNT(*) FROM ' . _DB_PREFIX_ . 'pack WHERE id_product_item = ' . (int) $id_product);
             self::$cacheIsPacked[$id_product] = $result > 0;
         }
+
         return self::$cacheIsPacked[$id_product];
     }
     public static function noPackPrice($id_product)
@@ -83,6 +85,7 @@ class Pack extends Product
         foreach ($items as $item) {
             $sum += $item->getPrice($price_display_method) * $item->pack_quantity;
         }
+
         return $sum;
     }
     public static function getItems($id_product, $id_lang)
@@ -102,6 +105,7 @@ class Pack extends Product
             $array_result[] = $p;
         }
         self::$cachePackItems[$id_product] = $array_result;
+
         return self::$cachePackItems[$id_product];
     }
     public static function isInStock($id_product)
@@ -116,6 +120,7 @@ class Pack extends Product
                 return false;
             }
         }
+
         return true;
     }
     public static function getItemTable($id_product, $id_lang, $full = false)
@@ -124,20 +129,20 @@ class Pack extends Product
             return array();
         }
         $sql = 'SELECT p.*, product_shop.*, pl.*, MAX(image_shop.`id_image`) id_image, il.`legend`, cl.`name` AS category_default, a.quantity AS pack_quantity, product_shop.`id_category_default`, a.id_product_pack
-				FROM `' . _DB_PREFIX_ . 'pack` a
-				LEFT JOIN `' . _DB_PREFIX_ . 'product` p ON p.id_product = a.id_product_item
-				LEFT JOIN `' . _DB_PREFIX_ . 'product_lang` pl
-					ON p.id_product = pl.id_product
-					AND pl.`id_lang` = ' . (int) $id_lang . Shop::addSqlRestrictionOnLang('pl') . '
-				LEFT JOIN `' . _DB_PREFIX_ . 'image` i ON (i.`id_product` = p.`id_product`)' . Shop::addSqlAssociation('image', 'i', false, 'image_shop.cover=1') . '
-				LEFT JOIN `' . _DB_PREFIX_ . 'image_lang` il ON (i.`id_image` = il.`id_image` AND il.`id_lang` = ' . (int) $id_lang . ')
-				' . Shop::addSqlAssociation('product', 'p') . '
-				LEFT JOIN `' . _DB_PREFIX_ . 'category_lang` cl
-					ON product_shop.`id_category_default` = cl.`id_category`
-					AND cl.`id_lang` = ' . (int) $id_lang . Shop::addSqlRestrictionOnLang('cl') . '
-				WHERE product_shop.`id_shop` = ' . (int) Context::getContext()->shop->id . '
-				AND a.`id_product_pack` = ' . (int) $id_product . '
-				GROUP BY product_shop.id_product';
+                FROM `' . _DB_PREFIX_ . 'pack` a
+                LEFT JOIN `' . _DB_PREFIX_ . 'product` p ON p.id_product = a.id_product_item
+                LEFT JOIN `' . _DB_PREFIX_ . 'product_lang` pl
+                    ON p.id_product = pl.id_product
+                    AND pl.`id_lang` = ' . (int) $id_lang . Shop::addSqlRestrictionOnLang('pl') . '
+                LEFT JOIN `' . _DB_PREFIX_ . 'image` i ON (i.`id_product` = p.`id_product`)' . Shop::addSqlAssociation('image', 'i', false, 'image_shop.cover=1') . '
+                LEFT JOIN `' . _DB_PREFIX_ . 'image_lang` il ON (i.`id_image` = il.`id_image` AND il.`id_lang` = ' . (int) $id_lang . ')
+                ' . Shop::addSqlAssociation('product', 'p') . '
+                LEFT JOIN `' . _DB_PREFIX_ . 'category_lang` cl
+                    ON product_shop.`id_category_default` = cl.`id_category`
+                    AND cl.`id_lang` = ' . (int) $id_lang . Shop::addSqlRestrictionOnLang('cl') . '
+                WHERE product_shop.`id_shop` = ' . (int) Context::getContext()->shop->id . '
+                AND a.`id_product_pack` = ' . (int) $id_product . '
+                GROUP BY product_shop.id_product';
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
         foreach ($result as &$line) {
             $line = Product::getTaxesInformations($line);
@@ -151,6 +156,7 @@ class Pack extends Product
                 $array_result[] = Product::getProductProperties($id_lang, $prow);
             }
         }
+
         return $array_result;
     }
     public static function getPacksTable($id_product, $id_lang, $full = false, $limit = null)
@@ -159,23 +165,23 @@ class Pack extends Product
             return array();
         }
         $packs = Db::getInstance()->getValue('
-		SELECT GROUP_CONCAT(a.`id_product_pack`)
-		FROM `' . _DB_PREFIX_ . 'pack` a
-		WHERE a.`id_product_item` = ' . (int) $id_product);
+        SELECT GROUP_CONCAT(a.`id_product_pack`)
+        FROM `' . _DB_PREFIX_ . 'pack` a
+        WHERE a.`id_product_item` = ' . (int) $id_product);
         if (!(int) $packs) {
             return array();
         }
         $sql = '
-		SELECT p.*, product_shop.*, pl.*, MAX(image_shop.`id_image`) id_image, il.`legend`
-		FROM `' . _DB_PREFIX_ . 'product` p
-		NATURAL LEFT JOIN `' . _DB_PREFIX_ . 'product_lang` pl
-		' . Shop::addSqlAssociation('product', 'p') . '
-		LEFT JOIN `' . _DB_PREFIX_ . 'image` i ON (i.`id_product` = p.`id_product`)' . Shop::addSqlAssociation('image', 'i', false, 'image_shop.cover=1') . '
-		LEFT JOIN `' . _DB_PREFIX_ . 'image_lang` il ON (i.`id_image` = il.`id_image` AND il.`id_lang` = ' . (int) $id_lang . ')
-		WHERE pl.`id_lang` = ' . (int) $id_lang . '
-			' . Shop::addSqlRestrictionOnLang('pl') . '
-			AND p.`id_product` IN (' . $packs . ')
-		GROUP BY product_shop.id_product';
+        SELECT p.*, product_shop.*, pl.*, MAX(image_shop.`id_image`) id_image, il.`legend`
+        FROM `' . _DB_PREFIX_ . 'product` p
+        NATURAL LEFT JOIN `' . _DB_PREFIX_ . 'product_lang` pl
+        ' . Shop::addSqlAssociation('product', 'p') . '
+        LEFT JOIN `' . _DB_PREFIX_ . 'image` i ON (i.`id_product` = p.`id_product`)' . Shop::addSqlAssociation('image', 'i', false, 'image_shop.cover=1') . '
+        LEFT JOIN `' . _DB_PREFIX_ . 'image_lang` il ON (i.`id_image` = il.`id_image` AND il.`id_lang` = ' . (int) $id_lang . ')
+        WHERE pl.`id_lang` = ' . (int) $id_lang . '
+            ' . Shop::addSqlRestrictionOnLang('pl') . '
+            AND p.`id_product` IN (' . $packs . ')
+        GROUP BY product_shop.id_product';
         if ($limit) {
             $sql .= ' LIMIT ' . (int) $limit;
         }
@@ -189,6 +195,7 @@ class Pack extends Product
                 $array_result[] = Product::getProductProperties($id_lang, $row);
             }
         }
+
         return $array_result;
     }
     public static function deleteItems($id_product)
@@ -198,9 +205,9 @@ class Pack extends Product
     /**
      * Add an item to the pack
      *
-     * @param integer $id_product
-     * @param integer $id_item
-     * @param integer $qty
+     * @param  integer $id_product
+     * @param  integer $id_item
+     * @param  integer $qty
      * @return boolean true if everything was fine
      */
     public static function addItem($id_product, $id_item, $qty)
@@ -210,7 +217,7 @@ class Pack extends Product
     public static function duplicate($id_product_old, $id_product_new)
     {
         Db::getInstance()->execute('INSERT INTO ' . _DB_PREFIX_ . 'pack (id_product_pack, id_product_item, quantity)
-		(SELECT ' . (int) $id_product_new . ', id_product_item, quantity FROM ' . _DB_PREFIX_ . 'pack WHERE id_product_pack = ' . (int) $id_product_old . ')');
+        (SELECT ' . (int) $id_product_new . ', id_product_item, quantity FROM ' . _DB_PREFIX_ . 'pack WHERE id_product_pack = ' . (int) $id_product_old . ')');
         // If return query result, a non-pack product will return false
         return true;
     }
@@ -234,14 +241,14 @@ class Pack extends Product
     {
         // We dont't use the parent method because the identifier isn't id_pack
         return (bool) Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('
-			SELECT `id_product_pack`
-			FROM `' . _DB_PREFIX_ . 'pack`
-		');
+            SELECT `id_product_pack`
+            FROM `' . _DB_PREFIX_ . 'pack`
+        ');
     }
     /**
      * For a given pack, tells if it has at least one product using the advanced stock management
      *
-     * @param int $id_product id_pack
+     * @param  int  $id_product id_pack
      * @return bool
      */
     public static function usesAdvancedStockManagement($id_product)

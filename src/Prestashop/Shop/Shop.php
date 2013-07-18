@@ -124,14 +124,14 @@ class Shop extends ObjectModel
     public function setUrl()
     {
         $sql = 'SELECT su.physical_uri, su.virtual_uri,
-			su.domain, su.domain_ssl, t.id_theme, t.name, t.directory
-				FROM ' . _DB_PREFIX_ . 'shop s
-				LEFT JOIN ' . _DB_PREFIX_ . 'shop_url su ON (s.id_shop = su.id_shop)
-				LEFT JOIN ' . _DB_PREFIX_ . 'theme t ON (t.id_theme = s.id_theme)
-				WHERE s.id_shop = ' . (int) $this->id . '
-					AND s.active = 1
-					AND s.deleted = 0
-					AND su.main = 1';
+            su.domain, su.domain_ssl, t.id_theme, t.name, t.directory
+                FROM ' . _DB_PREFIX_ . 'shop s
+                LEFT JOIN ' . _DB_PREFIX_ . 'shop_url su ON (s.id_shop = su.id_shop)
+                LEFT JOIN ' . _DB_PREFIX_ . 'theme t ON (t.id_theme = s.id_theme)
+                WHERE s.id_shop = ' . (int) $this->id . '
+                    AND s.active = 1
+                    AND s.deleted = 0
+                    AND su.main = 1';
         if (!($row = Db::getInstance()->getRow($sql))) {
             return;
         }
@@ -142,13 +142,14 @@ class Shop extends ObjectModel
         $this->virtual_uri = $row['virtual_uri'];
         $this->domain = $row['domain'];
         $this->domain_ssl = $row['domain_ssl'];
+
         return true;
     }
     /**
      * Add a shop, and clear the cache
      *
-     * @param bool $autodate
-     * @param bool $null_values
+     * @param  bool $autodate
+     * @param  bool $null_values
      * @return bool
      */
     public function add($autodate = true, $null_values = false)
@@ -156,6 +157,7 @@ class Shop extends ObjectModel
         $res = parent::add($autodate, $null_values);
         Shop::cacheShops(true);
         Db::getInstance()->Execute('INSERT INTO ' . _DB_PREFIX_ . 'employee_shop (id_employee, id_shop) (SELECT id_employee, ' . (int) $this->id . ' FROM ' . _DB_PREFIX_ . 'employee WHERE id_profile = ' . (int) _PS_ADMIN_PROFILE_ . ')');
+
         return $res;
     }
     /**
@@ -176,40 +178,42 @@ class Shop extends ObjectModel
                 $table_name .= '_' . $row['type'];
             }
             $res &= Db::getInstance()->execute('
-				DELETE FROM `' . bqSQL(_DB_PREFIX_ . $table_name) . '`
-				WHERE `' . bqSQL($id) . '`=' . (int) $this->id);
+                DELETE FROM `' . bqSQL(_DB_PREFIX_ . $table_name) . '`
+                WHERE `' . bqSQL($id) . '`=' . (int) $this->id);
         }
         // removes stock available
         $res &= Db::getInstance()->delete('stock_available', 'id_shop = ' . (int) $this->id);
         // Remove urls
         $res &= Db::getInstance()->delete('shop_url', 'id_shop = ' . (int) $this->id);
         Shop::cacheShops(true);
+
         return $res;
     }
     /**
      * Detect dependency with customer or orders
      *
-     * @param int $id_shop
+     * @param  int  $id_shop
      * @return bool
      */
     public static function hasDependency($id_shop)
     {
         $has_dependency = false;
         $nbr_customer = (int) Db::getInstance()->getValue('
-			SELECT count(*)
-			FROM `' . _DB_PREFIX_ . 'customer`
-			WHERE `id_shop`=' . (int) $id_shop);
+            SELECT count(*)
+            FROM `' . _DB_PREFIX_ . 'customer`
+            WHERE `id_shop`=' . (int) $id_shop);
         if ($nbr_customer) {
             $has_dependency = true;
         } else {
             $nbr_order = (int) Db::getInstance()->getValue('
-				SELECT count(*)
-				FROM `' . _DB_PREFIX_ . 'orders`
-				WHERE `id_shop`=' . (int) $id_shop);
+                SELECT count(*)
+                FROM `' . _DB_PREFIX_ . 'orders`
+                WHERE `id_shop`=' . (int) $id_shop);
             if ($nbr_order) {
                 $has_dependency = true;
             }
         }
+
         return $has_dependency;
     }
     /**
@@ -224,12 +228,12 @@ class Shop extends ObjectModel
         if (!($id_shop = Tools::getValue('id_shop')) || defined('_PS_ADMIN_DIR_')) {
             $host = pSQL(Tools::getHttpHost());
             $sql = 'SELECT s.id_shop, CONCAT(su.physical_uri, su.virtual_uri) AS uri, su.domain, su.main
-					FROM ' . _DB_PREFIX_ . 'shop_url su
-					LEFT JOIN ' . _DB_PREFIX_ . 'shop s ON (s.id_shop = su.id_shop)
-					WHERE (su.domain = \'' . $host . '\' OR su.domain_ssl = \'' . $host . '\')
-						AND s.active = 1
-						AND s.deleted = 0
-					ORDER BY LENGTH(CONCAT(su.physical_uri, su.virtual_uri)) DESC';
+                    FROM ' . _DB_PREFIX_ . 'shop_url su
+                    LEFT JOIN ' . _DB_PREFIX_ . 'shop s ON (s.id_shop = su.id_shop)
+                    WHERE (su.domain = \'' . $host . '\' OR su.domain_ssl = \'' . $host . '\')
+                        AND s.active = 1
+                        AND s.deleted = 0
+                    ORDER BY LENGTH(CONCAT(su.physical_uri, su.virtual_uri)) DESC';
             $id_shop = '';
             $found_uri = '';
             $request_uri = rawurldecode($_SERVER['REQUEST_URI']);
@@ -315,6 +319,7 @@ class Shop extends ObjectModel
         self::$context_id_shop = $shop->id;
         self::$context_id_shop_group = $shop->id_shop_group;
         self::$context = self::CONTEXT_SHOP;
+
         return $shop;
     }
     /**
@@ -333,6 +338,7 @@ class Shop extends ObjectModel
             $address->city = Configuration::get('PS_SHOP_CITY');
             $this->address = $address;
         }
+
         return $this->address;
     }
     /**
@@ -363,6 +369,7 @@ class Shop extends ObjectModel
         if (!$this->domain) {
             return false;
         }
+
         return 'http://' . $this->domain . $this->getBaseURI();
     }
     /**
@@ -375,6 +382,7 @@ class Shop extends ObjectModel
         if (!$this->group) {
             $this->group = new ShopGroup($this->id_shop_group);
         }
+
         return $this->group;
     }
     /**
@@ -394,9 +402,10 @@ class Shop extends ObjectModel
     public function getUrls()
     {
         $sql = 'SELECT *
-				FROM ' . _DB_PREFIX_ . 'shop_url
-				WHERE active = 1
-					AND id_shop = ' . (int) $this->id;
+                FROM ' . _DB_PREFIX_ . 'shop_url
+                WHERE active = 1
+                    AND id_shop = ' . (int) $this->id;
+
         return Db::getInstance()->executeS($sql);
     }
     /**
@@ -418,6 +427,7 @@ class Shop extends ObjectModel
         if (!Shop::$initialized) {
             Shop::init();
         }
+
         return isset(Shop::$asso_tables[$table]) ? Shop::$asso_tables[$table] : false;
     }
     /**
@@ -430,6 +440,7 @@ class Shop extends ObjectModel
         if (!Shop::$initialized) {
             Shop::init();
         }
+
         return in_array($table, self::$id_shop_default_tables);
     }
     /**
@@ -442,13 +453,14 @@ class Shop extends ObjectModel
         if (!Shop::$initialized) {
             Shop::init();
         }
+
         return Shop::$asso_tables;
     }
     /**
      * Add table associated to shop
      *
-     * @param string $table_name
-     * @param array $table_details
+     * @param  string $table_name
+     * @param  array  $table_details
      * @return bool
      */
     public static function addTableAssociation($table_name, $table_details)
@@ -458,12 +470,13 @@ class Shop extends ObjectModel
         } else {
             return false;
         }
+
         return true;
     }
     /**
      * Check if given table is associated to shop
      *
-     * @param string $table
+     * @param  string $table
      * @return bool
      */
     public static function isTableAssociated($table)
@@ -471,6 +484,7 @@ class Shop extends ObjectModel
         if (!Shop::$initialized) {
             Shop::init();
         }
+
         return isset(Shop::$asso_tables[$table]) && Shop::$asso_tables[$table]['type'] == 'shop';
     }
     /**
@@ -493,16 +507,16 @@ class Shop extends ObjectModel
             $where .= 'AND es.id_employee = ' . (int) $employee->id;
         }
         $sql = 'SELECT gs.*, s.*, gs.name AS group_name, s.name AS shop_name, s.active, su.domain, su.domain_ssl, su.physical_uri, su.virtual_uri
-				FROM ' . _DB_PREFIX_ . 'shop_group gs
-				LEFT JOIN ' . _DB_PREFIX_ . 'shop s
-					ON s.id_shop_group = gs.id_shop_group
-				LEFT JOIN ' . _DB_PREFIX_ . 'shop_url su
-					ON s.id_shop = su.id_shop AND su.main = 1
-				' . $from . '
-				WHERE s.deleted = 0
-					AND gs.deleted = 0
-					' . $where . '
-				ORDER BY gs.name, s.name';
+                FROM ' . _DB_PREFIX_ . 'shop_group gs
+                LEFT JOIN ' . _DB_PREFIX_ . 'shop s
+                    ON s.id_shop_group = gs.id_shop_group
+                LEFT JOIN ' . _DB_PREFIX_ . 'shop_url su
+                    ON s.id_shop = su.id_shop AND su.main = 1
+                ' . $from . '
+                WHERE s.deleted = 0
+                    AND gs.deleted = 0
+                    ' . $where . '
+                ORDER BY gs.name, s.name';
         if ($results = Db::getInstance()->executeS($sql)) {
             foreach ($results as $row) {
                 if (!isset(self::$shops[$row['id_shop_group']])) {
@@ -519,14 +533,15 @@ class Shop extends ObjectModel
         foreach (Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql) as $row) {
             $list[] = $row['id_shop'];
         }
+
         return $list;
     }
     /**
      * Get shops list
      *
-     * @param bool $active
-     * @param int $id_shop_group
-     * @param bool $get_as_list_id
+     * @param  bool  $active
+     * @param  int   $id_shop_group
+     * @param  bool  $get_as_list_id
      * @return array
      */
     public static function getShops($active = true, $id_shop_group = null, $get_as_list_id = false)
@@ -544,6 +559,7 @@ class Shop extends ObjectModel
                 }
             }
         }
+
         return $results;
     }
     public function getUrlsSharedCart()
@@ -561,13 +577,14 @@ class Shop extends ObjectModel
         foreach (Db::getInstance()->executeS($query) as $row) {
             $domains[] = $row['domain'];
         }
+
         return $domains;
     }
     /**
      * Get a collection of shops
      *
-     * @param bool $active
-     * @param int $id_shop_group
+     * @param  bool       $active
+     * @param  int        $id_shop_group
      * @return Collection
      */
     public static function getShopsCollection($active = true, $id_shop_group = null)
@@ -579,12 +596,13 @@ class Shop extends ObjectModel
         if ($id_shop_group) {
             $shops->where('id_shop_group', '=', (int) $id_shop_group);
         }
+
         return $shops;
     }
     /**
      * Return some informations cached for one shop
      *
-     * @param int $shop_id
+     * @param  int   $shop_id
      * @return array
      */
     public static function getShop($shop_id)
@@ -595,12 +613,13 @@ class Shop extends ObjectModel
                 return $group_data['shops'][$shop_id];
             }
         }
+
         return false;
     }
     /**
      * Return a shop ID from shop name
      *
-     * @param string $name
+     * @param  string $name
      * @return int
      */
     public static function getIdByName($name)
@@ -613,12 +632,13 @@ class Shop extends ObjectModel
                 }
             }
         }
+
         return false;
     }
     /**
-     * @param bool $active
-     * @param int $id_shop_group
-     * @return int Total of shops
+     * @param  bool $active
+     * @param  int  $id_shop_group
+     * @return int  Total of shops
      */
     public static function getTotalShops($active = true, $id_shop_group = null)
     {
@@ -627,7 +647,7 @@ class Shop extends ObjectModel
     /**
      * Retrieve group ID of a shop
      *
-     * @param int $shop_id Shop ID
+     * @param  int $shop_id Shop ID
      * @return int Group ID
      */
     public static function getGroupFromShop($shop_id, $as_id = true)
@@ -638,13 +658,14 @@ class Shop extends ObjectModel
                 return $as_id ? $group_id : $group_data;
             }
         }
+
         return false;
     }
     /**
      * If the shop group has the option $type activated, get all shops ID of this group, else get current shop ID
      *
-     * @param int $shop_id
-     * @param int $type Shop::SHARE_CUSTOMER | Shop::SHARE_ORDER
+     * @param  int   $shop_id
+     * @param  int   $type    Shop::SHARE_CUSTOMER | Shop::SHARE_ORDER
      * @return array
      */
     public static function getSharedShops($shop_id, $type)
@@ -658,12 +679,13 @@ class Shop extends ObjectModel
                 return array_keys($group_data['shops']);
             }
         }
+
         return array($shop_id);
     }
     /**
      * Get a list of ID concerned by the shop context (E.g. if context is shop group, get list of children shop ID)
      *
-     * @param string $share If false, dont check share datas from group. Else can take a Shop::SHARE_* constant value
+     * @param  string $share If false, dont check share datas from group. Else can take a Shop::SHARE_* constant value
      * @return array
      */
     public static function getContextListShopID($share = false)
@@ -677,28 +699,29 @@ class Shop extends ObjectModel
                 $list = Shop::getShops(true, null, true);
             }
         }
+
         return $list;
     }
     /**
      * Return the list of shop by id
      *
-     * @param int $id
-     * @param string $identifier
-     * @param string $table
+     * @param  int    $id
+     * @param  string $identifier
+     * @param  string $table
      * @return array
      */
     public static function getShopById($id, $identifier, $table)
     {
         return Db::getInstance()->executeS('
-			SELECT `id_shop`, `' . bqSQL($identifier) . '`
-			FROM `' . _DB_PREFIX_ . bqSQL($table) . '_shop`
-			WHERE `' . bqSQL($identifier) . '` = ' . (int) $id);
+            SELECT `id_shop`, `' . bqSQL($identifier) . '`
+            FROM `' . _DB_PREFIX_ . bqSQL($table) . '_shop`
+            WHERE `' . bqSQL($identifier) . '` = ' . (int) $id);
     }
     /**
      * Change the current shop context
      *
      * @param int $type Shop::CONTEXT_ALL | Shop::CONTEXT_GROUP | Shop::CONTEXT_SHOP
-     * @param int $id ID shop if CONTEXT_SHOP or id shop group if CONTEXT_GROUP
+     * @param int $id   ID shop if CONTEXT_SHOP or id shop group if CONTEXT_GROUP
      */
     public static function setContext($type, $id = null)
     {
@@ -739,6 +762,7 @@ class Shop extends ObjectModel
         if ($null_value_without_multishop && !Shop::isFeatureActive()) {
             return null;
         }
+
         return self::$context_id_shop;
     }
     /**
@@ -751,6 +775,7 @@ class Shop extends ObjectModel
         if ($null_value_without_multishop && !Shop::isFeatureActive()) {
             return null;
         }
+
         return self::$context_id_shop_group;
     }
     public static function getContextShopGroup()
@@ -759,12 +784,13 @@ class Shop extends ObjectModel
         if ($context_shop_group === null) {
             $context_shop_group = new ShopGroup((int) self::$context_id_shop_group);
         }
+
         return $context_shop_group;
     }
     /**
      * Add an sql restriction for shops fields
      *
-     * @param int $share If false, dont check share datas from group. Else can take a Shop::SHARE_* constant value
+     * @param int    $share If false, dont check share datas from group. Else can take a Shop::SHARE_* constant value
      * @param string $alias
      */
     public static function addSqlRestriction($share = false, $alias = null)
@@ -778,15 +804,16 @@ class Shop extends ObjectModel
         } else {
             $restriction = ' AND ' . $alias . 'id_shop IN (' . implode(', ', Shop::getContextListShopID($share)) . ') ';
         }
+
         return $restriction;
     }
     /**
      * Add an SQL JOIN in query between a table and its associated table in multishop
      *
-     * @param string $table Table name (E.g. product, module, etc.)
-     * @param string $alias Alias of table
-     * @param bool $inner_join Use or not INNER JOIN
-     * @param string $on
+     * @param  string $table      Table name (E.g. product, module, etc.)
+     * @param  string $alias      Alias of table
+     * @param  bool   $inner_join Use or not INNER JOIN
+     * @param  string $on
      * @return string
      */
     public static function addSqlAssociation($table, $alias, $inner_join = true, $on = null, $force_not_default = false)
@@ -800,7 +827,7 @@ class Shop extends ObjectModel
             return;
         }
         $sql = ($inner_join ? ' INNER' : ' LEFT') . ' JOIN ' . _DB_PREFIX_ . $table . '_shop ' . $table_alias . '
-		ON (' . $table_alias . '.id_' . $table . ' = ' . $alias . '.id_' . $table;
+        ON (' . $table_alias . '.id_' . $table . ' = ' . $alias . '.id_' . $table;
         if ((int) self::$context_id_shop) {
             $sql .= ' AND ' . $table_alias . '.id_shop = ' . (int) self::$context_id_shop;
         } elseif (Shop::checkIdShopDefault($table) && !$force_not_default) {
@@ -809,13 +836,14 @@ class Shop extends ObjectModel
             $sql .= ' AND ' . $table_alias . '.id_shop IN (' . implode(', ', Shop::getContextListShopID()) . ')';
         }
         $sql .= ($on ? ' AND ' . $on : '') . ')';
+
         return $sql;
     }
     /**
      * Add a restriction on id_shop for multishop lang table
      *
-     * @param string $alias
-     * @param Context $context
+     * @param  string  $alias
+     * @param  Context $context
      * @return string
      */
     public static function addSqlRestrictionOnLang($alias = null, $id_shop = null)
@@ -826,6 +854,7 @@ class Shop extends ObjectModel
         if (!$id_shop) {
             $id_shop = (int) Configuration::get('PS_SHOP_DEFAULT');
         }
+
         return ' AND ' . ($alias ? $alias . '.' : '') . 'id_shop = ' . $id_shop . ' ';
     }
     /**
@@ -836,6 +865,7 @@ class Shop extends ObjectModel
     public static function getTree()
     {
         Shop::cacheShops();
+
         return self::$shops;
     }
     /**
@@ -847,6 +877,7 @@ class Shop extends ObjectModel
         if ($feature_active === null) {
             $feature_active = Configuration::getGlobalValue('PS_MULTISHOP_FEATURE_ACTIVE') && Db::getInstance()->getValue('SELECT COUNT(*) FROM ' . _DB_PREFIX_ . 'shop') > 1;
         }
+
         return $feature_active;
     }
     public function copyShopData($old_id, $tables_import = false, $deleted = false)
@@ -905,13 +936,13 @@ class Shop extends ObjectModel
                         unset($res['id_category_default']);
                         $keys = implode('`, `', array_keys($res));
                         $sql = 'INSERT IGNORE INTO `' . _DB_PREFIX_ . $table_name . '` (`' . $keys . '`, `id_category_default`, ' . $id . ')
-								(SELECT `' . $keys . '`, ' . (int) $categories[0] . ', ' . (int) $this->id . ' FROM ' . _DB_PREFIX_ . $table_name . '
-								WHERE `' . $id . '` = ' . (int) $old_id . ')';
+                                (SELECT `' . $keys . '`, ' . (int) $categories[0] . ', ' . (int) $this->id . ' FROM ' . _DB_PREFIX_ . $table_name . '
+                                WHERE `' . $id . '` = ' . (int) $old_id . ')';
                     } else {
                         $keys = implode('`, `', array_keys($res));
                         $sql = 'INSERT IGNORE INTO `' . _DB_PREFIX_ . $table_name . '` (`' . $keys . '`, ' . $id . ')
-								(SELECT `' . $keys . '`, ' . (int) $this->id . ' FROM ' . _DB_PREFIX_ . $table_name . '
-								WHERE `' . $id . '` = ' . (int) $old_id . ')';
+                                (SELECT `' . $keys . '`, ' . (int) $this->id . ' FROM ' . _DB_PREFIX_ . $table_name . '
+                                WHERE `' . $id . '` = ' . (int) $old_id . ')';
                     }
                     Db::getInstance()->execute($sql);
                 }
@@ -929,7 +960,7 @@ class Shop extends ObjectModel
     }
     /**
      * @static
-     * @param int $id
+     * @param  int   $id
      * @return array
      */
     public static function getCategories($id = 0, $only_id = true)
@@ -954,6 +985,7 @@ class Shop extends ObjectModel
         } else {
             return $result;
         }
+
         return $array;
     }
     /**
@@ -962,11 +994,12 @@ class Shop extends ObjectModel
     public static function getCurrentShop()
     {
         Tools::displayAsDeprecated();
+
         return Context::getContext()->shop->id;
     }
     /**
-     * @param string $entity
-     * @param int $id_shop
+     * @param  string     $entity
+     * @param  int        $id_shop
      * @return array|bool
      */
     public static function getEntityIds($entity, $id_shop, $active = false, $delete = false)
@@ -974,11 +1007,12 @@ class Shop extends ObjectModel
         if (!Shop::isTableAssociated($entity)) {
             return false;
         }
+
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
-			SELECT entity.`id_' . pSQL($entity) . '`
-			FROM `' . _DB_PREFIX_ . pSQL($entity) . '_shop`es
-			LEFT JOIN ' . _DB_PREFIX_ . pSQL($entity) . ' entity
-				ON (entity.`id_' . pSQL($entity) . '` = es.`id_' . pSQL($entity) . '`)
-			WHERE es.`id_shop` = ' . (int) $id_shop . ($active ? ' AND entity.`active` = 1' : '') . ($delete ? ' AND entity.deleted = 0' : ''));
+            SELECT entity.`id_' . pSQL($entity) . '`
+            FROM `' . _DB_PREFIX_ . pSQL($entity) . '_shop`es
+            LEFT JOIN ' . _DB_PREFIX_ . pSQL($entity) . ' entity
+                ON (entity.`id_' . pSQL($entity) . '` = es.`id_' . pSQL($entity) . '`)
+            WHERE es.`id_shop` = ' . (int) $id_shop . ($active ? ' AND entity.`active` = 1' : '') . ($delete ? ' AND entity.deleted = 0' : ''));
     }
 }

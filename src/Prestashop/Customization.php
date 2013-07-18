@@ -33,16 +33,17 @@ class Customization
     public static function getReturnedCustomizations($id_order)
     {
         if (($result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
-			SELECT ore.`id_order_return`, ord.`id_order_detail`, ord.`id_customization`, ord.`product_quantity`
-			FROM `' . _DB_PREFIX_ . 'order_return` ore
-			INNER JOIN `' . _DB_PREFIX_ . 'order_return_detail` ord ON (ord.`id_order_return` = ore.`id_order_return`)
-			WHERE ore.`id_order` = ' . (int) $id_order . ' AND ord.`id_customization` != 0')) === false) {
+            SELECT ore.`id_order_return`, ord.`id_order_detail`, ord.`id_customization`, ord.`product_quantity`
+            FROM `' . _DB_PREFIX_ . 'order_return` ore
+            INNER JOIN `' . _DB_PREFIX_ . 'order_return_detail` ord ON (ord.`id_order_return` = ore.`id_order_return`)
+            WHERE ore.`id_order` = ' . (int) $id_order . ' AND ord.`id_customization` != 0')) === false) {
             return false;
         }
         $customizations = array();
         foreach ($result as $row) {
             $customizations[(int) $row['id_customization']] = $row;
         }
+
         return $customizations;
     }
     public static function getOrderedCustomizations($id_cart)
@@ -54,6 +55,7 @@ class Customization
         foreach ($result as $row) {
             $customizations[(int) $row['id_customization']] = $row;
         }
+
         return $customizations;
     }
     public static function countCustomizationQuantityByProduct($customizations)
@@ -62,6 +64,7 @@ class Customization
         foreach ($customizations as $customization) {
             $total[(int) $customization['id_order_detail']] = !isset($total[(int) $customization['id_order_detail']]) ? (int) $customization['quantity'] : $total[(int) $customization['id_order_detail']] + (int) $customization['quantity'];
         }
+
         return $total;
     }
     public static function getLabel($id_customization, $id_lang)
@@ -70,10 +73,11 @@ class Customization
             return false;
         }
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow('
-		SELECT `name`
-		FROM `' . _DB_PREFIX_ . 'customization_field_lang`
-		WHERE `id_customization_field` = ' . (int) $id_customization . '
-		AND `id_lang` = ' . (int) $id_lang);
+        SELECT `name`
+        FROM `' . _DB_PREFIX_ . 'customization_field_lang`
+        WHERE `id_customization_field` = ' . (int) $id_customization . '
+        AND `id_lang` = ' . (int) $id_lang);
+
         return $result['name'];
     }
     public static function retrieveQuantitiesFromIds($ids_customizations)
@@ -88,26 +92,28 @@ class Customization
         }
         if (!empty($in_values)) {
             $results = Db::getInstance()->executeS('SELECT `id_customization`, `id_product`, `quantity`, `quantity_refunded`, `quantity_returned`
-							 FROM `' . _DB_PREFIX_ . 'customization`
-							 WHERE `id_customization` IN (' . $in_values . ')');
+                             FROM `' . _DB_PREFIX_ . 'customization`
+                             WHERE `id_customization` IN (' . $in_values . ')');
             foreach ($results as $row) {
                 $quantities[$row['id_customization']] = $row;
             }
         }
+
         return $quantities;
     }
     public static function countQuantityByCart($id_cart)
     {
         $quantity = array();
         $results = Db::getInstance()->executeS('
-			SELECT `id_product`, `id_product_attribute`, SUM(`quantity`) AS quantity
-			FROM `' . _DB_PREFIX_ . 'customization`
-			WHERE `id_cart` = ' . (int) $id_cart . '
-			GROUP BY `id_cart`, `id_product`, `id_product_attribute`
-		');
+            SELECT `id_product`, `id_product_attribute`, SUM(`quantity`) AS quantity
+            FROM `' . _DB_PREFIX_ . 'customization`
+            WHERE `id_cart` = ' . (int) $id_cart . '
+            GROUP BY `id_cart`, `id_product`, `id_product_attribute`
+        ');
         foreach ($results as $row) {
             $quantity[$row['id_product']][$row['product_attribute_id']] = $row['quantity'];
         }
+
         return $quantity;
     }
     /**
@@ -129,8 +135,8 @@ class Customization
     public static function isCurrentlyUsed($table = null, $has_active_column = false)
     {
         return (bool) Db::getInstance()->getValue('
-			SELECT `id_customization_field`
-			FROM `' . _DB_PREFIX_ . 'customization_field`
-		');
+            SELECT `id_customization_field`
+            FROM `' . _DB_PREFIX_ . 'customization_field`
+        ');
     }
 }

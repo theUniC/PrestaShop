@@ -67,12 +67,12 @@ class AdminManufacturersController extends AdminController
         $this->addRowAction('edit');
         $this->addRowAction('delete');
         $this->_select = '
-			COUNT(`id_product`) AS `products`, (
-				SELECT COUNT(ad.`id_manufacturer`) as `addresses`
-				FROM `' . _DB_PREFIX_ . 'address` ad
-				WHERE ad.`id_manufacturer` = a.`id_manufacturer`
-					AND ad.`deleted` = 0
-				GROUP BY ad.`id_manufacturer`) as `addresses`';
+            COUNT(`id_product`) AS `products`, (
+                SELECT COUNT(ad.`id_manufacturer`) as `addresses`
+                FROM `' . _DB_PREFIX_ . 'address` ad
+                WHERE ad.`id_manufacturer` = a.`id_manufacturer`
+                    AND ad.`deleted` = 0
+                GROUP BY ad.`id_manufacturer`) as `addresses`';
         $this->_join = 'LEFT JOIN `' . _DB_PREFIX_ . 'product` p ON (a.`id_manufacturer` = p.`id_manufacturer`)';
         $this->_group = 'GROUP BY a.`id_manufacturer`';
         $this->context->smarty->assign('title_list', $this->l('List of manufacturers:'));
@@ -108,11 +108,11 @@ class AdminManufacturersController extends AdminController
         $this->fields_list = array('id_address' => array('title' => $this->l('ID'), 'width' => 25), 'manufacturer_name' => array('title' => $this->l('Manufacturer'), 'width' => 'auto'), 'firstname' => array('title' => $this->l('First name'), 'width' => 80), 'lastname' => array('title' => $this->l('Last name'), 'width' => 100, 'filter_key' => 'a!name'), 'postcode' => array('title' => $this->l('Zip Code/Postal Code'), 'align' => 'right', 'width' => 50), 'city' => array('title' => $this->l('City'), 'width' => 150), 'country' => array('title' => $this->l('Country'), 'width' => 100, 'type' => 'select', 'list' => $this->countries_array, 'filter_key' => 'cl!id_country'));
         $this->_select = 'cl.`name` as country, m.`name` AS manufacturer_name';
         $this->_join = '
-			LEFT JOIN `' . _DB_PREFIX_ . 'country_lang` cl
-				ON (cl.`id_country` = a.`id_country` AND cl.`id_lang` = ' . (int) $this->context->language->id . ') ';
+            LEFT JOIN `' . _DB_PREFIX_ . 'country_lang` cl
+                ON (cl.`id_country` = a.`id_country` AND cl.`id_lang` = ' . (int) $this->context->language->id . ') ';
         $this->_join .= '
-			LEFT JOIN `' . _DB_PREFIX_ . 'manufacturer` m
-				ON (a.`id_manufacturer` = m.`id_manufacturer`)';
+            LEFT JOIN `' . _DB_PREFIX_ . 'manufacturer` m
+                ON (a.`id_manufacturer` = m.`id_manufacturer`)';
         $this->_where = 'AND a.`id_customer` = 0 AND a.`id_supplier` = 0 AND a.`id_warehouse` = 0 AND a.`deleted`=0';
         $this->context->smarty->assign('title_list', $this->l('Manufacturers addresses:'));
         // call postProcess() for take care about actions and filters
@@ -127,8 +127,8 @@ class AdminManufacturersController extends AdminController
     }
     /**
      * Display editaddresses action link
-     * @param string $token the token to add to the link
-     * @param int $id the identifier to add to the link
+     * @param  string $token the token to add to the link
+     * @param  int    $id    the identifier to add to the link
      * @return string
      */
     public function displayEditaddressesLink($token = null, $id)
@@ -137,6 +137,7 @@ class AdminManufacturersController extends AdminController
             self::$cache_lang['editaddresses'] = $this->l('Edit Adresses');
         }
         $this->context->smarty->assign(array('href' => self::$currentIndex . '&' . $this->identifier . '=' . $id . '&editaddresses&token=' . ($token != null ? $token : $this->token), 'action' => self::$cache_lang['editaddresses']));
+
         return $this->context->smarty->fetch('helpers/list/list_action_edit.tpl');
     }
     public function renderForm()
@@ -155,6 +156,7 @@ class AdminManufacturersController extends AdminController
             $this->fields_value['short_description_' . $language['id_lang']] = htmlentities(stripslashes($this->getFieldValue($manufacturer, 'short_description', $language['id_lang'])), ENT_COMPAT, 'UTF-8');
             $this->fields_value['description_' . $language['id_lang']] = htmlentities(stripslashes($this->getFieldValue($manufacturer, 'description', $language['id_lang'])), ENT_COMPAT, 'UTF-8');
         }
+
         return parent::renderForm();
     }
     public function renderFormAddress()
@@ -264,6 +266,7 @@ class AdminManufacturersController extends AdminController
             }
         }
         $this->tpl_view_vars = array('manufacturer' => $manufacturer, 'addresses' => $addresses, 'products' => $products, 'stock_management' => Configuration::get('PS_STOCK_MANAGEMENT'), 'shopContext' => Shop::getContext());
+
         return parent::renderView();
     }
     public function initContent()
@@ -341,6 +344,7 @@ class AdminManufacturersController extends AdminController
         if (!$res) {
             $this->errors[] = Tools::displayError('Unable to resize one or more of your pictures.');
         }
+
         return $res;
     }
     protected function beforeDelete($object)

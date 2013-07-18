@@ -120,6 +120,7 @@ class Address extends ObjectModel
         if (Validate::isUnsignedId($this->id_customer)) {
             Customer::resetAddressCache($this->id_customer);
         }
+
         return true;
     }
     public function update($null_values = false)
@@ -131,6 +132,7 @@ class Address extends ObjectModel
         if (isset(self::$_idZones[$this->id])) {
             unset(self::$_idZones[$this->id]);
         }
+
         return parent::update($null_values);
     }
     /**
@@ -145,6 +147,7 @@ class Address extends ObjectModel
             return parent::delete();
         } else {
             $this->deleted = true;
+
             return $this->update();
         }
     }
@@ -157,6 +160,7 @@ class Address extends ObjectModel
         $tmp_addr = new Address();
         $out = $tmp_addr->fieldsValidate;
         unset($tmp_addr);
+
         return $out;
     }
     /**
@@ -172,12 +176,13 @@ class Address extends ObjectModel
         if (class_exists('VatNumber', false)) {
             return array_merge($errors, VatNumber::WebServiceCheck($this->vat_number));
         }
+
         return $errors;
     }
     /**
      * Get zone id for a given address
      *
-     * @param integer $id_address Address id for which we want to get zone id
+     * @param  integer $id_address Address id for which we want to get zone id
      * @return integer Zone id
      */
     public static function getZoneById($id_address)
@@ -189,18 +194,19 @@ class Address extends ObjectModel
             return self::$_idZones[$id_address];
         }
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow('
-		SELECT s.`id_zone` AS id_zone_state, c.`id_zone`
-		FROM `' . _DB_PREFIX_ . 'address` a
-		LEFT JOIN `' . _DB_PREFIX_ . 'country` c ON c.`id_country` = a.`id_country`
-		LEFT JOIN `' . _DB_PREFIX_ . 'state` s ON s.`id_state` = a.`id_state`
-		WHERE a.`id_address` = ' . (int) $id_address);
+        SELECT s.`id_zone` AS id_zone_state, c.`id_zone`
+        FROM `' . _DB_PREFIX_ . 'address` a
+        LEFT JOIN `' . _DB_PREFIX_ . 'country` c ON c.`id_country` = a.`id_country`
+        LEFT JOIN `' . _DB_PREFIX_ . 'state` s ON s.`id_state` = a.`id_state`
+        WHERE a.`id_address` = ' . (int) $id_address);
         self::$_idZones[$id_address] = (int) ((int) $result['id_zone_state'] ? $result['id_zone_state'] : $result['id_zone']);
+
         return self::$_idZones[$id_address];
     }
     /**
      * Check if country is active for a given address
      *
-     * @param integer $id_address Address id for which we want to get country status
+     * @param  integer $id_address Address id for which we want to get country status
      * @return integer Country status
      */
     public static function isCountryActiveById($id_address)
@@ -209,12 +215,13 @@ class Address extends ObjectModel
             return false;
         }
         if (!($result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow('
-		SELECT c.`active`
-		FROM `' . _DB_PREFIX_ . 'address` a
-		LEFT JOIN `' . _DB_PREFIX_ . 'country` c ON c.`id_country` = a.`id_country`
-		WHERE a.`id_address` = ' . (int) $id_address))) {
+        SELECT c.`active`
+        FROM `' . _DB_PREFIX_ . 'address` a
+        LEFT JOIN `' . _DB_PREFIX_ . 'country` c ON c.`id_country` = a.`id_country`
+        WHERE a.`id_address` = ' . (int) $id_address))) {
             return false;
         }
+
         return $result['active'];
     }
     /**
@@ -225,10 +232,11 @@ class Address extends ObjectModel
     public function isUsed()
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow('
-		SELECT COUNT(`id_order`) AS used
-		FROM `' . _DB_PREFIX_ . 'orders`
-		WHERE `id_address_delivery` = ' . (int) $this->id . '
-		OR `id_address_invoice` = ' . (int) $this->id);
+        SELECT COUNT(`id_order`) AS used
+        FROM `' . _DB_PREFIX_ . 'orders`
+        WHERE `id_address_delivery` = ' . (int) $this->id . '
+        OR `id_address_invoice` = ' . (int) $this->id);
+
         return isset($result['used']) ? $result['used'] : false;
     }
     public static function getCountryAndState($id_address)
@@ -238,12 +246,13 @@ class Address extends ObjectModel
         }
         if ($id_address) {
             $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow('
-			SELECT `id_country`, `id_state`, `vat_number`, `postcode` FROM `' . _DB_PREFIX_ . 'address`
-			WHERE `id_address` = ' . (int) $id_address);
+            SELECT `id_country`, `id_state`, `vat_number`, `postcode` FROM `' . _DB_PREFIX_ . 'address`
+            WHERE `id_address` = ' . (int) $id_address);
         } else {
             $result = false;
         }
         self::$_idCountries[$id_address] = $result;
+
         return $result;
     }
     /**
@@ -257,10 +266,11 @@ class Address extends ObjectModel
         $key = 'address_exists_' . (int) $id_address;
         if (!Cache::isStored($key)) {
             Cache::store($key, Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow('
-							SELECT `id_address`
-							FROM ' . _DB_PREFIX_ . 'address a
-							WHERE a.`id_address` = ' . (int) $id_address));
+                            SELECT `id_address`
+                            FROM ' . _DB_PREFIX_ . 'address a
+                            WHERE a.`id_address` = ' . (int) $id_address));
         }
+
         return Cache::retrieve($key);
     }
     public static function getFirstCustomerAddressId($id_customer, $active = true)
@@ -268,16 +278,17 @@ class Address extends ObjectModel
         if (!$id_customer) {
             return false;
         }
+
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('
-			SELECT `id_address`
-			FROM `' . _DB_PREFIX_ . 'address`
-			WHERE `id_customer` = ' . (int) $id_customer . ' AND `deleted` = 0' . ($active ? ' AND `active` = 1' : ''));
+            SELECT `id_address`
+            FROM `' . _DB_PREFIX_ . 'address`
+            WHERE `id_customer` = ' . (int) $id_customer . ' AND `deleted` = 0' . ($active ? ' AND `active` = 1' : ''));
     }
     /**
      * Initiliaze an address corresponding to the specified id address or if empty to the
      * default shop configuration
      *
-     * @param int $id_address
+     * @param  int     $id_address
      * @return Address address
      */
     public static function initialize($id_address = null)
@@ -295,12 +306,13 @@ class Address extends ObjectModel
             $address->id_state = 0;
             $address->postcode = 0;
         }
+
         return $address;
     }
     /**
      * Returns id_address for a given id_supplier
      * @since 1.5.0
-     * @param int $id_supplier
+     * @param  int $id_supplier
      * @return int $id_address
      */
     public static function getAddressIdBySupplierId($id_supplier)
@@ -313,6 +325,7 @@ class Address extends ObjectModel
         $query->where('id_customer = 0');
         $query->where('id_manufacturer = 0');
         $query->where('id_warehouse = 0');
+
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($query);
     }
 }

@@ -42,9 +42,9 @@ class Translate
      * Get a translation for an admin controller
      *
      * @param $string
-     * @param string $class
-     * @param bool $addslashes
-     * @param bool $htmlentities
+     * @param  string $class
+     * @param  bool   $addslashes
+     * @param  bool   $htmlentities
      * @return string
      */
     public static function getAdminTranslation($string, $class = 'AdminTab', $addslashes = false, $htmlentities = true, $sprintf = null)
@@ -69,6 +69,7 @@ class Translate
             // if the class is extended by a module, use modules/[module_name]/xx.php lang file
             if (class_exists($class_name_controller) && Module::getModuleNameFromClass($class_name_controller)) {
                 $string = str_replace('\'', '\\\'', $string);
+
                 return Translate::getModuleTranslation(Module::$classInModule[$class_name_controller], $string, $class_name_controller);
             }
         }
@@ -85,6 +86,7 @@ class Translate
         if ($sprintf !== null) {
             $str = Translate::checkAndReplaceArgs($str, $sprintf);
         }
+
         return $addslashes ? addslashes($str) : stripslashes($str);
     }
     /**
@@ -115,14 +117,15 @@ class Translate
                 }
             }
         }
+
         return $str;
     }
     /**
      * Get a translation for a module
      *
-     * @param string|Module $module
-     * @param string $string
-     * @param string $source
+     * @param  string|Module $module
+     * @param  string        $string
+     * @param  string        $source
      * @return string
      */
     public static function getModuleTranslation($module, $string, $source, $sprintf = null, $js = false)
@@ -151,6 +154,7 @@ class Translate
                 if ($sprintf !== null) {
                     $string = Translate::checkAndReplaceArgs($string, $sprintf);
                 }
+
                 return str_replace('"', '&quot;', $string);
             }
             $current_key = strtolower('<{' . $name . '}' . _THEME_NAME_ . '>' . $source) . '_' . $key;
@@ -172,12 +176,13 @@ class Translate
             }
             $lang_cache[$cache_key] = str_replace('"', '&quot;', $ret);
         }
+
         return $lang_cache[$cache_key];
     }
     /**
      * Get a translation for a PDF
      *
-     * @param string $string
+     * @param  string $string
      * @return string
      */
     public static function getPdfTranslation($string)
@@ -200,6 +205,7 @@ class Translate
         }
         $key = md5(str_replace('\'', '\\\'', $string));
         $str = array_key_exists('PDF' . $key, $_LANGPDF) ? $_LANGPDF['PDF' . $key] : $string;
+
         return $str;
     }
     /**
@@ -215,8 +221,10 @@ class Translate
             if (!is_array($args)) {
                 $args = array($args);
             }
+
             return vsprintf($string, $args);
         }
+
         return $string;
     }
 }

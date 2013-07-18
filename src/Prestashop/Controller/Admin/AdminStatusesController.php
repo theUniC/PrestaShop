@@ -58,6 +58,7 @@ class AdminStatusesController extends AdminController
         if (Tools::isSubmit('updateorder_return_state')) {
             $this->display = 'edit';
         }
+
         return parent::init();
     }
     /**
@@ -109,6 +110,7 @@ class AdminStatusesController extends AdminController
         }
         $helper->toolbar_btn = $this->toolbar_btn;
         $helper->title = $this->l('Edit Order Status');
+
         return $helper;
     }
     /**
@@ -128,6 +130,7 @@ class AdminStatusesController extends AdminController
         $this->checkFilterForOrdersReturnsList();
         parent::initToolbar();
         $lists .= parent::renderList();
+
         return $lists;
     }
     protected function checkFilterForOrdersReturnsList()
@@ -160,12 +163,14 @@ class AdminStatusesController extends AdminController
             return;
         }
         $this->fields_value = array('logable_on' => $this->getFieldValue($obj, 'logable'), 'invoice_on' => $this->getFieldValue($obj, 'invoice'), 'hidden_on' => $this->getFieldValue($obj, 'hidden'), 'send_email_on' => $this->getFieldValue($obj, 'send_email'), 'shipped_on' => $this->getFieldValue($obj, 'shipped'), 'paid_on' => $this->getFieldValue($obj, 'paid'), 'delivery_on' => $this->getFieldValue($obj, 'delivery'));
+
         return parent::renderForm();
     }
     protected function renderOrderReturnsForm()
     {
         $helper = $this->initOrderReturnsForm();
         $this->fields_form[0]['form'] = array('tinymce' => true, 'legend' => array('title' => $this->l('Order status'), 'image' => '../img/admin/time.gif'), 'input' => array(array('type' => 'text', 'label' => $this->l('Status name:'), 'name' => 'name', 'lang' => true, 'size' => 40, 'required' => true, 'hint' => $this->l('Invalid characters: numbers and') . ' !<>,;?=+()@#"�{}_$%:', 'desc' => $this->l('Order\'s return status name')), array('type' => 'color', 'label' => $this->l('Color:'), 'name' => 'color', 'size' => 30, 'desc' => $this->l('Status will be highlighted in this color. (HTML colors only)') . ' "lightblue", "#CC6600")')), 'submit' => array('title' => $this->l('Save'), 'class' => 'button'));
+
         return $helper->generateForm($this->fields_form);
     }
     protected function getTemplates($iso_code)
@@ -180,6 +185,7 @@ class AdminStatusesController extends AdminController
                 $array[] = array('id' => substr($template, 0, -5), 'name' => substr($template, 0, -5));
             }
         }
+
         return $array;
     }
     public function postProcess()
@@ -236,6 +242,7 @@ class AdminStatusesController extends AdminController
                     $_POST['template_' . $language['id_lang']] = '';
                 }
             }
+
             return parent::postProcess();
         } else {
             if (Tools::isSubmit('delete' . $this->table)) {
@@ -270,6 +277,7 @@ class AdminStatusesController extends AdminController
         } elseif ($this->table == 'order_return_state') {
             $this->initOrdersReturnsList();
         }
+
         return parent::filterToField($key, $filter);
     }
 }

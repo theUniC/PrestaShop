@@ -69,6 +69,7 @@ class HelperHelpAccess extends Helper
             $this->tpl->assign($tpl_vars);
             $content = parent::generate();
         }
+
         return $content;
     }
 }

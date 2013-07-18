@@ -66,6 +66,7 @@ class FileUploader
             case 'k':
                 $val *= 1024;
         }
+
         return $val;
     }
     /**
@@ -92,6 +93,7 @@ class FileUploader
         if ($this->allowedExtensions && !in_array(strtolower($ext), $this->allowedExtensions)) {
             return array('error' => Tools::displayError('File has an invalid extension, it should be one of') . $these . '.');
         }
+
         return $this->file->save();
     }
 }
@@ -146,6 +148,7 @@ class QqUploadedFileForm
             return array('error' => Tools::displayError('Error while updating status'));
         }
         $img = array('id_image' => $image->id, 'position' => $image->position, 'cover' => $image->cover, 'name' => $this->getName());
+
         return array('success' => $img);
     }
     public function getName()
@@ -176,6 +179,7 @@ class QqUploadedFileXhr
         }
         fclose($input);
         fclose($target);
+
         return true;
     }
     public function save()
@@ -213,9 +217,9 @@ class QqUploadedFileXhr
             $imagesTypes = ImageType::getImagesTypes('products');
             foreach ($imagesTypes as $imageType) {
                 /*
-                	$theme = (Shop::isFeatureActive() ? '-'.$imageType['id_theme'] : '');
-                	if (!ImageManager::resize($tmpName, $new_path.'-'.stripslashes($imageType['name']).$theme.'.'.$image->image_format, $imageType['width'], $imageType['height'], $image->image_format))
-                		return array('error' => Tools::displayError('An error occurred while copying image:').' '.stripslashes($imageType['name']));
+                    $theme = (Shop::isFeatureActive() ? '-'.$imageType['id_theme'] : '');
+                    if (!ImageManager::resize($tmpName, $new_path.'-'.stripslashes($imageType['name']).$theme.'.'.$image->image_format, $imageType['width'], $imageType['height'], $image->image_format))
+                        return array('error' => Tools::displayError('An error occurred while copying image:').' '.stripslashes($imageType['name']));
                 */
                 if (!ImageManager::resize($tmpName, $new_path . '-' . stripslashes($imageType['name']) . '.' . $image->image_format, $imageType['width'], $imageType['height'], $image->image_format)) {
                     return array('error' => Tools::displayError('An error occurred while copying image:') . ' ' . stripslashes($imageType['name']));
@@ -228,6 +232,7 @@ class QqUploadedFileXhr
             return array('error' => Tools::displayError('Error while updating status'));
         }
         $img = array('id_image' => $image->id, 'position' => $image->position, 'cover' => $image->cover, 'name' => $this->getName());
+
         return array('success' => $img);
     }
     public function getName()

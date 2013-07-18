@@ -64,6 +64,7 @@ class AdminCmsCategoriesController extends AdminController
     {
         $this->initToolbar();
         $this->toolbar_btn['new']['href'] .= '&amp;id_parent=' . (int) Tools::getValue('id_cms_category');
+
         return parent::renderList();
     }
     /**
@@ -87,6 +88,7 @@ class AdminCmsCategoriesController extends AdminController
                 $this->id_object = $id_cms_category;
                 if (!CMSCategory::checkBeforeMove($id_cms_category, (int) Tools::getValue('id_parent'))) {
                     $this->errors[] = Tools::displayError('The CMS Category cannot be moved here.');
+
                     return false;
                 }
             }
@@ -94,6 +96,7 @@ class AdminCmsCategoriesController extends AdminController
             if ($object !== false) {
                 Tools::redirectAdmin(self::$currentIndex . '&conf=3&id_cms_category=' . (int) $object->id . '&token=' . Tools::getValue('token'));
             }
+
             return $object;
         } elseif (Tools::isSubmit('statuscms_category') && Tools::getValue($this->identifier)) {
             if ($this->tabAccess['edit'] === '1') {
@@ -179,6 +182,7 @@ class AdminCmsCategoriesController extends AdminController
         $html_categories = CMSCategory::recurseCMSCategory($categories, $categories[0][1], 1, $this->getFieldValue($this->object, 'id_parent'), 1);
         $this->fields_form = array('legend' => array('title' => $this->l('CMS Category'), 'image' => '../img/admin/tab-categories.gif'), 'input' => array(array('type' => 'text', 'label' => $this->l('Name:'), 'name' => 'name', 'required' => true, 'lang' => true, 'class' => 'copy2friendlyUrl', 'hint' => $this->l('Invalid characters:') . ' <>;=#{}'), array('type' => 'radio', 'label' => $this->l('Displayed:'), 'name' => 'active', 'required' => false, 'class' => 't', 'is_bool' => true, 'values' => array(array('id' => 'active_on', 'value' => 1, 'label' => $this->l('Enabled')), array('id' => 'active_off', 'value' => 0, 'label' => $this->l('Disabled')))), array('type' => 'select_category', 'label' => $this->l('Parent CMS Category:'), 'name' => 'id_parent', 'options' => array('html' => $html_categories)), array('type' => 'textarea', 'label' => $this->l('Description:'), 'name' => 'description', 'lang' => true, 'rows' => 5, 'cols' => 40, 'hint' => $this->l('Invalid characters:') . ' <>;=#{}'), array('type' => 'text', 'label' => $this->l('Meta title:'), 'name' => 'meta_title', 'lang' => true, 'hint' => $this->l('Invalid characters:') . ' <>;=#{}'), array('type' => 'text', 'label' => $this->l('Meta description:'), 'name' => 'meta_description', 'lang' => true, 'hint' => $this->l('Invalid characters:') . ' <>;=#{}'), array('type' => 'text', 'label' => $this->l('Meta keywords:'), 'name' => 'meta_keywords', 'lang' => true, 'hint' => $this->l('Invalid characters:') . ' <>;=#{}'), array('type' => 'text', 'label' => $this->l('Friendly URL:'), 'name' => 'link_rewrite', 'required' => true, 'lang' => true, 'hint' => $this->l('Only letters and the minus (-) character are allowed.'))), 'submit' => array('title' => $this->l('Save'), 'class' => 'button'));
         $this->tpl_form_vars['PS_ALLOW_ACCENTED_CHARS_URL'] = (int) Configuration::get('PS_ALLOW_ACCENTED_CHARS_URL');
+
         return parent::renderForm();
     }
 }

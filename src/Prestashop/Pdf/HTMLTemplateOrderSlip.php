@@ -83,9 +83,9 @@ class HTMLTemplateOrderSlip extends HTMLTemplateInvoice
             $product['total_price_tax_incl'] = $product['unit_price_tax_incl'] * $product['product_quantity'];
             if ($this->order_slip->partial == 1) {
                 $order_slip_detail = Db::getInstance()->getRow('
-					SELECT * FROM `' . _DB_PREFIX_ . 'order_slip_detail`
-					WHERE `id_order_slip` = ' . (int) $this->order_slip->id . '
-					AND `id_order_detail` = ' . (int) $product['id_order_detail']);
+                    SELECT * FROM `' . _DB_PREFIX_ . 'order_slip_detail`
+                    WHERE `id_order_slip` = ' . (int) $this->order_slip->id . '
+                    AND `id_order_detail` = ' . (int) $product['id_order_detail']);
                 $product['total_price_tax_excl'] = $order_slip_detail['amount_tax_excl'];
                 $product['total_price_tax_incl'] = $order_slip_detail['amount_tax_incl'];
             }
@@ -109,6 +109,7 @@ class HTMLTemplateOrderSlip extends HTMLTemplateInvoice
         $this->order->total_paid_tax_incl += $this->order->total_shipping_tax_incl;
         $this->order->total_paid_tax_excl += $this->order->total_shipping_tax_excl;
         $this->smarty->assign(array('order' => $this->order, 'order_slip' => $this->order_slip, 'order_details' => $this->order->products, 'delivery_address' => $formatted_delivery_address, 'invoice_address' => $formatted_invoice_address, 'tax_excluded_display' => Group::getPriceDisplayMethod((int) $customer->id_default_group), 'tax_tab' => $this->getTaxTabContent()));
+
         return $this->smarty->fetch($this->getTemplate('order-slip'));
     }
     /**
@@ -135,6 +136,7 @@ class HTMLTemplateOrderSlip extends HTMLTemplateInvoice
         $address = new Address((int) $this->order->{Configuration::get('PS_TAX_ADDRESS_TYPE')});
         $tax_exempt = Configuration::get('VATNUMBER_MANAGEMENT') && !empty($address->vat_number) && $address->id_country != Configuration::get('VATNUMBER_COUNTRY');
         $this->smarty->assign(array('tax_exempt' => $tax_exempt, 'use_one_after_another_method' => $this->order->useOneAfterAnotherTaxComputationMethod(), 'product_tax_breakdown' => $this->getProductTaxesBreakdown(), 'shipping_tax_breakdown' => $this->getShippingTaxesBreakdown(), 'order' => $this->order, 'ecotax_tax_breakdown' => $this->order_slip->getEcoTaxTaxesBreakdown(), 'is_order_slip' => true));
+
         return $this->smarty->fetch($this->getTemplate('invoice.tax-tab'));
     }
     public function getProductTaxesBreakdown()
@@ -178,6 +180,7 @@ class HTMLTemplateOrderSlip extends HTMLTemplateInvoice
                 $row['total_amount'] -= $ecotax[$rate]['ecotax_tax_incl'] - $ecotax[$rate]['ecotax_tax_excl'];
             }
         }
+
         return $tmp_tax_infos;
     }
     public function getShippingTaxesBreakdown()
@@ -191,6 +194,7 @@ class HTMLTemplateOrderSlip extends HTMLTemplateInvoice
         if ($shipping_tax_amount > 0) {
             $taxes_breakdown[] = array('rate' => $this->order->carrier_tax_rate, 'total_amount' => $shipping_tax_amount, 'total_tax_excl' => $total_tax_excl);
         }
+
         return $taxes_breakdown;
     }
 }

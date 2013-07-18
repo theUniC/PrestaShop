@@ -77,6 +77,7 @@ class StoresController extends FrontController
             }
         }
         $out = implode('<br />', $out_datas);
+
         return $out;
     }
     /**
@@ -85,12 +86,12 @@ class StoresController extends FrontController
     protected function assignStoresSimplified()
     {
         $stores = Db::getInstance()->executeS('
-		SELECT s.*, cl.name country, st.iso_code state
-		FROM ' . _DB_PREFIX_ . 'store s
-		' . Shop::addSqlAssociation('store', 's') . '
-		LEFT JOIN ' . _DB_PREFIX_ . 'country_lang cl ON (cl.id_country = s.id_country)
-		LEFT JOIN ' . _DB_PREFIX_ . 'state st ON (st.id_state = s.id_state)
-		WHERE s.active = 1 AND cl.id_lang = ' . (int) $this->context->language->id);
+        SELECT s.*, cl.name country, st.iso_code state
+        FROM ' . _DB_PREFIX_ . 'store s
+        ' . Shop::addSqlAssociation('store', 's') . '
+        LEFT JOIN ' . _DB_PREFIX_ . 'country_lang cl ON (cl.id_country = s.id_country)
+        LEFT JOIN ' . _DB_PREFIX_ . 'state st ON (st.id_state = s.id_state)
+        WHERE s.active = 1 AND cl.id_lang = ' . (int) $this->context->language->id);
         foreach ($stores as &$store) {
             $store['has_picture'] = file_exists(_PS_STORE_IMG_DIR_ . (int) $store['id_store'] . '.jpg');
             if ($working_hours = $this->renderStoreWorkingHours($store)) {
@@ -122,8 +123,10 @@ class StoresController extends FrontController
             }
             $smarty->assign('days_datas', $days_datas);
             $smarty->assign('id_country', $store['id_country']);
+
             return $this->context->smarty->fetch(_PS_THEME_DIR_ . 'store_infos.tpl');
         }
+
         return false;
     }
     public function getStores()
@@ -134,36 +137,37 @@ class StoresController extends FrontController
         }
         if (Tools::getValue('all') == 1) {
             $stores = Db::getInstance()->executeS('
-			SELECT s.*, cl.name country, st.iso_code state
-			FROM ' . _DB_PREFIX_ . 'store s
-			' . Shop::addSqlAssociation('store', 's') . '
-			LEFT JOIN ' . _DB_PREFIX_ . 'country_lang cl ON (cl.id_country = s.id_country)
-			LEFT JOIN ' . _DB_PREFIX_ . 'state st ON (st.id_state = s.id_state)
-			WHERE s.active = 1 AND cl.id_lang = ' . (int) $this->context->language->id);
+            SELECT s.*, cl.name country, st.iso_code state
+            FROM ' . _DB_PREFIX_ . 'store s
+            ' . Shop::addSqlAssociation('store', 's') . '
+            LEFT JOIN ' . _DB_PREFIX_ . 'country_lang cl ON (cl.id_country = s.id_country)
+            LEFT JOIN ' . _DB_PREFIX_ . 'state st ON (st.id_state = s.id_state)
+            WHERE s.active = 1 AND cl.id_lang = ' . (int) $this->context->language->id);
         } else {
             $distance = (int) Tools::getValue('radius', 100);
             $multiplicator = $distanceUnit == 'km' ? 6371 : 3959;
             $stores = Db::getInstance()->executeS('
-			SELECT s.*, cl.name country, st.iso_code state,
-			(' . (int) $multiplicator . '
-				* acos(
-					cos(radians(' . (double) Tools::getValue('latitude') . '))
-					* cos(radians(latitude))
-					* cos(radians(longitude) - radians(' . (double) Tools::getValue('longitude') . '))
-					+ sin(radians(' . (double) Tools::getValue('latitude') . '))
-					* sin(radians(latitude))
-				)
-			) distance,
-			cl.id_country id_country
-			FROM ' . _DB_PREFIX_ . 'store s
-			' . Shop::addSqlAssociation('store', 's') . '
-			LEFT JOIN ' . _DB_PREFIX_ . 'country_lang cl ON (cl.id_country = s.id_country)
-			LEFT JOIN ' . _DB_PREFIX_ . 'state st ON (st.id_state = s.id_state)
-			WHERE s.active = 1 AND cl.id_lang = ' . (int) $this->context->language->id . '
-			HAVING distance < ' . (int) $distance . '
-			ORDER BY distance ASC
-			LIMIT 0,20');
+            SELECT s.*, cl.name country, st.iso_code state,
+            (' . (int) $multiplicator . '
+                * acos(
+                    cos(radians(' . (double) Tools::getValue('latitude') . '))
+                    * cos(radians(latitude))
+                    * cos(radians(longitude) - radians(' . (double) Tools::getValue('longitude') . '))
+                    + sin(radians(' . (double) Tools::getValue('latitude') . '))
+                    * sin(radians(latitude))
+                )
+            ) distance,
+            cl.id_country id_country
+            FROM ' . _DB_PREFIX_ . 'store s
+            ' . Shop::addSqlAssociation('store', 's') . '
+            LEFT JOIN ' . _DB_PREFIX_ . 'country_lang cl ON (cl.id_country = s.id_country)
+            LEFT JOIN ' . _DB_PREFIX_ . 'state st ON (st.id_state = s.id_state)
+            WHERE s.active = 1 AND cl.id_lang = ' . (int) $this->context->language->id . '
+            HAVING distance < ' . (int) $distance . '
+            ORDER BY distance ASC
+            LIMIT 0,20');
         }
+
         return $stores;
     }
     /**

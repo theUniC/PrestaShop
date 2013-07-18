@@ -53,7 +53,7 @@ class CartController extends FrontController
      */
     public function canonicalRedirection($canonicalURL = '')
     {
-        
+
     }
     /**
      * Initialize cart controller
@@ -180,6 +180,7 @@ class CartController extends FrontController
         $product = new Product($this->id_product, true, $this->context->language->id);
         if (!$product->id || !$product->active) {
             $this->errors[] = Tools::displayError('This product is no longer available.', false);
+
             return;
         }
         // Check product quantity availability

@@ -70,6 +70,7 @@ class AdminCmsContentController extends AdminController
         $result = parent::viewAccess($disable);
         $this->admin_cms_categories->tabAccess = $this->tabAccess;
         $this->admin_cms->tabAccess = $this->tabAccess;
+
         return $result;
     }
     public function initContent()

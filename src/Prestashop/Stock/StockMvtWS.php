@@ -166,7 +166,7 @@ class StockMvtWS extends ObjectModelCore
         $query = 'SELECT DISTINCT main.' . $this->def['primary'] . ' ';
         if ($full) {
             $query .= ', s.id_product, s.id_product_attribute, s.id_warehouse, w.id_currency, w.management_type,
-					   s.ean13, s.upc, s.reference ';
+                       s.ean13, s.upc, s.reference ';
         }
         $old_filter = $filter;
         if ($filter) {
@@ -193,6 +193,7 @@ class StockMvtWS extends ObjectModelCore
         if ($limit) {
             $query .= $limit . ' ';
         }
+
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
     }
     /**
@@ -205,6 +206,7 @@ class StockMvtWS extends ObjectModelCore
         foreach ($languages as $language) {
             $res[$language['id_lang']] = Product::getProductName($this->id_product, $this->id_product_attribute, $language['id_lang']);
         }
+
         return $res;
     }
 }

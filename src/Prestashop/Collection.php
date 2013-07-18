@@ -81,7 +81,7 @@ class Collection implements Iterator, ArrayAccess, Countable
     const LANG_ALIAS = 'l';
     /**
      * @param string $classname
-     * @param int $id_lang
+     * @param int    $id_lang
      */
     public function __construct($classname, $id_lang = null)
     {
@@ -101,8 +101,8 @@ class Collection implements Iterator, ArrayAccess, Countable
      * Join current entity to an associated entity
      *
      * @param $association Association name
-     * @param string $on
-     * @param int $type
+     * @param  string     $on
+     * @param  int        $type
      * @return Collection
      */
     public function join($association, $on = '', $type = null)
@@ -122,15 +122,16 @@ class Collection implements Iterator, ArrayAccess, Countable
         if ($type) {
             $this->join_list[$association]['type'] = $type;
         }
+
         return $this;
     }
     /**
      * Add WHERE restriction on query
      *
-     * @param string $field Field name
-     * @param string $operator List of operators : =, !=, <>, <, <=, >, >=, like, notlike, regexp, notregexp
-     * @param mixed $value
-     * @param string $type where|having
+     * @param  string     $field    Field name
+     * @param  string     $operator List of operators : =, !=, <>, <, <=, >, >=, like, notlike, regexp, notregexp
+     * @param  mixed      $value
+     * @param  string     $type     where|having
      * @return Collection
      */
     public function where($field, $operator, $value, $method = 'where')
@@ -176,25 +177,27 @@ class Collection implements Iterator, ArrayAccess, Countable
                     throw new PrestaShopException('Operator not supported');
             }
         }
+
         return $this;
     }
     /**
      * Add WHERE restriction on query using real SQL syntax
      *
-     * @param string $sql
+     * @param  string     $sql
      * @return Collection
      */
     public function sqlWhere($sql)
     {
         $this->query->where($this->parseFields($sql));
+
         return $this;
     }
     /**
      * Add HAVING restriction on query
      *
-     * @param string $field Field name
-     * @param string $operator List of operators : =, !=, <>, <, <=, >, >=, like, notlike, regexp, notregexp
-     * @param mixed $value
+     * @param  string     $field    Field name
+     * @param  string     $operator List of operators : =, !=, <>, <, <=, >, >=, like, notlike, regexp, notregexp
+     * @param  mixed      $value
      * @return Collection
      */
     public function having($field, $operator, $value)
@@ -204,19 +207,20 @@ class Collection implements Iterator, ArrayAccess, Countable
     /**
      * Add HAVING restriction on query using real SQL syntax
      *
-     * @param string $sql
+     * @param  string     $sql
      * @return Collection
      */
     public function sqlHaving($sql)
     {
         $this->query->having($this->parseFields($sql));
+
         return $this;
     }
     /**
      * Add ORDER BY restriction on query
      *
-     * @param string $field Field name
-     * @param string $order asc|desc
+     * @param  string     $field Field name
+     * @param  string     $order asc|desc
      * @return Collection
      */
     public function orderBy($field, $order = 'asc')
@@ -226,45 +230,49 @@ class Collection implements Iterator, ArrayAccess, Countable
             throw new PrestaShopException('Order must be asc or desc');
         }
         $this->query->orderBy($this->parseField($field) . ' ' . $order);
+
         return $this;
     }
     /**
      * Add ORDER BY restriction on query using real SQL syntax
      *
-     * @param string $sql
+     * @param  string     $sql
      * @return Collection
      */
     public function sqlOrderBy($sql)
     {
         $this->query->orderBy($this->parseFields($sql));
+
         return $this;
     }
     /**
      * Add GROUP BY restriction on query
      *
-     * @param string $field Field name
+     * @param  string     $field Field name
      * @return Collection
      */
     public function groupBy($field)
     {
         $this->query->groupBy($this->parseField($field));
+
         return $this;
     }
     /**
      * Add GROUP BY restriction on query using real SQL syntax
      *
-     * @param string $sql
+     * @param  string     $sql
      * @return Collection
      */
     public function sqlGroupBy($sql)
     {
         $this->query->groupBy($this->parseFields($sql));
+
         return $this;
     }
     /**
      * Launch sql query to create collection of objects
      *
-     * @param bool $display_query If true, query will be displayed (for debug purpose)
+     * @param  bool       $display_query If true, query will be displayed (for debug purpose)
      * @return Collection
      */
     public function getAll($display_query = false)
@@ -304,6 +312,7 @@ class Collection implements Iterator, ArrayAccess, Countable
         }
         $this->results = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query);
         $this->results = ObjectModel::hydrateCollection($this->classname, $this->results, $this->id_lang);
+
         return $this;
     }
     /**
@@ -317,6 +326,7 @@ class Collection implements Iterator, ArrayAccess, Countable
         if (!count($this)) {
             return false;
         }
+
         return $this[0];
     }
     /**
@@ -327,6 +337,7 @@ class Collection implements Iterator, ArrayAccess, Countable
     public function getResults()
     {
         $this->getAll();
+
         return $this->results;
     }
     /**
@@ -389,6 +400,7 @@ class Collection implements Iterator, ArrayAccess, Countable
     public function count()
     {
         $this->getAll();
+
         return count($this->results);
     }
     /**
@@ -401,6 +413,7 @@ class Collection implements Iterator, ArrayAccess, Countable
     public function offsetExists($offset)
     {
         $this->getAll();
+
         return isset($this->results[$offset]);
     }
     /**
@@ -416,6 +429,7 @@ class Collection implements Iterator, ArrayAccess, Countable
         if (!isset($this->results[$offset])) {
             throw new PrestaShopException('Unknown offset ' . $offset . ' for collection ' . $this->classname);
         }
+
         return $this->results[$offset];
     }
     /**
@@ -451,7 +465,7 @@ class Collection implements Iterator, ArrayAccess, Countable
     /**
      * Get definition of an association
      *
-     * @param string $association
+     * @param  string $association
      * @return array
      */
     protected function getDefinition($association)
@@ -502,12 +516,13 @@ class Collection implements Iterator, ArrayAccess, Countable
         } else {
             $definition = $this->association_definition[$association];
         }
+
         return $definition;
     }
     /**
      * Parse all fields with {field} syntax in a string
      *
-     * @param string $str
+     * @param  string $str
      * @return string
      */
     protected function parseFields($str)
@@ -516,24 +531,26 @@ class Collection implements Iterator, ArrayAccess, Countable
         for ($i = 0, $total = count($m[0]); $i < $total; $i++) {
             $str = str_replace($m[0][$i], $this->parseField($m[1][$i]), $str);
         }
+
         return $str;
     }
     /**
      * Replace a field with its SQL version (E.g. manufacturer.name with a2.name)
      *
-     * @param string $field Field name
+     * @param  string $field Field name
      * @return string
      */
     protected function parseField($field)
     {
         $info = $this->getFieldInfo($field);
+
         return $info['alias'] . '.`' . $info['name'] . '`';
     }
     /**
      * Format a value with the type of the given field
      *
-     * @param mixed $value
-     * @param string $field Field name
+     * @param  mixed  $value
+     * @param  string $field Field name
      * @return mixed
      */
     protected function formatValue($value, $field)
@@ -544,14 +561,16 @@ class Collection implements Iterator, ArrayAccess, Countable
             foreach ($value as $item) {
                 $results[] = ObjectModel::formatValue($item, $info['type'], true);
             }
+
             return $results;
         }
+
         return ObjectModel::formatValue($value, $info['type'], true);
     }
     /**
      * Obtain some information on a field (alias, name, type, etc.)
      *
-     * @param string $field Field name
+     * @param  string $field Field name
      * @return array
      */
     protected function getFieldInfo($field)
@@ -590,12 +609,13 @@ class Collection implements Iterator, ArrayAccess, Countable
             }
             $this->fields[$field] = array('name' => $fieldname, 'association' => $association, 'alias' => $this->generateAlias($association), 'type' => $type);
         }
+
         return $this->fields[$field];
     }
     /**
      * Generate uniq alias from association name
      *
-     * @param string $association Use empty association for alias on current table
+     * @param  string $association Use empty association for alias on current table
      * @return string
      */
     protected function generateAlias($association = '')
@@ -603,6 +623,7 @@ class Collection implements Iterator, ArrayAccess, Countable
         if (!isset($this->alias[$association])) {
             $this->alias[$association] = 'a' . $this->alias_iterator++;
         }
+
         return $this->alias[$association];
     }
 }

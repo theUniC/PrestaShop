@@ -131,6 +131,7 @@ class PDFGenerator extends TCPDF
         } else {
             $output = 'I';
         }
+
         return $this->output($filename, $output);
     }
     /**
@@ -184,6 +185,7 @@ class PDFGenerator extends TCPDF
         $seed .= rand();
         $seed .= uniqid('', true);
         $seed .= microtime();
+
         return $seed;
     }
 }

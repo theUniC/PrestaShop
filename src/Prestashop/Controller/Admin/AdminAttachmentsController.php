@@ -46,6 +46,7 @@ class AdminAttachmentsController extends AdminController
     public function renderForm()
     {
         $this->fields_form = array('legend' => array('title' => $this->l('Attachment'), 'image' => '../img/t/AdminAttachments.gif'), 'input' => array(array('type' => 'text', 'label' => $this->l('Filename:'), 'name' => 'name', 'size' => 33, 'required' => true, 'lang' => true), array('type' => 'textarea', 'label' => $this->l('Description:'), 'name' => 'description', 'cols' => 40, 'rows' => 10, 'lang' => true), array('type' => 'file', 'label' => $this->l('File:'), 'name' => 'file', 'desc' => $this->l('Upload a file from your computer.'))), 'submit' => array('title' => $this->l('Save   '), 'class' => 'button'));
+
         return parent::renderForm();
     }
     public function getList($id_lang, $order_by = null, $order_way = null, $start = 0, $limit = null, $id_lang_shop = false)
@@ -71,6 +72,7 @@ class AdminAttachmentsController extends AdminController
     {
         if (_PS_MODE_DEMO_) {
             $this->errors[] = Tools::displayError('This functionality has been disabled.');
+
             return;
         }
         if (Tools::isSubmit('submitAdd' . $this->table)) {
@@ -110,6 +112,7 @@ class AdminAttachmentsController extends AdminController
             }
             $this->validateRules();
         }
+
         return parent::postProcess();
     }
 }

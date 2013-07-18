@@ -42,7 +42,7 @@ abstract class ModuleGraph extends Module
     protected $_titles = array('main' => null, 'x' => null, 'y' => null);
     /** @var ModuleGraphEngine graph engine */
     protected $_render;
-    protected abstract function getData($layers);
+    abstract protected function getData($layers);
     public function setEmployee($id_employee)
     {
         $this->_employee = new Employee($id_employee);
@@ -253,7 +253,7 @@ abstract class ModuleGraph extends Module
      */
     public function setOption($option, $layers = 1)
     {
-        
+
     }
     public function engine($params)
     {
@@ -288,6 +288,7 @@ abstract class ModuleGraph extends Module
         $url_params['id_lang'] = $id_lang;
         $drawer = 'drawer.php?' . http_build_query(array_map('Tools::safeOutput', $url_params), '', '&');
         require_once _PS_ROOT_DIR_ . '/modules/' . $render . '/' . $render . '.php';
+
         return call_user_func(array($render, 'hookGraphEngine'), $params, $drawer);
     }
     protected static function getEmployee($employee = null, Context $context = null)
@@ -310,6 +311,7 @@ abstract class ModuleGraph extends Module
             }
             $employee->update();
         }
+
         return $employee;
     }
     public function getDate()
@@ -321,6 +323,7 @@ abstract class ModuleGraph extends Module
         if ($employee = ModuleGraph::getEmployee($employee)) {
             return ' \'' . $employee->stats_date_from . ' 00:00:00\' AND \'' . $employee->stats_date_to . ' 23:59:59\' ';
         }
+
         return ' \'' . date('Y-m') . '-01 00:00:00\' AND \'' . date('Y-m-t') . ' 23:59:59\' ';
     }
     public function getLang()

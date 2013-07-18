@@ -73,25 +73,26 @@ class Link
     /**
      * Create a link to delete a product
      *
-     * @param mixed $product ID of the product OR a Product object
-     * @param int $id_picture ID of the picture to delete
+     * @param  mixed  $product    ID of the product OR a Product object
+     * @param  int    $id_picture ID of the picture to delete
      * @return string
      */
     public function getProductDeletePictureLink($product, $id_picture)
     {
         $url = $this->getProductLink($product);
+
         return $url . (strpos($url, '?') ? '&' : '?') . '&deletePicture=' . $id_picture;
     }
     /**
      * Create a link to a product
      *
-     * @param mixed $product Product object (can be an ID product, but deprecated)
-     * @param string $alias
-     * @param string $category
-     * @param string $ean13
-     * @param int $id_lang
-     * @param int $id_shop (since 1.5.0) ID shop need to be used when we generate a product link for a product in a cart
-     * @param int $ipa ID product attribute
+     * @param  mixed  $product  Product object (can be an ID product, but deprecated)
+     * @param  string $alias
+     * @param  string $category
+     * @param  string $ean13
+     * @param  int    $id_lang
+     * @param  int    $id_shop  (since 1.5.0) ID shop need to be used when we generate a product link for a product in a cart
+     * @param  int    $ipa      ID product attribute
      * @return string
      */
     public function getProductLink($product, $alias = null, $category = null, $ean13 = null, $id_lang = null, $id_shop = null, $ipa = 0, $force_routes = false)
@@ -152,15 +153,16 @@ class Link
             $params['categories'] = implode('/', $cats);
         }
         $anchor = $ipa ? $product->getAnchor($ipa) : '';
+
         return $url . $dispatcher->createUrl('product_rule', $id_lang, $params, $force_routes, $anchor, $id_shop);
     }
     /**
      * Create a link to a category
      *
-     * @param mixed $category Category object (can be an ID category, but deprecated)
-     * @param string $alias
-     * @param int $id_lang
-     * @param string $selected_filters Url parameter to autocheck filters of the module blocklayered
+     * @param  mixed  $category         Category object (can be an ID category, but deprecated)
+     * @param  string $alias
+     * @param  int    $id_lang
+     * @param  string $selected_filters Url parameter to autocheck filters of the module blocklayered
      * @return string
      */
     public function getCategoryLink($category, $alias = null, $id_lang = null, $selected_filters = null, $id_shop = null)
@@ -191,14 +193,15 @@ class Link
             $rule = 'layered_rule';
             $params['selected_filters'] = $selected_filters;
         }
+
         return $url . Dispatcher::getInstance()->createUrl($rule, $id_lang, $params, $this->allow, '', $id_shop);
     }
     /**
      * Create a link to a CMS category
      *
-     * @param mixed $category CMSCategory object (can be an ID category, but deprecated)
-     * @param string $alias
-     * @param int $id_lang
+     * @param  mixed  $category CMSCategory object (can be an ID category, but deprecated)
+     * @param  string $alias
+     * @param  int    $id_lang
      * @return string
      */
     public function getCMSCategoryLink($cms_category, $alias = null, $id_lang = null, $id_shop = null)
@@ -225,15 +228,16 @@ class Link
         $params['rewrite'] = !$alias ? $cms_category->link_rewrite : $alias;
         $params['meta_keywords'] = Tools::str2url($cms_category->meta_keywords);
         $params['meta_title'] = Tools::str2url($cms_category->meta_title);
+
         return $url . $dispatcher->createUrl('cms_category_rule', $id_lang, $params, $this->allow, '', $id_shop);
     }
     /**
      * Create a link to a CMS page
      *
-     * @param mixed $cms CMS object (can be an ID CMS, but deprecated)
-     * @param string $alias
-     * @param bool $ssl
-     * @param int $id_lang
+     * @param  mixed  $cms     CMS object (can be an ID CMS, but deprecated)
+     * @param  string $alias
+     * @param  bool   $ssl
+     * @param  int    $id_lang
      * @return string
      */
     public function getCMSLink($cms, $alias = null, $ssl = false, $id_lang = null, $id_shop = null)
@@ -267,14 +271,15 @@ class Link
         if (isset($cms->meta_title) && !empty($cms->meta_title)) {
             $params['meta_title'] = is_array($cms->meta_title) ? Tools::str2url($cms->meta_title[(int) $id_lang]) : Tools::str2url($cms->meta_title);
         }
+
         return $url . $dispatcher->createUrl('cms_rule', $id_lang, $params, $this->allow, '', $id_shop);
     }
     /**
      * Create a link to a supplier
      *
-     * @param mixed $supplier Supplier object (can be an ID supplier, but deprecated)
-     * @param string $alias
-     * @param int $id_lang
+     * @param  mixed  $supplier Supplier object (can be an ID supplier, but deprecated)
+     * @param  string $alias
+     * @param  int    $id_lang
      * @return string
      */
     public function getSupplierLink($supplier, $alias = null, $id_lang = null, $id_shop = null)
@@ -301,14 +306,15 @@ class Link
         $params['rewrite'] = !$alias ? $supplier->link_rewrite : $alias;
         $params['meta_keywords'] = Tools::str2url($supplier->meta_keywords);
         $params['meta_title'] = Tools::str2url($supplier->meta_title);
+
         return $url . $dispatcher->createUrl('supplier_rule', $id_lang, $params, $this->allow, '', $id_shop);
     }
     /**
      * Create a link to a manufacturer
      *
-     * @param mixed $manufacturer Manufacturer object (can be an ID supplier, but deprecated)
-     * @param string $alias
-     * @param int $id_lang
+     * @param  mixed  $manufacturer Manufacturer object (can be an ID supplier, but deprecated)
+     * @param  string $alias
+     * @param  int    $id_lang
      * @return string
      */
     public function getManufacturerLink($manufacturer, $alias = null, $id_lang = null, $id_shop = null)
@@ -335,15 +341,16 @@ class Link
         $params['rewrite'] = !$alias ? $manufacturer->link_rewrite : $alias;
         $params['meta_keywords'] = Tools::str2url($manufacturer->meta_keywords);
         $params['meta_title'] = Tools::str2url($manufacturer->meta_title);
+
         return $url . $dispatcher->createUrl('manufacturer_rule', $id_lang, $params, $this->allow, '', $id_shop);
     }
     /**
      * Create a link to a module
      *
      * @since 1.5.0
-     * @param string $module Module name
-     * @param string $process Action name
-     * @param int $id_lang
+     * @param  string $module  Module name
+     * @param  string $process Action name
+     * @param  int    $id_lang
      * @return string
      */
     public function getModuleLink($module, $controller = 'default', array $params = array(), $ssl = false, $id_lang = null, $id_shop = null)
@@ -371,14 +378,15 @@ class Link
     /**
      * Use controller name to create a link
      *
-     * @param string $controller
-     * @param boolean $with_token include or not the token in the url
+     * @param  string     $controller
+     * @param  boolean    $with_token include or not the token in the url
      * @return controller url
      */
     public function getAdminLink($controller, $with_token = true)
     {
         $id_lang = Context::getContext()->language->id;
         $params = $with_token ? array('token' => Tools::getAdminTokenLite($controller)) : array();
+
         return Dispatcher::getInstance()->createUrl($controller, $id_lang, $params, false);
     }
     /**
@@ -386,7 +394,7 @@ class Link
      * Note: the new image filesystem stores product images in subdirectories of img/p/
      *
      * @param string $name rewrite link of the image
-     * @param string $ids id part of the image filename - can be "id_product-id_image" (legacy support, recommended) or "id_image" (new)
+     * @param string $ids  id part of the image filename - can be "id_product-id_image" (legacy support, recommended) or "id_image" (new)
      * @param string $type
      */
     public function getImageLink($name, $ids, $type = null)
@@ -411,6 +419,7 @@ class Link
                 $uri_path = _THEME_PROD_DIR_ . Image::getImgFolderStatic($id_image) . $id_image . ($type ? '-' . $type : '') . $theme . '.jpg';
             }
         }
+
         return $this->protocol_content . Tools::getMediaServer($uri_path) . $uri_path;
     }
     public function getMediaLink($filepath)
@@ -420,11 +429,11 @@ class Link
     /**
      * Create a simple link
      *
-     * @param string $controller
-     * @param bool $ssl
-     * @param int $id_lang
+     * @param string       $controller
+     * @param bool         $ssl
+     * @param int          $id_lang
      * @param string|array $request
-     * @param bool $request_url_encode Use URL encode
+     * @param bool         $request_url_encode Use URL encode
      *
      * @return string Page link
      */
@@ -450,6 +459,7 @@ class Link
         $uri_path = Dispatcher::getInstance()->createUrl($controller, $id_lang, $request, false, '', $id_shop);
         $url = $ssl && $this->ssl_enable ? 'https://' : 'http://';
         $url .= $shop->domain . $shop->getBaseURI() . $this->getLangLink($id_lang) . ltrim($uri_path, '/');
+
         return $url;
     }
     public function getCatImageLink($name, $id_category, $type = null)
@@ -459,13 +469,14 @@ class Link
         } else {
             $uri_path = _THEME_CAT_DIR_ . $id_category . ($type ? '-' . $type : '') . '.jpg';
         }
+
         return $this->protocol_content . Tools::getMediaServer($uri_path) . $uri_path;
     }
     /**
      * Create link after language change, for the change language block
      *
-     * @param integer $id_lang Language ID
-     * @return string link
+     * @param  integer $id_lang Language ID
+     * @return string  link
      */
     public function getLanguageLink($id_lang, Context $context = null)
     {
@@ -496,6 +507,7 @@ class Link
         } elseif ($controller == 'cms' && isset($params['id_cms_category'])) {
             return $this->getCMSCategoryLink((int) $params['id_cms_category'], null, (int) $id_lang);
         }
+
         return $this->getPageLink($controller, false, $id_lang, $params);
     }
     public function goPage($url, $p)
@@ -505,12 +517,12 @@ class Link
     /**
      * Get pagination link
      *
-     * @param string $type Controller name
-     * @param int $id_object
-     * @param boolean $nb Show nb element per page attribute
-     * @param boolean $sort Show sort attribute
+     * @param string  $type       Controller name
+     * @param int     $id_object
+     * @param boolean $nb         Show nb element per page attribute
+     * @param boolean $sort       Show sort attribute
      * @param boolean $pagination Show page number attribute
-     * @param boolean $array If false return an url, if true return an array
+     * @param boolean $array      If false return an url, if true return an array
      */
     public function getPaginationLink($type, $id_object, $nb = false, $sort = false, $pagination = false, $array = false)
     {
@@ -570,6 +582,7 @@ class Link
         if (!$this->allow == 1) {
             $vars['controller'] = Dispatcher::getInstance()->getController();
         }
+
         return $vars;
     }
     public function addSortDetails($url, $orderby, $orderway)
@@ -587,6 +600,7 @@ class Link
         if (!$id_lang) {
             $id_lang = $context->language->id;
         }
+
         return Language::getIsoById($id_lang) . '/';
     }
 }

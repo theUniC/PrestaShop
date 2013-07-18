@@ -167,6 +167,7 @@ class OrderDetail extends ObjectModel
             return false;
         }
         Db::getInstance()->delete('order_detail_tax', 'id_order_detail=' . (int) $this->id);
+
         return $res;
     }
     protected function setContext($id_shop)
@@ -181,18 +182,20 @@ class OrderDetail extends ObjectModel
             return false;
         }
         $sql = 'SELECT *
-		FROM `' . _DB_PREFIX_ . 'order_detail` od
-		LEFT JOIN `' . _DB_PREFIX_ . 'product_download` pd ON (od.`product_id`=pd.`id_product`)
-		WHERE od.`download_hash` = \'' . pSQL(strval($hash)) . '\'
-		AND pd.`active` = 1';
+        FROM `' . _DB_PREFIX_ . 'order_detail` od
+        LEFT JOIN `' . _DB_PREFIX_ . 'product_download` pd ON (od.`product_id`=pd.`id_product`)
+        WHERE od.`download_hash` = \'' . pSQL(strval($hash)) . '\'
+        AND pd.`active` = 1';
+
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
     }
     public static function incrementDownload($id_order_detail, $increment = 1)
     {
         $sql = 'UPDATE `' . _DB_PREFIX_ . 'order_detail`
-			SET `download_nb` = `download_nb` + ' . (int) $increment . '
-			WHERE `id_order_detail`= ' . (int) $id_order_detail . '
-			LIMIT 1';
+            SET `download_nb` = `download_nb` + ' . (int) $increment . '
+            WHERE `id_order_detail`= ' . (int) $id_order_detail . '
+            LIMIT 1';
+
         return Db::getInstance()->execute($sql);
     }
     /**
@@ -207,15 +210,15 @@ class OrderDetail extends ObjectModel
     /**
      * Return the tax calculator associated to this order_detail
      * @since 1.5.0.1
-     * @param int $id_order_detail
+     * @param  int           $id_order_detail
      * @return TaxCalculator
      */
     public static function getTaxCalculatorStatic($id_order_detail)
     {
         $sql = 'SELECT t.*, d.`tax_computation_method`
-				FROM `' . _DB_PREFIX_ . 'order_detail_tax` t
-				LEFT JOIN `' . _DB_PREFIX_ . 'order_detail` d ON (d.`id_order_detail` = t.`id_order_detail`)
-				WHERE d.`id_order_detail` = ' . (int) $id_order_detail;
+                FROM `' . _DB_PREFIX_ . 'order_detail_tax` t
+                LEFT JOIN `' . _DB_PREFIX_ . 'order_detail` d ON (d.`id_order_detail` = t.`id_order_detail`)
+                WHERE d.`id_order_detail` = ' . (int) $id_order_detail;
         $computation_method = 1;
         $taxes = array();
         if ($results = Db::getInstance()->executeS($sql)) {
@@ -224,6 +227,7 @@ class OrderDetail extends ObjectModel
             }
             $computation_method = $result['tax_computation_method'];
         }
+
         return new TaxCalculator($taxes, $computation_method);
     }
     /**
@@ -260,7 +264,8 @@ class OrderDetail extends ObjectModel
         }
         $values = rtrim($values, ',');
         $sql = 'INSERT INTO `' . _DB_PREFIX_ . 'order_detail_tax` (id_order_detail, id_tax, unit_amount, total_amount)
-				VALUES ' . $values;
+                VALUES ' . $values;
+
         return Db::getInstance()->execute($sql);
     }
     public function updateTaxAmount($order)
@@ -269,11 +274,12 @@ class OrderDetail extends ObjectModel
         $address = new Address((int) $order->{Configuration::get('PS_TAX_ADDRESS_TYPE')});
         $tax_manager = TaxManagerFactory::getManager($address, (int) Product::getIdTaxRulesGroupByIdProduct((int) $this->product_id, $this->context));
         $this->tax_calculator = $tax_manager->getTaxCalculator();
+
         return $this->saveTaxCalculator($order, true);
     }
     /**
      * Get a detailed order list of an id_order
-     * @param int $id_order
+     * @param  int   $id_order
      * @return array
      */
     public static function getList($id_order)
@@ -299,7 +305,7 @@ class OrderDetail extends ObjectModel
     /**
      * Check the order state
      * @param array $product
-     * @param int $id_order_state
+     * @param int   $id_order_state
      */
     protected function checkProductStock($product, $id_order_state)
     {
@@ -320,7 +326,7 @@ class OrderDetail extends ObjectModel
     /**
      * Apply tax to the product
      * @param object $order
-     * @param array $product
+     * @param array  $product
      */
     protected function setProductTax(Order $order, $product)
     {
@@ -372,7 +378,7 @@ class OrderDetail extends ObjectModel
      * Set detailed product price to the order detail
      * @param object $order
      * @param object $cart
-     * @param array $product
+     * @param array  $product
      */
     protected function setDetailProductPrice(Order $order, Cart $cart, $product)
     {
@@ -410,10 +416,10 @@ class OrderDetail extends ObjectModel
      * Create an order detail liable to an id_order
      * @param object $order
      * @param object $cart
-     * @param array $product
-     * @param int $id_order_status
-     * @param int $id_order_invoice
-     * @param bool $use_taxes set to false if you don't want to use taxes
+     * @param array  $product
+     * @param int    $id_order_status
+     * @param int    $id_order_invoice
+     * @param bool   $use_taxes        set to false if you don't want to use taxes
      */
     protected function create(Order $order, Cart $cart, $product, $id_order_state, $id_order_invoice, $use_taxes = true, $id_warehouse = 0)
     {
@@ -455,9 +461,9 @@ class OrderDetail extends ObjectModel
      * Create a list of order detail for a specified id_order using cart
      * @param object $order
      * @param object $cart
-     * @param int $id_order_status
-     * @param int $id_order_invoice
-     * @param bool $use_taxes set to false if you don't want to use taxes
+     * @param int    $id_order_status
+     * @param int    $id_order_invoice
+     * @param bool   $use_taxes        set to false if you don't want to use taxes
      */
     public function createList(Order $order, Cart $cart, $id_order_state, $product_list, $id_order_invoice = 0, $use_taxes = true, $id_warehouse = 0)
     {
@@ -504,6 +510,7 @@ class OrderDetail extends ObjectModel
         $query->from('order_detail_tax', 'tax');
         $query->join('LEFT JOIN `' . _DB_PREFIX_ . 'order_detail` od ON (tax.`id_order_detail` = od.`id_order_detail`)');
         $query->where('od.`id_order_detail` = ' . (int) $this->id_order_detail);
+
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
     }
 }

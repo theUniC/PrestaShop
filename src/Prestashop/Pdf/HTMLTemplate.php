@@ -57,6 +57,7 @@ abstract class HTMLTemplate
             list($width, $height) = getimagesize($path_logo);
         }
         $this->smarty->assign(array('logo_path' => $path_logo, 'img_ps_dir' => 'http://' . Tools::getMediaServer(_PS_IMG_) . _PS_IMG_, 'img_update_time' => Configuration::get('PS_IMG_UPDATE_TIME'), 'title' => $this->title, 'date' => $this->date, 'shop_name' => $shop_name, 'width_logo' => $width, 'height_logo' => $height));
+
         return $this->smarty->fetch($this->getTemplate('header'));
     }
     /**
@@ -67,6 +68,7 @@ abstract class HTMLTemplate
     {
         $shop_address = $this->getShopAddress();
         $this->smarty->assign(array('available_in_your_account' => $this->available_in_your_account, 'shop_address' => $shop_address, 'shop_fax' => Configuration::get('PS_SHOP_FAX', null, null, (int) $this->order->id_shop), 'shop_phone' => Configuration::get('PS_SHOP_PHONE', null, null, (int) $this->order->id_shop), 'shop_details' => Configuration::get('PS_SHOP_DETAILS', null, null, (int) $this->order->id_shop), 'free_text' => Configuration::get('PS_INVOICE_FREE_TEXT', (int) Context::getContext()->language->id, null, (int) $this->order->id_shop)));
+
         return $this->smarty->fetch($this->getTemplate('footer'));
     }
     /**
@@ -81,8 +83,10 @@ abstract class HTMLTemplate
             if (isset($shop_address_obj) && $shop_address_obj instanceof Address) {
                 $shop_address = AddressFormat::generateAddress($shop_address_obj, array(), ' - ', ' ');
             }
+
             return $shop_address;
         }
+
         return $shop_address;
     }
     /**
@@ -97,6 +101,7 @@ abstract class HTMLTemplate
         } elseif (Configuration::get('PS_LOGO', null, null, (int) $this->order->id_shop) != false && file_exists(_PS_IMG_DIR_ . Configuration::get('PS_LOGO', null, null, (int) $this->order->id_shop))) {
             $logo = _PS_IMG_DIR_ . Configuration::get('PS_LOGO', null, null, (int) $this->order->id_shop);
         }
+
         return $logo;
     }
     /**
@@ -114,17 +119,17 @@ abstract class HTMLTemplate
      * Returns the template's HTML content
      * @return string HTML content
      */
-    public abstract function getContent();
+    abstract public function getContent();
     /**
      * Returns the template filename
      * @return string filename
      */
-    public abstract function getFilename();
+    abstract public function getFilename();
     /**
      * Returns the template filename when using bulk rendering
      * @return string filename
      */
-    public abstract function getBulkFilename();
+    abstract public function getBulkFilename();
     /**
      * If the template is not present in the theme directory, it will return the default template
      * in _PS_PDF_DIR_ directory
@@ -144,11 +149,12 @@ abstract class HTMLTemplate
                 $template = $default_template;
             }
         }
+
         return $template;
     }
     /**
      * Translatation method
-     * @param string $string
+     * @param  string $string
      * @return string translated text
      */
     protected static function l($string)

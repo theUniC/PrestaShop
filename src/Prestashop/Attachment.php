@@ -46,13 +46,14 @@ class Attachment extends ObjectModel
     {
         @unlink(_PS_DOWNLOAD_DIR_ . $this->file);
         $products = Db::getInstance()->executeS('
-							SELECT id_product
-							FROM ' . _DB_PREFIX_ . 'product_attachment
-							WHERE id_attachment=' . (int) $this->id);
+                            SELECT id_product
+                            FROM ' . _DB_PREFIX_ . 'product_attachment
+                            WHERE id_attachment=' . (int) $this->id);
         Db::getInstance()->execute('DELETE FROM ' . _DB_PREFIX_ . 'product_attachment WHERE id_attachment = ' . (int) $this->id);
         foreach ($products as $product) {
             Product::updateCacheAttachment((int) $product['id_product']);
         }
+
         return parent::delete();
     }
     public function deleteSelection($attachments)
@@ -62,20 +63,21 @@ class Attachment extends ObjectModel
             $attachment = new Attachment((int) $id_attachment);
             $return &= $attachment->delete();
         }
+
         return $return;
     }
     public static function getAttachments($id_lang, $id_product, $include = true)
     {
         return Db::getInstance()->executeS('
-			SELECT *
-			FROM ' . _DB_PREFIX_ . 'attachment a
-			LEFT JOIN ' . _DB_PREFIX_ . 'attachment_lang al
-				ON (a.id_attachment = al.id_attachment AND al.id_lang = ' . (int) $id_lang . ')
-			WHERE a.id_attachment ' . ($include ? 'IN' : 'NOT IN') . ' (
-				SELECT pa.id_attachment
-				FROM ' . _DB_PREFIX_ . 'product_attachment pa
-				WHERE id_product = ' . (int) $id_product . '
-			)');
+            SELECT *
+            FROM ' . _DB_PREFIX_ . 'attachment a
+            LEFT JOIN ' . _DB_PREFIX_ . 'attachment_lang al
+                ON (a.id_attachment = al.id_attachment AND al.id_lang = ' . (int) $id_lang . ')
+            WHERE a.id_attachment ' . ($include ? 'IN' : 'NOT IN') . ' (
+                SELECT pa.id_attachment
+                FROM ' . _DB_PREFIX_ . 'product_attachment pa
+                WHERE id_product = ' . (int) $id_product . '
+            )');
     }
     /**
      * deassociate $id_product from the current object
@@ -87,24 +89,26 @@ class Attachment extends ObjectModel
     public static function deleteProductAttachments($id_product)
     {
         $res = Db::getInstance()->execute('
-			DELETE FROM ' . _DB_PREFIX_ . 'product_attachment
-			WHERE id_product = ' . (int) $id_product);
+            DELETE FROM ' . _DB_PREFIX_ . 'product_attachment
+            WHERE id_product = ' . (int) $id_product);
         Product::updateCacheAttachment((int) $id_product);
+
         return $res;
     }
     /**
      * associate $id_product to the current object.
-     * 
-     * @param int $id_product id of the product to associate
+     *
+     * @param  int     $id_product id of the product to associate
      * @return boolean true if succed
      */
     public function attachProduct($id_product)
     {
         $res = Db::getInstance()->execute('
-			INSERT INTO ' . _DB_PREFIX_ . 'product_attachment 
-				(id_attachment, id_product) VALUES
-				(' . (int) $this->id . ', ' . (int) $id_product . ')');
+            INSERT INTO ' . _DB_PREFIX_ . 'product_attachment
+                (id_attachment, id_product) VALUES
+                (' . (int) $this->id . ', ' . (int) $id_product . ')');
         Product::updateCacheAttachment((int) $id_product);
+
         return $res;
     }
     /**
@@ -134,6 +138,7 @@ class Attachment extends ObjectModel
         if (is_array($array)) {
             return $result1 && (!isset($result2) || $result2);
         }
+
         return $result1;
     }
     public static function getProductAttached($id_lang, $list)
@@ -144,14 +149,15 @@ class Attachment extends ObjectModel
                 $ids_attachements[] = $attachement['id_attachment'];
             }
             $sql = 'SELECT * FROM `' . _DB_PREFIX_ . 'product_attachment` pa
-					LEFT JOIN `' . _DB_PREFIX_ . 'product_lang` pl ON (pa.`id_product` = pl.`id_product`' . Shop::addSqlRestrictionOnLang('pl') . ')
-					WHERE `id_attachment` IN (' . implode(',', array_map('intval', $ids_attachements)) . ')
-						AND pl.`id_lang` = ' . (int) $id_lang;
+                    LEFT JOIN `' . _DB_PREFIX_ . 'product_lang` pl ON (pa.`id_product` = pl.`id_product`' . Shop::addSqlRestrictionOnLang('pl') . ')
+                    WHERE `id_attachment` IN (' . implode(',', array_map('intval', $ids_attachements)) . ')
+                        AND pl.`id_lang` = ' . (int) $id_lang;
             $tmp = Db::getInstance()->executeS($sql);
             $product_attachements = array();
             foreach ($tmp as $t) {
                 $product_attachements[$t['id_attachment']][] = $t['name'];
             }
+
             return $product_attachements;
         } else {
             return false;

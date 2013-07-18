@@ -322,6 +322,7 @@ class OrderOpcController extends ParentOrderController
         } else {
             $birthday = array('0', '0', '0');
         }
+
         return array('id_customer' => (int) $customer->id, 'email' => Tools::htmlentitiesUTF8($customer->email), 'customer_lastname' => Tools::htmlentitiesUTF8($customer->lastname), 'customer_firstname' => Tools::htmlentitiesUTF8($customer->firstname), 'newsletter' => (int) $customer->newsletter, 'optin' => (int) $customer->optin, 'id_address_delivery' => (int) $this->context->cart->id_address_delivery, 'company' => Tools::htmlentitiesUTF8($address_delivery->company), 'lastname' => Tools::htmlentitiesUTF8($address_delivery->lastname), 'firstname' => Tools::htmlentitiesUTF8($address_delivery->firstname), 'vat_number' => Tools::htmlentitiesUTF8($address_delivery->vat_number), 'dni' => Tools::htmlentitiesUTF8($address_delivery->dni), 'address1' => Tools::htmlentitiesUTF8($address_delivery->address1), 'postcode' => Tools::htmlentitiesUTF8($address_delivery->postcode), 'city' => Tools::htmlentitiesUTF8($address_delivery->city), 'phone' => Tools::htmlentitiesUTF8($address_delivery->phone), 'phone_mobile' => Tools::htmlentitiesUTF8($address_delivery->phone_mobile), 'id_country' => (int) $address_delivery->id_country, 'id_state' => (int) $address_delivery->id_state, 'id_gender' => (int) $customer->id_gender, 'sl_year' => $birthday[0], 'sl_month' => $birthday[1], 'sl_day' => $birthday[2], 'id_address_invoice' => $id_address_invoice, 'company_invoice' => Tools::htmlentitiesUTF8($address_invoice->company), 'lastname_invoice' => Tools::htmlentitiesUTF8($address_invoice->lastname), 'firstname_invoice' => Tools::htmlentitiesUTF8($address_invoice->firstname), 'vat_number_invoice' => Tools::htmlentitiesUTF8($address_invoice->vat_number), 'dni_invoice' => Tools::htmlentitiesUTF8($address_invoice->dni), 'address1_invoice' => Tools::htmlentitiesUTF8($address_invoice->address1), 'address2_invoice' => Tools::htmlentitiesUTF8($address_invoice->address2), 'postcode_invoice' => Tools::htmlentitiesUTF8($address_invoice->postcode), 'city_invoice' => Tools::htmlentitiesUTF8($address_invoice->city), 'phone_invoice' => Tools::htmlentitiesUTF8($address_invoice->phone), 'phone_mobile_invoice' => Tools::htmlentitiesUTF8($address_invoice->phone_mobile), 'id_country_invoice' => (int) $address_invoice->id_country, 'id_state_invoice' => (int) $address_invoice->id_state);
     }
     protected function _assignCarrier()
@@ -388,6 +389,7 @@ class OrderOpcController extends ParentOrderController
         if (!$return) {
             return '<p class="warning">' . Tools::displayError('No payment method is available for use at this time. ') . '</p>';
         }
+
         return $return;
     }
     protected function _getCarrierList()
@@ -422,6 +424,7 @@ class OrderOpcController extends ParentOrderController
         } else {
             $result = array('HOOK_BEFORECARRIER' => Hook::exec('displayBeforeCarrier', array('carriers' => $carriers, 'delivery_option_list' => $this->context->cart->getDeliveryOptionList(), 'delivery_option' => $this->context->cart->getDeliveryOption(null, true))), 'carrier_block' => $this->context->smarty->fetch(_PS_THEME_DIR_ . 'order-carrier.tpl'));
             Cart::addExtraCarriers($result);
+
             return $result;
         }
         if (count($this->errors)) {
@@ -465,6 +468,7 @@ class OrderOpcController extends ParentOrderController
         if ($result['customizedDatas']) {
             Product::addCustomizationPrice($result['summary']['products'], $result['customizedDatas']);
         }
+
         return $result;
     }
 }

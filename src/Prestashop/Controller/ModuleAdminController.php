@@ -56,6 +56,7 @@ abstract class ModuleAdminController extends AdminController
         if (file_exists($this->getTemplatePath() . $this->override_folder . $tpl_name) && $this->viewAccess()) {
             return $this->context->smarty->createTemplate($this->getTemplatePath() . $this->override_folder . $tpl_name, $this->context->smarty);
         }
+
         return parent::createTemplate($tpl_name);
     }
     /**

@@ -52,6 +52,6 @@ class PageNotFoundController extends FrontController
     }
     public function canonicalRedirection($canonical_url = '')
     {
-        
+
     }
 }

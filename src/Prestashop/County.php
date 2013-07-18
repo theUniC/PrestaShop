@@ -56,6 +56,7 @@ class County extends ObjectModel
     public static function getCounties($id_state)
     {
         Tools::displayAsDeprecated();
+
         return false;
     }
     /**
@@ -64,6 +65,7 @@ class County extends ObjectModel
     public function getZipCodes()
     {
         Tools::displayAsDeprecated();
+
         return false;
     }
     /**
@@ -72,6 +74,7 @@ class County extends ObjectModel
     public function addZipCodes($zip_codes)
     {
         Tools::displayAsDeprecated();
+
         return true;
     }
     /**
@@ -80,6 +83,7 @@ class County extends ObjectModel
     public function removeZipCodes($zip_codes)
     {
         Tools::displayAsDeprecated();
+
         return true;
     }
     /**
@@ -88,6 +92,7 @@ class County extends ObjectModel
     public function breakDownZipCode($zip_codes)
     {
         Tools::displayAsDeprecated();
+
         return array(0, 0);
     }
     /**
@@ -96,6 +101,7 @@ class County extends ObjectModel
     public static function getIdCountyByZipCode($id_state, $zip_code)
     {
         Tools::displayAsDeprecated();
+
         return false;
     }
     /**
@@ -104,6 +110,7 @@ class County extends ObjectModel
     public function isZipCodeRangePresent($zip_codes)
     {
         Tools::displayAsDeprecated();
+
         return false;
     }
     /**
@@ -112,6 +119,7 @@ class County extends ObjectModel
     public function isZipCodePresent($zip_code)
     {
         Tools::displayAsDeprecated();
+
         return false;
     }
     /**
@@ -120,6 +128,7 @@ class County extends ObjectModel
     public static function deleteZipCodeByIdCounty($id_county)
     {
         Tools::displayAsDeprecated();
+
         return true;
     }
     /**
@@ -128,6 +137,7 @@ class County extends ObjectModel
     public static function getIdCountyByNameAndIdState($name, $id_state)
     {
         Tools::displayAsDeprecated();
+
         return false;
     }
 }

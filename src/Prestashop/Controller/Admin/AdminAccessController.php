@@ -79,13 +79,13 @@ class AdminAccessController extends AdminController
         $modules = array();
         foreach ($profiles as $profile) {
             $modules[$profile['id_profile']] = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
-				SELECT ma.`id_module`, m.`name`, ma.`view`, ma.`configure`
-				FROM ' . _DB_PREFIX_ . 'module_access ma
-				LEFT JOIN ' . _DB_PREFIX_ . 'module m
-					ON ma.id_module = m.id_module
-				WHERE id_profile = ' . (int) $profile['id_profile'] . '
-				ORDER BY m.name
-			');
+                SELECT ma.`id_module`, m.`name`, ma.`view`, ma.`configure`
+                FROM ' . _DB_PREFIX_ . 'module_access ma
+                LEFT JOIN ' . _DB_PREFIX_ . 'module m
+                    ON ma.id_module = m.id_module
+                WHERE id_profile = ' . (int) $profile['id_profile'] . '
+                ORDER BY m.name
+            ');
             foreach ($modules[$profile['id_profile']] as &$module) {
                 $m = Module::getInstanceById($module['id_module']);
                 // the following condition handles invalid modules
@@ -98,6 +98,7 @@ class AdminAccessController extends AdminController
         }
         $this->fields_form = array('');
         $this->tpl_form_vars = array('profiles' => $profiles, 'accesses' => $accesses, 'tabs' => $tabs, 'current_profile' => (int) $current_profile, 'admin_profile' => (int) _PS_ADMIN_PROFILE_, 'access_edit' => $this->tabAccess['edit'], 'perms' => array('view', 'add', 'edit', 'delete'), 'modules' => $modules, 'link' => $this->context->link);
+
         return parent::renderForm();
     }
     /**
@@ -142,26 +143,26 @@ class AdminAccessController extends AdminController
             if ($id_tab == -1) {
                 if ($perm == 'all') {
                     $sql = '
-					UPDATE `' . _DB_PREFIX_ . 'access` a
-					SET `view` = ' . (int) $enabled . ', `add` = ' . (int) $enabled . ', `edit` = ' . (int) $enabled . ', `delete` = ' . (int) $enabled . '
-					WHERE `id_profile` = ' . (int) $id_profile;
+                    UPDATE `' . _DB_PREFIX_ . 'access` a
+                    SET `view` = ' . (int) $enabled . ', `add` = ' . (int) $enabled . ', `edit` = ' . (int) $enabled . ', `delete` = ' . (int) $enabled . '
+                    WHERE `id_profile` = ' . (int) $id_profile;
                 } else {
                     $sql = '
-					UPDATE `' . _DB_PREFIX_ . 'access` a
-					SET `' . bqSQL($perm) . '` = ' . (int) $enabled . '
-					WHERE `id_profile` = ' . (int) $id_profile;
+                    UPDATE `' . _DB_PREFIX_ . 'access` a
+                    SET `' . bqSQL($perm) . '` = ' . (int) $enabled . '
+                    WHERE `id_profile` = ' . (int) $id_profile;
                 }
             } else {
                 if ($perm == 'all') {
                     $sql = '
-					UPDATE `' . _DB_PREFIX_ . 'access` a ' . $join . '
-					SET `view` = ' . (int) $enabled . ', `add` = ' . (int) $enabled . ', `edit` = ' . (int) $enabled . ', `delete` = ' . (int) $enabled . '
-					WHERE ' . $where . ' = ' . (int) $id_tab . ' AND `id_profile` = ' . (int) $id_profile;
+                    UPDATE `' . _DB_PREFIX_ . 'access` a ' . $join . '
+                    SET `view` = ' . (int) $enabled . ', `add` = ' . (int) $enabled . ', `edit` = ' . (int) $enabled . ', `delete` = ' . (int) $enabled . '
+                    WHERE ' . $where . ' = ' . (int) $id_tab . ' AND `id_profile` = ' . (int) $id_profile;
                 } else {
                     $sql = '
-					UPDATE `' . _DB_PREFIX_ . 'access` a ' . $join . '
-					SET `' . bqSQL($perm) . '` = ' . (int) $enabled . '
-					WHERE ' . $where . ' = ' . (int) $id_tab . ' AND `id_profile` = ' . (int) $id_profile;
+                    UPDATE `' . _DB_PREFIX_ . 'access` a ' . $join . '
+                    SET `' . bqSQL($perm) . '` = ' . (int) $enabled . '
+                    WHERE ' . $where . ' = ' . (int) $id_tab . ' AND `id_profile` = ' . (int) $id_profile;
                 }
             }
             $res = Db::getInstance()->execute($sql) ? 'ok' : 'error';
@@ -186,15 +187,15 @@ class AdminAccessController extends AdminController
             }
             if ($id_module == -1) {
                 $sql = '
-					UPDATE `' . _DB_PREFIX_ . 'module_access`
-					SET `' . bqSQL($perm) . '` = ' . (int) $enabled . '
-					WHERE `id_profile` = ' . (int) $id_profile;
+                    UPDATE `' . _DB_PREFIX_ . 'module_access`
+                    SET `' . bqSQL($perm) . '` = ' . (int) $enabled . '
+                    WHERE `id_profile` = ' . (int) $id_profile;
             } else {
                 $sql = '
-					UPDATE `' . _DB_PREFIX_ . 'module_access`
-					SET `' . bqSQL($perm) . '` = ' . (int) $enabled . '
-					WHERE `id_module` = ' . (int) $id_module . '
-						AND `id_profile` = ' . (int) $id_profile;
+                    UPDATE `' . _DB_PREFIX_ . 'module_access`
+                    SET `' . bqSQL($perm) . '` = ' . (int) $enabled . '
+                    WHERE `id_module` = ' . (int) $id_module . '
+                        AND `id_profile` = ' . (int) $id_profile;
             }
             $res = Db::getInstance()->execute($sql) ? 'ok' : 'error';
             die($res);

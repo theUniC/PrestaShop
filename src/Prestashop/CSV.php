@@ -40,8 +40,8 @@ class CSV
     /**
      * Loads objects, filename and optionnaly a delimiter.
      * @param Collection $collection collection of objects / array (of non-objects)
-     * @param string $filename : used later to save the file
-     * @param string $delimiter Optional : delimiter used
+     * @param string     $filename   : used later to save the file
+     * @param string     $delimiter  Optional : delimiter used
      */
     public function __construct($collection, $filename, $delimiter = ';')
     {
@@ -81,12 +81,13 @@ class CSV
     }
     /**
      * Escapes data
-     * @param string $data
+     * @param  string $data
      * @return string $data
      */
     public static function wrap($data)
     {
         $data = Tools::safeOutput($data, '";');
+
         return sprintf('"%s"', $data);
     }
     /**

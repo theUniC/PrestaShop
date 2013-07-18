@@ -48,6 +48,7 @@ abstract class TaxManagerModule extends Module
         if (call_user_func(array($class, 'isAvailableForThisAddress'), $args['address'])) {
             return new $class();
         }
+
         return false;
     }
 }

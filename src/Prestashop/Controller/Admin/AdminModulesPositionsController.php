@@ -245,6 +245,7 @@ class AdminModulesPositionsController extends AdminController
         $this->toolbar_btn['save'] = array('href' => self::$currentIndex . '&addToHook' . ($this->display_key ? '&show_modules=' . $this->display_key : '') . '&token=' . $this->token, 'desc' => $this->l('Transplant a module'));
         $live_edit_params = array('live_edit' => true, 'ad' => $admin_dir, 'liveToken' => $this->token, 'id_employee' => (int) $this->context->employee->id);
         $this->context->smarty->assign(array('show_toolbar' => true, 'toolbar_btn' => $this->toolbar_btn, 'title' => $this->toolbar_title, 'toolbar_scroll' => 'false', 'token' => $this->token, 'url_show_modules' => self::$currentIndex . '&token=' . $this->token . '&show_modules=', 'modules' => $module_instances, 'url_show_invisible' => self::$currentIndex . '&token=' . $this->token . '&show_modules=' . (int) Tools::getValue('show_modules') . '&hook_position=', 'hook_position' => Tools::getValue('hook_position'), 'live_edit' => Shop::isFeatureActive() && Shop::getContext() != Shop::CONTEXT_SHOP, 'url_live_edit' => $this->getLiveEditUrl($live_edit_params), 'display_key' => $this->display_key, 'hooks' => $hooks, 'url_submit' => self::$currentIndex . '&token=' . $this->token, 'can_move' => Shop::isFeatureActive() && Shop::getContext() != Shop::CONTEXT_SHOP ? false : true));
+
         return $this->createTemplate('list_modules.tpl')->fetch();
     }
     public function getLiveEditUrl($live_edit_params)
@@ -254,6 +255,7 @@ class AdminModulesPositionsController extends AdminController
             $lang = Language::getIsoById($this->context->employee->id_lang) . '/';
         }
         $url = $this->context->shop->getBaseURL() . $lang . Dispatcher::getInstance()->createUrl('index', (int) $this->context->language->id, $live_edit_params);
+
         return $url;
     }
     public function renderForm()
@@ -270,10 +272,10 @@ class AdminModulesPositionsController extends AdminController
                 Tools::redirectAdmin(self::$currentIndex . '&token=' . $this->token);
             }
             $sql = 'SELECT id_module
-					FROM ' . _DB_PREFIX_ . 'hook_module
-					WHERE id_module = ' . $id_module . '
-						AND id_hook = ' . $id_hook . '
-						AND id_shop IN(' . implode(', ', Shop::getContextListShopID()) . ')';
+                    FROM ' . _DB_PREFIX_ . 'hook_module
+                    WHERE id_module = ' . $id_module . '
+                        AND id_hook = ' . $id_hook . '
+                        AND id_shop IN(' . implode(', ', Shop::getContextListShopID()) . ')';
             if (!Db::getInstance()->getValue($sql)) {
                 Tools::redirectAdmin(self::$currentIndex . '&token=' . $this->token);
             }
@@ -312,6 +314,7 @@ class AdminModulesPositionsController extends AdminController
         }
         $tpl = $this->createTemplate('form.tpl');
         $tpl->assign(array('url_submit' => self::$currentIndex . '&token=' . $this->token, 'edit_graft' => Tools::isSubmit('editGraft'), 'id_module' => (int) Tools::getValue('id_module'), 'id_hook' => (int) Tools::getValue('id_hook'), 'show_modules' => Tools::getValue('show_modules'), 'hooks' => $hooks, 'exception_list' => $this->displayModuleExceptionList(array_shift($excepts_list), 0), 'exception_list_diff' => $exception_list_diff, 'except_diff' => isset($excepts_diff) ? $excepts_diff : null, 'display_key' => $this->display_key, 'modules' => $modules, 'show_toolbar' => true, 'toolbar_btn' => $this->toolbar_btn, 'toolbar_scroll' => $this->toolbar_scroll, 'title' => $this->toolbar_title, 'table' => 'hook_module'));
+
         return $tpl->fetch();
     }
     public function displayModuleExceptionList($file_list, $shop_id)
@@ -332,7 +335,8 @@ class AdminModulesPositionsController extends AdminController
             $content .= '<option value="' . $k . '">' . $k . '</option>';
         }
         $content .= '</select> <input type="button" class="button" value="' . $this->l('Add') . '" onclick="position_exception_add(' . $shop_id . ')" />
-				<input type="button" class="button" value="' . $this->l('Remove') . '" onclick="position_exception_remove(' . $shop_id . ')" /><br /><br />';
+                <input type="button" class="button" value="' . $this->l('Remove') . '" onclick="position_exception_remove(' . $shop_id . ')" /><br /><br />';
+
         return $content;
     }
     public function ajaxProcessUpdatePositions()
@@ -439,8 +443,8 @@ class AdminModulesPositionsController extends AdminController
             foreach ($hooks_list as $id_hook => $modules) {
                 // 1st, drop all previous hooked modules
                 $sql = 'DELETE FROM `' . _DB_PREFIX_ . 'hook_module`
-					WHERE `id_hook` =  ' . (int) $id_hook . '
-					AND id_shop = ' . (int) $id_shop;
+                    WHERE `id_hook` =  ' . (int) $id_hook . '
+                    AND id_shop = ' . (int) $id_shop;
                 $res &= Db::getInstance()->execute($sql);
                 $i = 1;
                 $value = '';
@@ -456,8 +460,8 @@ class AdminModulesPositionsController extends AdminController
                 }
                 $value = rtrim($value, ',');
                 $res &= Db::getInstance()->execute('INSERT INTO  `' . _DB_PREFIX_ . 'hook_module`
-					(id_module, id_shop, id_hook, position)
-					VALUES ' . $value);
+                    (id_module, id_shop, id_hook, position)
+                    VALUES ' . $value);
             }
             if ($res) {
                 $hasError = true;

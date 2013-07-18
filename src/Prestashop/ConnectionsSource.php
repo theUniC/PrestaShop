@@ -50,6 +50,7 @@ class ConnectionsSource extends ObjectModel
         if ($result = parent::add($autodate, $nullValues)) {
             Referrer::cacheNewSource($this->id);
         }
+
         return $result;
     }
     public static function logHttpReferer(Cookie $cookie = null)
@@ -91,17 +92,18 @@ class ConnectionsSource extends ObjectModel
             $source->request_uri = '';
         }
         $source->request_uri = substr($source->request_uri, 0, ConnectionsSource::$uri_max_size);
+
         return $source->add();
     }
     public static function getOrderSources($id_order)
     {
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
-		SELECT cos.http_referer, cos.request_uri, cos.keywords, cos.date_add
-		FROM ' . _DB_PREFIX_ . 'orders o
-		INNER JOIN ' . _DB_PREFIX_ . 'guest g ON g.id_customer = o.id_customer
-		INNER JOIN ' . _DB_PREFIX_ . 'connections co  ON co.id_guest = g.id_guest
-		INNER JOIN ' . _DB_PREFIX_ . 'connections_source cos ON cos.id_connections = co.id_connections
-		WHERE id_order = ' . (int) $id_order . '
-		ORDER BY cos.date_add DESC');
+        SELECT cos.http_referer, cos.request_uri, cos.keywords, cos.date_add
+        FROM ' . _DB_PREFIX_ . 'orders o
+        INNER JOIN ' . _DB_PREFIX_ . 'guest g ON g.id_customer = o.id_customer
+        INNER JOIN ' . _DB_PREFIX_ . 'connections co  ON co.id_guest = g.id_guest
+        INNER JOIN ' . _DB_PREFIX_ . 'connections_source cos ON cos.id_connections = co.id_connections
+        WHERE id_order = ' . (int) $id_order . '
+        ORDER BY cos.date_add DESC');
     }
 }

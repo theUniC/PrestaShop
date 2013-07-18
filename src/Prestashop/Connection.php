@@ -63,6 +63,7 @@ class Connection extends ObjectModel
             $this->id_shop_group = Context::getContext()->shop->id_shop_group;
         }
         $fields = parent::getFields();
+
         return $fields;
     }
     public static function setPageConnection($cookie, $full = true)
@@ -88,22 +89,23 @@ class Connection extends ObjectModel
         if (isset($_SERVER['HTTP_USER_AGENT']) && preg_match('/BotLink|ahoy|AlkalineBOT|anthill|appie|arale|araneo|AraybOt|ariadne|arks|ATN_Worldwide|Atomz|bbot|Bjaaland|Ukonline|borg\\-bot\\/0\\.9|boxseabot|bspider|calif|christcrawler|CMC\\/0\\.01|combine|confuzzledbot|CoolBot|cosmos|Internet Cruiser Robot|cusco|cyberspyder|cydralspider|desertrealm, desert realm|digger|DIIbot|grabber|downloadexpress|DragonBot|dwcp|ecollector|ebiness|elfinbot|esculapio|esther|fastcrawler|FDSE|FELIX IDE|ESI|fido|H�m�h�kki|KIT\\-Fireball|fouineur|Freecrawl|gammaSpider|gazz|gcreep|golem|googlebot|griffon|Gromit|gulliver|gulper|hambot|havIndex|hotwired|htdig|iajabot|INGRID\\/0\\.1|Informant|InfoSpiders|inspectorwww|irobot|Iron33|JBot|jcrawler|Teoma|Jeeves|jobo|image\\.kapsi\\.net|KDD\\-Explorer|ko_yappo_robot|label\\-grabber|larbin|legs|Linkidator|linkwalker|Lockon|logo_gif_crawler|marvin|mattie|mediafox|MerzScope|NEC\\-MeshExplorer|MindCrawler|udmsearch|moget|Motor|msnbot|muncher|muninn|MuscatFerret|MwdSearch|sharp\\-info\\-agent|WebMechanic|NetScoop|newscan\\-online|ObjectsSearch|Occam|Orbsearch\\/1\\.0|packrat|pageboy|ParaSite|patric|pegasus|perlcrawler|phpdig|piltdownman|Pimptrain|pjspider|PlumtreeWebAccessor|PortalBSpider|psbot|Getterrobo\\-Plus|Raven|RHCS|RixBot|roadrunner|Robbie|robi|RoboCrawl|robofox|Scooter|Search\\-AU|searchprocess|Senrigan|Shagseeker|sift|SimBot|Site Valet|skymob|SLCrawler\\/2\\.0|slurp|ESI|snooper|solbot|speedy|spider_monkey|SpiderBot\\/1\\.0|spiderline|nil|suke|http:\\/\\/www\\.sygol\\.com|tach_bw|TechBOT|templeton|titin|topiclink|UdmSearch|urlck|Valkyrie libwww\\-perl|verticrawl|Victoria|void\\-bot|Voyager|VWbot_K|crawlpaper|wapspider|WebBandit\\/1\\.0|webcatcher|T\\-H\\-U\\-N\\-D\\-E\\-R\\-S\\-T\\-O\\-N\\-E|WebMoose|webquest|webreaper|webs|webspider|WebWalker|wget|winona|whowhere|wlm|WOLP|WWWC|none|XGET|Nederland\\.zoek/i', $_SERVER['HTTP_USER_AGENT'])) {
             // This is a bot and we have to retrieve its connection ID
             $sql = 'SELECT `id_connections` FROM `' . _DB_PREFIX_ . 'connections`
-					WHERE ip_address = ' . ip2long(Tools::getRemoteAddr()) . '
-						AND DATE_ADD(`date_add`, INTERVAL 30 MINUTE) > \'' . pSQL(date('Y-m-d H:i:00')) . '\'
-						' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER) . '
-					ORDER BY `date_add` DESC';
+                    WHERE ip_address = ' . ip2long(Tools::getRemoteAddr()) . '
+                        AND DATE_ADD(`date_add`, INTERVAL 30 MINUTE) > \'' . pSQL(date('Y-m-d H:i:00')) . '\'
+                        ' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER) . '
+                    ORDER BY `date_add` DESC';
             if ($id_connections = Db::getInstance()->getValue($sql)) {
                 $cookie->id_connections = (int) $id_connections;
+
                 return Page::getCurrentId();
             }
         }
         // A new connection is created if the guest made no actions during 30 minutes
         $sql = 'SELECT `id_guest`
-				FROM `' . _DB_PREFIX_ . 'connections`
-				WHERE `id_guest` = ' . (int) $cookie->id_guest . '
-					AND DATE_ADD(`date_add`, INTERVAL 30 MINUTE) > \'' . pSQL(date('Y-m-d H:i:00')) . '\'
-					' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER) . '
-				ORDER BY `date_add` DESC';
+                FROM `' . _DB_PREFIX_ . 'connections`
+                WHERE `id_guest` = ' . (int) $cookie->id_guest . '
+                    AND DATE_ADD(`date_add`, INTERVAL 30 MINUTE) > \'' . pSQL(date('Y-m-d H:i:00')) . '\'
+                    ' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER) . '
+                ORDER BY `date_add` DESC';
         $result = Db::getInstance()->getRow($sql);
         if (!$result['id_guest'] && (int) $cookie->id_guest) {
             // The old connections details are removed from the database in order to spare some memory
@@ -125,6 +127,7 @@ class Connection extends ObjectModel
             }
             $connection->add();
             $cookie->id_connections = $connection->id;
+
             return $connection->id_page;
         }
     }
@@ -138,11 +141,11 @@ class Connection extends ObjectModel
             $time = 300000;
         }
         Db::getInstance()->execute('
-		UPDATE `' . _DB_PREFIX_ . 'connections_page`
-		SET `time_end` = `time_start` + INTERVAL ' . (int) ($time / 1000) . ' SECOND
-		WHERE `id_connections` = ' . (int) $id_connections . '
-		AND `id_page` = ' . (int) $id_page . '
-		AND `time_start` = \'' . pSQL($time_start) . '\'');
+        UPDATE `' . _DB_PREFIX_ . 'connections_page`
+        SET `time_end` = `time_start` + INTERVAL ' . (int) ($time / 1000) . ' SECOND
+        WHERE `id_connections` = ' . (int) $id_connections . '
+        AND `id_page` = ' . (int) $id_page . '
+        AND `time_start` = \'' . pSQL($time_start) . '\'');
     }
     public static function cleanConnectionsPages()
     {
@@ -163,8 +166,8 @@ class Connection extends ObjectModel
         if ($interval != null) {
             // Records of connections details older than the beginning of the  specified interval are deleted
             Db::getInstance()->execute('
-			DELETE FROM `' . _DB_PREFIX_ . 'connections_page`
-			WHERE time_start < LAST_DAY(DATE_SUB(NOW(), INTERVAL ' . $interval . '))');
+            DELETE FROM `' . _DB_PREFIX_ . 'connections_page`
+            WHERE time_start < LAST_DAY(DATE_SUB(NOW(), INTERVAL ' . $interval . '))');
         }
     }
 }

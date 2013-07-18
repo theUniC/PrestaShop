@@ -59,9 +59,9 @@ class Backup
     }
     /**
      * you can set a different path with that function
-     * 
+     *
      * @TODO include the prefix name
-     * @param string $dir 
+     * @param  string  $dir
      * @return boolean bo
      */
     public function setCustomBackupPath($dir)
@@ -72,12 +72,13 @@ class Backup
         } else {
             return false;
         }
+
         return true;
     }
     /**
      * get the path to use for backup (customBackupDir if specified, or default)
-     * 
-     * @param string $filename filename to use
+     *
+     * @param  string $filename filename to use
      * @return string full path
      */
     public function getRealBackupPath($filename = null)
@@ -89,13 +90,14 @@ class Backup
                 $backupDir .= DIRECTORY_SEPARATOR;
             }
         }
+
         return $backupDir;
     }
     /**
      * Get the full path of the backup file
      *
-     * @param string $filename prefix of the backup file (datetime will be the second part)
-     * @return The full path of the backup file, or false if the backup file does not exists
+     * @param  string $filename prefix of the backup file (datetime will be the second part)
+     * @return The    full path of the backup file, or false if the backup file does not exists
      */
     public static function getBackupPath($filename)
     {
@@ -112,6 +114,7 @@ class Backup
         if ($backupfile === false || strncmp($backupdir, $backupfile, strlen($backupdir)) != 0) {
             die(Tools::displayError());
         }
+
         return $backupfile;
     }
     /**
@@ -123,6 +126,7 @@ class Backup
     {
         $adminDir = __PS_BASE_URI__ . substr($_SERVER['SCRIPT_NAME'], strlen(__PS_BASE_URI__));
         $adminDir = substr($adminDir, 0, strrpos($adminDir, '/'));
+
         return $adminDir . '/backup.php?filename=' . basename($this->id);
     }
     /**
@@ -134,8 +138,10 @@ class Backup
     {
         if (!$this->id || !unlink($this->id)) {
             $this->error = Tools::displayError('Error deleting') . ' ' . ($this->id ? '"' . $this->id . '"' : Tools::displayError('Invalid ID'));
+
             return false;
         }
+
         return true;
     }
     /**
@@ -149,9 +155,11 @@ class Backup
             $backup = new Backup($file);
             if (!$backup->delete()) {
                 $this->error = $backup->error;
+
                 return false;
             }
         }
+
         return true;
     }
     /**
@@ -184,6 +192,7 @@ class Backup
         }
         if ($fp === false) {
             echo Tools::displayError('Unable to create backup file') . ' "' . addslashes($backupfile) . '"';
+
             return false;
         }
         $this->id = realpath($backupfile);
@@ -210,6 +219,7 @@ class Backup
                 fclose($fp);
                 $this->delete();
                 echo Tools::displayError('An error occurred while backing up. Unable to obtain the schema of') . ' "' . $table;
+
                 return false;
             }
             fwrite($fp, '/* Scheme for table ' . $schema[0]['Table'] . ' */
@@ -273,8 +283,10 @@ INSERT INTO `' . $schema[0]['Table'] . '` VALUES
         if ($found == 0) {
             $this->delete();
             echo Tools::displayError('No valid tables were found to backup.');
+
             return false;
         }
+
         return true;
     }
 }

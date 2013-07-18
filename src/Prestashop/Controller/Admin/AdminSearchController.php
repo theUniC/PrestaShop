@@ -50,6 +50,7 @@ class AdminSearchController extends AdminController
         /* Handle empty search field */
         if (empty($this->query)) {
             $this->errors[] = Tools::displayError('Please complete the search form first.');
+
             return;
         } else {
             if (!$searchType && strlen($this->query) > 1) {
@@ -149,6 +150,7 @@ class AdminSearchController extends AdminController
     {
         if (!ip2long(trim($this->query))) {
             $this->errors[] = Tools::displayError('This is not a valid IP address:') . ' ' . Tools::htmlentitiesUTF8($this->query);
+
             return;
         }
         $this->_list['customers'] = Customer::searchByIp($this->query);
@@ -195,10 +197,10 @@ class AdminSearchController extends AdminController
         $tabs = array();
         $key_match = array();
         $result = Db::getInstance()->executeS('
-		SELECT class_name, name
-		FROM ' . _DB_PREFIX_ . 'tab t
-		INNER JOIN ' . _DB_PREFIX_ . 'tab_lang tl ON (t.id_tab = tl.id_tab AND tl.id_lang = ' . (int) $this->context->language->id . ')
-		WHERE active = 1');
+        SELECT class_name, name
+        FROM ' . _DB_PREFIX_ . 'tab t
+        INNER JOIN ' . _DB_PREFIX_ . 'tab_lang tl ON (t.id_tab = tl.id_tab AND tl.id_lang = ' . (int) $this->context->language->id . ')
+        WHERE active = 1');
         foreach ($result as $row) {
             $tabs[strtolower($row['class_name'])] = $row['name'];
             $key_match[strtolower($row['class_name'])] = $row['class_name'];
@@ -259,7 +261,7 @@ class AdminSearchController extends AdminController
     /* Override because we don't want any buttons */
     public function initToolbar()
     {
-        
+
     }
     public function initToolbarTitle()
     {
@@ -339,6 +341,7 @@ class AdminSearchController extends AdminController
             if (isset($this->_list['modules'])) {
                 $this->tpl_view_vars['modules'] = $this->_list['modules'];
             }
+
             return parent::renderView();
         }
     }

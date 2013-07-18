@@ -92,7 +92,7 @@ class AdminPerformanceController extends AdminController
     {
         if (!class_exists('CloudCache')) {
             $this->fields_form[6]['form'] = array('legend' => array('title' => $this->l('CloudCache'), 'image' => '../img/admin/subdomain.gif'), 'desc' => $this->l('Performance matters! Improve speed and conversions the easy way.') . '<br />' . $this->l('CloudCache supercharges your site in minutes through its state-of-the-art content delivery network.') . '<br /><br />' . $this->l('Subscribe now using the code "presta25" and get an exclusive 25% monthly discount on every available package.') . '<br /><br />
-			<a style="color: blue" href="index.php?controller=AdminModules&token=' . Tools::getAdminTokenLite('AdminModules') . '&filtername=cloudcache" id="installCloudCache">&gt; ' . $this->l('Click here to install the CloudCache module for PrestaShop') . '</a><br />');
+            <a style="color: blue" href="index.php?controller=AdminModules&token=' . Tools::getAdminTokenLite('AdminModules') . '&filtername=cloudcache" id="installCloudCache">&gt; ' . $this->l('Click here to install the CloudCache module for PrestaShop') . '</a><br />');
         }
     }
     public function renderForm()
@@ -107,6 +107,7 @@ class AdminPerformanceController extends AdminController
         $this->initFieldsetCloudCache();
         // Activate multiple fieldset
         $this->multiple_fieldsets = true;
+
         return parent::renderForm();
     }
     public function initContent()
@@ -115,19 +116,19 @@ class AdminPerformanceController extends AdminController
         $php_lang = in_array($this->context->language->iso_code, $php_dot_net_supported_langs) ? $this->context->language->iso_code : 'en';
         if (!extension_loaded('memcache')) {
             $this->warnings[] = $this->l('To use Memcached, you must install the Memcache PECL extension on your server.') . '
-				<a href="http://www.php.net/manual/' . substr($php_lang, 0, 2) . '/memcache.installation.php" target="_blank">
-					http://www.php.net/manual/' . substr($php_lang, 0, 2) . '/memcache.installation.php
-				</a>';
+                <a href="http://www.php.net/manual/' . substr($php_lang, 0, 2) . '/memcache.installation.php" target="_blank">
+                    http://www.php.net/manual/' . substr($php_lang, 0, 2) . '/memcache.installation.php
+                </a>';
         }
         if (!extension_loaded('apc')) {
             $this->warnings[] = $this->l('To use APC, you must install the APC PECL extension on your server.') . '
-				<a href="http://php.net/manual/' . substr($php_lang, 0, 2) . '/apc.installation.php" target="_blank">
-					http://php.net/manual/' . substr($php_lang, 0, 2) . '/apc.installation.php
-				</a>';
+                <a href="http://php.net/manual/' . substr($php_lang, 0, 2) . '/apc.installation.php" target="_blank">
+                    http://php.net/manual/' . substr($php_lang, 0, 2) . '/apc.installation.php
+                </a>';
         }
         if (!extension_loaded('xcache')) {
             $this->warnings[] = $this->l('To use Xcache, you must install the Xcache extension on your server.') . '
-				<a href="http://xcache.lighttpd.net" target="_blank">http://xcache.lighttpd.net</a>';
+                <a href="http://xcache.lighttpd.net" target="_blank">http://xcache.lighttpd.net</a>';
         }
         if (!is_writable(_PS_CACHEFS_DIRECTORY_)) {
             $this->warnings[] = sprintf($this->l('To use the CacheFS directory %s must be writable.'), realpath(_PS_CACHEFS_DIRECTORY_));
@@ -146,6 +147,7 @@ class AdminPerformanceController extends AdminController
         /* PrestaShop demo mode */
         if (_PS_MODE_DEMO_) {
             $this->errors[] = Tools::displayError('This functionality has been disabled.');
+
             return;
         }
         Hook::exec('action' . get_class($this) . ucfirst($this->action) . 'Before', array('controller' => $this));
@@ -306,17 +308,17 @@ class AdminPerformanceController extends AdminController
                 }
                 if ($cache_active && $caching_system == 'CacheMemcache' && !extension_loaded('memcache')) {
                     $this->errors[] = Tools::displayError('To use Memcached, you must install the Memcache PECL extension on your server.') . '
-						<a href="http://www.php.net/manual/en/memcache.installation.php">http://www.php.net/manual/en/memcache.installation.php</a>';
+                        <a href="http://www.php.net/manual/en/memcache.installation.php">http://www.php.net/manual/en/memcache.installation.php</a>';
                 } elseif ($cache_active && $caching_system == 'CacheApc' && !extension_loaded('apc')) {
                     $this->errors[] = Tools::displayError('To use APC cache, you must install the APC PECL extension on your server.') . '
-						<a href="http://fr.php.net/manual/fr/apc.installation.php">http://fr.php.net/manual/fr/apc.installation.php</a>';
+                        <a href="http://fr.php.net/manual/fr/apc.installation.php">http://fr.php.net/manual/fr/apc.installation.php</a>';
                 } elseif ($cache_active && $caching_system == 'CacheXcache' && !extension_loaded('xcache')) {
                     $this->errors[] = Tools::displayError('To use Xcache, you must install the Xcache extension on your server.') . '
-						<a href="http://xcache.lighttpd.net">http://xcache.lighttpd.net</a>';
+                        <a href="http://xcache.lighttpd.net">http://xcache.lighttpd.net</a>';
                 } else {
                     if ($cache_active && $caching_system == 'CacheXcache' && !ini_get('xcache.var_size')) {
                         $this->errors[] = Tools::displayError('To use Xcache, you must configure "xcache.var_size" for the Xcache extension (recommended value 16M to 64M).') . '
-						<a href="http://xcache.lighttpd.net/wiki/XcacheIni">http://xcache.lighttpd.net/wiki/XcacheIni</a>';
+                        <a href="http://xcache.lighttpd.net/wiki/XcacheIni">http://xcache.lighttpd.net/wiki/XcacheIni</a>';
                     } elseif ($cache_active && $caching_system == 'CacheFs' && !is_writable(_PS_CACHEFS_DIRECTORY_)) {
                         $this->errors[] = sprintf(Tools::displayError('To use CacheFS, the directory %s must be writable.'), realpath(_PS_CACHEFS_DIRECTORY_));
                     }

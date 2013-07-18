@@ -313,7 +313,7 @@ class FrontController extends Controller
     }
     public function postProcess()
     {
-        
+
     }
     public function initContent()
     {
@@ -373,7 +373,7 @@ class FrontController extends Controller
     }
     public function process()
     {
-        
+
     }
     public function redirect()
     {
@@ -384,7 +384,7 @@ class FrontController extends Controller
      */
     public function displayContent()
     {
-        
+
     }
     public function display()
     {
@@ -436,6 +436,7 @@ class FrontController extends Controller
                 $this->smartyOutputContent(_PS_THEME_DIR_ . 'footer.tpl');
             }
         }
+
         return true;
     }
     /* Display a maintenance page if shop is closed */
@@ -532,6 +533,7 @@ class FrontController extends Controller
                     if (isset($has_been_set) && $has_been_set) {
                         $this->context->cookie->id_currency = (int) Currency::getCurrencyInstance($default_country->id_currency ? (int) $default_country->id_currency : Configuration::get('PS_CURRENCY_DEFAULT'))->id;
                     }
+
                     return $default_country;
                 } elseif (Configuration::get('PS_GEOLOCATION_NA_BEHAVIOR') == _PS_GEOLOCATION_NO_CATALOG_ && !FrontController::isInWhitelistForGeolocation()) {
                     $this->restrictedCountry = true;
@@ -542,6 +544,7 @@ class FrontController extends Controller
                 Configuration::updateValue('PS_GEOLOCATION_ENABLED', 0);
             }
         }
+
         return false;
     }
     /**
@@ -565,6 +568,7 @@ class FrontController extends Controller
         // @see FrontControllerCore::setMobileMedia()
         if ($this->context->getMobileDevice() != false) {
             $this->setMobileMedia();
+
             return true;
         }
         if (Tools::file_exists_cache(_PS_ROOT_DIR_ . Tools::str_replace_once(__PS_BASE_URI__, DIRECTORY_SEPARATOR, _THEME_CSS_DIR_ . 'grid_prestashop.css'))) {
@@ -602,6 +606,7 @@ class FrontController extends Controller
     {
         $live_token = Tools::getAdminToken('AdminModulesPositions' . (int) Tab::getIdFromClassName('AdminModulesPositions') . (int) Tools::getValue('id_employee'));
         $ad = Tools::getValue('ad');
+
         return Tools::isSubmit('live_edit') && $ad && Tools::getValue('liveToken') == $live_token && is_dir(_PS_ROOT_DIR_ . DIRECTORY_SEPARATOR . $ad);
     }
     public function getLiveEditFooter()
@@ -609,6 +614,7 @@ class FrontController extends Controller
         if ($this->checkLiveEditAccess()) {
             $data = $this->context->smarty->createData();
             $data->assign(array('ad' => Tools::getValue('ad'), 'live_edit' => true, 'hook_list' => Hook::$executed_hooks, 'id_shop' => $this->context->shop->id));
+
             return $this->context->smarty->createTemplate(_PS_ALL_THEMES_DIR_ . 'live_edit.tpl', $data)->fetch();
         } else {
             return '';
@@ -694,6 +700,7 @@ class FrontController extends Controller
                 self::$currentCustomerGroups[] = $row['id_group'];
             }
         }
+
         return self::$currentCustomerGroups;
     }
     protected static function isInWhitelistForGeolocation()
@@ -717,6 +724,7 @@ class FrontController extends Controller
                 }
             }
         }
+
         return $allowed;
     }
     /**
@@ -730,6 +738,7 @@ class FrontController extends Controller
         if (!Configuration::get('PS_TOKEN_ENABLE')) {
             return true;
         }
+
         return strcasecmp(Tools::getToken(false), Tools::getValue('token')) == 0;
     }
     /**
@@ -751,6 +760,7 @@ class FrontController extends Controller
             }
             $list_uri[$file] = $media;
         }
+
         return parent::addCSS($list_uri, $css_media_type);
     }
     /**
@@ -772,6 +782,7 @@ class FrontController extends Controller
                 }
             }
         }
+
         return parent::addJS($js_uri);
     }
     protected function recoverCart()
@@ -788,6 +799,7 @@ class FrontController extends Controller
                     $this->context->cookie->is_guest = $customer->isGuest();
                     $this->context->cookie->passwd = $customer->passwd;
                     $this->context->cookie->email = $customer->email;
+
                     return $id_cart;
                 }
             }
@@ -856,6 +868,7 @@ class FrontController extends Controller
         if (!$layout && file_exists($layout_dir . 'layout.tpl')) {
             $layout = $layout_dir . 'layout.tpl';
         }
+
         return $layout;
     }
     /**
@@ -898,7 +911,7 @@ class FrontController extends Controller
         $this->template = $template;
     }
     /**
-     * Return an array with specific logo and favicon, 
+     * Return an array with specific logo and favicon,
      * if mobile device
      *
      * @since 1.5
@@ -913,6 +926,7 @@ class FrontController extends Controller
         } else {
             $logo = _PS_IMG_ . Configuration::get('PS_LOGO') . '?' . Configuration::get('PS_IMG_UPDATE_TIME');
         }
+
         return array('favicon_url' => _PS_IMG_ . Configuration::get('PS_FAVICON'), 'logo_image_width' => $mobile_device == false ? Configuration::get('SHOP_LOGO_WIDTH') : Configuration::get('SHOP_LOGO_MOBILE_WIDTH'), 'logo_image_height' => $mobile_device == false ? Configuration::get('SHOP_LOGO_HEIGHT') : Configuration::get('SHOP_LOGO_MOBILE_HEIGHT'), 'logo_url' => $logo);
     }
 }

@@ -53,6 +53,7 @@ class StockManagerFactory
             }
             StockManagerFactory::$stock_manager = $stock_manager;
         }
+
         return StockManagerFactory::$stock_manager;
     }
     /**
@@ -73,6 +74,7 @@ class StockManagerFactory
                 break;
             }
         }
+
         return $stock_manager;
     }
 }

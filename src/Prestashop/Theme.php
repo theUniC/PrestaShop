@@ -42,13 +42,14 @@ class Theme extends ObjectModel
     {
         $themes = new Collection('Theme');
         $themes->orderBy('name');
+
         return $themes;
     }
     /**
      * return an array of all available theme (installed or not)
-     * 
-     * @param boolean $installed_only
-     * @return array string (directory)
+     *
+     * @param  boolean $installed_only
+     * @return array   string (directory)
      */
     public static function getAvailable($installed_only = true)
     {
@@ -75,23 +76,24 @@ class Theme extends ObjectModel
         } else {
             $available_theme = $dirlist;
         }
+
         return $available_theme;
     }
     /**
      * check if a theme is used by a shop
-     * 
+     *
      * @return boolean
      */
     public function isUsed()
     {
-        return Db::getInstance()->getValue('SELECT count(*) 
-			FROM ' . _DB_PREFIX_ . 'shop WHERE id_theme = ' . (int) $this->id);
+        return Db::getInstance()->getValue('SELECT count(*)
+            FROM ' . _DB_PREFIX_ . 'shop WHERE id_theme = ' . (int) $this->id);
     }
     /**
      * add only theme if the directory exists
-     * 
-     * @param bool $null_values
-     * @param bool $autodate
+     *
+     * @param  bool    $null_values
+     * @param  bool    $autodate
      * @return boolean Insertion result
      */
     public function add($autodate = true, $null_values = false)
@@ -99,6 +101,7 @@ class Theme extends ObjectModel
         if (!is_dir(_PS_ALL_THEMES_DIR_ . $this->directory)) {
             return false;
         }
+
         return parent::add($autodate, $null_values);
     }
 }

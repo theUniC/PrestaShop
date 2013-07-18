@@ -460,6 +460,7 @@ class ProductController extends FrontController
             $html_img = '<img src="' . $link_lmg . '" alt="" ' . $class . '/>';
             $desc = str_replace($matches[0], $html_img, $desc);
         }
+
         return $desc;
     }
     protected function pictureUpload()
@@ -499,6 +500,7 @@ class ProductController extends FrontController
                 unlink($tmp_name);
             }
         }
+
         return true;
     }
     protected function textRecord()
@@ -561,6 +563,7 @@ class ProductController extends FrontController
             }
             $row['nextQuantity'] = isset($specific_prices[$key + 1]) ? (int) $specific_prices[$key + 1]['from_quantity'] : -1;
         }
+
         return $specific_prices;
     }
 }

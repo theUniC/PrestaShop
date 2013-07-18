@@ -92,6 +92,7 @@ class AdminSuppliersController extends AdminController
         $image = ImageManager::thumbnail(_PS_SUPP_IMG_DIR_ . '/' . $this->object->id . '.jpg', $this->table . '_' . (int) $this->object->id . '.' . $this->imageType, 350, $this->imageType, true);
         $this->fields_value['image'] = $image ? $image : false;
         $this->fields_value['size'] = $image ? filesize(_PS_SUPP_IMG_DIR_ . '/' . $this->object->id . '.jpg') / 1000 : false;
+
         return parent::renderForm();
     }
     public function renderView()
@@ -130,6 +131,7 @@ class AdminSuppliersController extends AdminController
             }
         }
         $this->tpl_view_vars = array('supplier' => $this->object, 'products' => $products, 'stock_management' => Configuration::get('PS_STOCK_MANAGEMENT'), 'shopContext' => Shop::getContext());
+
         return parent::renderView();
     }
     protected function afterImageUpload()
@@ -145,6 +147,7 @@ class AdminSuppliersController extends AdminController
                 }
             }
         }
+
         return $return;
     }
     /**
@@ -156,6 +159,7 @@ class AdminSuppliersController extends AdminController
         // checks access
         if (Tools::isSubmit('submitAdd' . $this->table) && !($this->tabAccess['add'] === '1')) {
             $this->errors[] = Tools::displayError('You do not have permission to add suppliers.');
+
             return parent::postProcess();
         }
         if (Tools::isSubmit('submitAdd' . $this->table)) {
@@ -196,6 +200,7 @@ class AdminSuppliersController extends AdminController
                     $_POST['id_address'] = $address->id;
                 }
             }
+
             return parent::postProcess();
         } else {
             if (Tools::isSubmit('delete' . $this->table)) {
@@ -213,6 +218,7 @@ class AdminSuppliersController extends AdminController
                             $address->deleted = 1;
                             $address->save();
                         }
+
                         return parent::postProcess();
                     }
                 }
@@ -232,6 +238,7 @@ class AdminSuppliersController extends AdminController
             $address->id_supplier = $object->id;
             $address->save();
         }
+
         return true;
     }
     /**
@@ -247,6 +254,7 @@ class AdminSuppliersController extends AdminController
                 $address->save();
             }
         }
+
         return true;
     }
 }

@@ -56,11 +56,13 @@ class AdminStatesController extends AdminController
         $this->_select = 'z.`name` AS zone';
         $this->_join = 'LEFT JOIN `' . _DB_PREFIX_ . 'zone` z ON (z.`id_zone` = a.`id_zone`)';
         $this->tpl_list_vars['zones'] = Zone::getZones();
+
         return parent::renderList();
     }
     public function renderForm()
     {
         $this->fields_form = array('legend' => array('title' => $this->l('States'), 'image' => '../img/admin/world.gif'), 'input' => array(array('type' => 'text', 'label' => $this->l('Name:'), 'name' => 'name', 'size' => 30, 'maxlength' => 32, 'required' => true, 'desc' => $this->l('Provide the State name to be display in addresses and on invoices.')), array('type' => 'text', 'label' => $this->l('ISO code:'), 'name' => 'iso_code', 'size' => 7, 'maxlength' => 7, 'required' => true, 'class' => 'uppercase', 'desc' => $this->l('1 to 4 letter ISO code')), array('type' => 'select', 'label' => $this->l('Country:'), 'name' => 'id_country', 'required' => false, 'default_value' => (int) $this->context->country->id, 'options' => array('query' => Country::getCountries($this->context->language->id, false, true), 'id' => 'id_country', 'name' => 'name'), 'desc' => $this->l('Country where the state, region or city is located')), array('type' => 'select', 'label' => $this->l('Zone:'), 'name' => 'id_zone', 'required' => false, 'options' => array('query' => Zone::getZones(), 'id' => 'id_zone', 'name' => 'name'), 'desc' => array($this->l('Geographical region where this state is located.'), $this->l('Used for shipping'))), array('type' => 'radio', 'label' => $this->l('Status:'), 'name' => 'active', 'required' => false, 'class' => 't', 'values' => array(array('id' => 'active_on', 'value' => 1, 'label' => '<img src="../img/admin/enabled.gif" alt="' . $this->l('Enabled') . '" title="' . $this->l('Enabled') . '" />'), array('id' => 'active_off', 'value' => 0, 'label' => '<img src="../img/admin/disabled.gif" alt="' . $this->l('Disabled') . '" title="' . $this->l('Disabled') . '" />')), 'desc' => $this->l('Enabled or disabled'))), 'submit' => array('title' => $this->l('   Save   '), 'class' => 'button'));
+
         return parent::renderForm();
     }
     public function postProcess()

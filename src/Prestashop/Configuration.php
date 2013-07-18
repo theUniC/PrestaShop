@@ -63,14 +63,15 @@ class Configuration extends ObjectModel
         if (!is_array($this->value)) {
             return true;
         }
+
         return $this->getFieldsLang();
     }
     /**
      * Return ID a configuration key
      *
      * @param string $key
-     * @param int $id_shop_group
-     * @param int $id_shop
+     * @param int    $id_shop_group
+     * @param int    $id_shop
      */
     public static function getIdByName($key, $id_shop_group = null, $id_shop = null)
     {
@@ -81,8 +82,9 @@ class Configuration extends ObjectModel
             $id_shop_group = Shop::getContextShopGroupID(true);
         }
         $sql = 'SELECT id_configuration
-				FROM ' . _DB_PREFIX_ . 'configuration
-				WHERE name = \'' . pSQL($key) . '\'' . Configuration::sqlRestriction($id_shop_group, $id_shop);
+                FROM ' . _DB_PREFIX_ . 'configuration
+                WHERE name = \'' . pSQL($key) . '\'' . Configuration::sqlRestriction($id_shop_group, $id_shop);
+
         return (int) Db::getInstance()->getValue($sql);
     }
     /**
@@ -92,8 +94,8 @@ class Configuration extends ObjectModel
     {
         self::$_CONF = array();
         $sql = 'SELECT c.`name`, cl.`id_lang`, IF(cl.`id_lang` IS NULL, c.`value`, cl.`value`) AS value, c.id_shop_group, c.id_shop
-				FROM `' . _DB_PREFIX_ . 'configuration` c
-				LEFT JOIN `' . _DB_PREFIX_ . 'configuration_lang` cl ON (c.id_configuration = cl.id_configuration)';
+                FROM `' . _DB_PREFIX_ . 'configuration` c
+                LEFT JOIN `' . _DB_PREFIX_ . 'configuration_lang` cl ON (c.id_configuration = cl.id_configuration)';
         if (!($results = Db::getInstance()->executeS($sql))) {
             return;
         }
@@ -117,9 +119,9 @@ class Configuration extends ObjectModel
     /**
      * Get a single configuration value (in one language only)
      *
-     * @param string $key Key wanted
-     * @param integer $id_lang Language ID
-     * @return string Value
+     * @param  string  $key     Key wanted
+     * @param  integer $id_lang Language ID
+     * @return string  Value
      */
     public static function get($key, $id_lang = null, $id_shop_group = null, $id_shop = null)
     {
@@ -150,6 +152,7 @@ class Configuration extends ObjectModel
         } elseif (Configuration::hasKey($key, $id_lang)) {
             return self::$_CONF[$id_lang]['global'][$key];
         }
+
         return false;
     }
     public static function getGlobalValue($key, $id_lang = null)
@@ -159,10 +162,10 @@ class Configuration extends ObjectModel
     /**
      * Get a single configuration value (in multiple languages)
      *
-     * @param string $key Key wanted
-     * @param int $id_shop_group
-     * @param int $id_shop
-     * @return array Values in multiple languages
+     * @param  string $key           Key wanted
+     * @param  int    $id_shop_group
+     * @param  int    $id_shop
+     * @return array  Values in multiple languages
      */
     public static function getInt($key, $id_shop_group = null, $id_shop = null)
     {
@@ -171,14 +174,15 @@ class Configuration extends ObjectModel
         foreach ($languages as $language) {
             $resultsArray[$language['id_lang']] = Configuration::get($key, $language['id_lang'], $id_shop_group, $id_shop);
         }
+
         return $resultsArray;
     }
     /**
      * Get several configuration values (in one language only)
      *
-     * @param array $keys Keys wanted
-     * @param integer $id_lang Language ID
-     * @return array Values
+     * @param  array   $keys    Keys wanted
+     * @param  integer $id_lang Language ID
+     * @return array   Values
      */
     public static function getMultiple($keys, $id_lang = null, $id_shop_group = null, $id_shop = null)
     {
@@ -196,15 +200,16 @@ class Configuration extends ObjectModel
         foreach ($keys as $key) {
             $results[$key] = Configuration::get($key, $id_lang, $id_shop_group, $id_shop);
         }
+
         return $results;
     }
     /**
      * Check if key exists in configuration
      *
-     * @param string $key
-     * @param int $id_lang
-     * @param int $id_shop_group
-     * @param int $id_shop
+     * @param  string $key
+     * @param  int    $id_lang
+     * @param  int    $id_shop_group
+     * @param  int    $id_shop
      * @return bool
      */
     public static function hasKey($key, $id_lang = null, $id_shop_group = null, $id_shop = null)
@@ -215,15 +220,16 @@ class Configuration extends ObjectModel
         } elseif ($id_shop_group) {
             return isset(self::$_CONF[$id_lang]['group'][$id_shop_group]) && array_key_exists($key, self::$_CONF[$id_lang]['group'][$id_shop_group]);
         }
+
         return isset(self::$_CONF[$id_lang]['global']) && array_key_exists($key, self::$_CONF[$id_lang]['global']);
     }
     /**
      * Set TEMPORARY a single configuration value (in one language only)
      *
-     * @param string $key Key wanted
-     * @param mixed $values $values is an array if the configuration is multilingual, a single string else.
-     * @param int $id_shop_group
-     * @param int $id_shop
+     * @param string $key           Key wanted
+     * @param mixed  $values        $values is an array if the configuration is multilingual, a single string else.
+     * @param int    $id_shop_group
+     * @param int    $id_shop
      */
     public static function set($key, $values, $id_shop_group = null, $id_shop = null)
     {
@@ -254,9 +260,9 @@ class Configuration extends ObjectModel
     /**
      * Update configuration key for global context only
      *
-     * @param string $key
-     * @param mixed $values
-     * @param bool $html
+     * @param  string $key
+     * @param  mixed  $values
+     * @param  bool   $html
      * @return bool
      */
     public static function updateGlobalValue($key, $values, $html = false)
@@ -266,11 +272,11 @@ class Configuration extends ObjectModel
     /**
      * Update configuration key and value into database (automatically insert if key does not exist)
      *
-     * @param string $key Key
-     * @param mixed $values $values is an array if the configuration is multilingual, a single string else.
-     * @param boolean $html Specify if html is authorized in value
-     * @param int $id_shop_group
-     * @param int $id_shop
+     * @param  string  $key           Key
+     * @param  mixed   $values        $values is an array if the configuration is multilingual, a single string else.
+     * @param  boolean $html          Specify if html is authorized in value
+     * @param  int     $id_shop_group
+     * @param  int     $id_shop
      * @return boolean Update result
      */
     public static function updateValue($key, $values, $html = false, $id_shop_group = null, $id_shop = null)
@@ -303,13 +309,13 @@ class Configuration extends ObjectModel
                 } else {
                     // Update multi lang
                     $sql = 'UPDATE ' . _DB_PREFIX_ . 'configuration_lang cl
-							SET cl.value = \'' . pSQL($value, $html) . '\',
-								cl.date_upd = NOW()
-							WHERE cl.id_lang = ' . (int) $lang . '
-								AND cl.id_configuration = (
-									SELECT c.id_configuration
-									FROM ' . _DB_PREFIX_ . 'configuration c
-									WHERE c.name = \'' . pSQL($key) . '\'' . Configuration::sqlRestriction($id_shop_group, $id_shop) . ')';
+                            SET cl.value = \'' . pSQL($value, $html) . '\',
+                                cl.date_upd = NOW()
+                            WHERE cl.id_lang = ' . (int) $lang . '
+                                AND cl.id_configuration = (
+                                    SELECT c.id_configuration
+                                    FROM ' . _DB_PREFIX_ . 'configuration c
+                                    WHERE c.name = \'' . pSQL($key) . '\'' . Configuration::sqlRestriction($id_shop_group, $id_shop) . ')';
                     $result &= Db::getInstance()->execute($sql);
                 }
             } else {
@@ -334,12 +340,13 @@ class Configuration extends ObjectModel
             }
         }
         Configuration::set($key, $values, $id_shop_group, $id_shop);
+
         return $result;
     }
     /**
      * Delete a configuration key in database (with or without language management)
      *
-     * @param string $key Key to delete
+     * @param  string  $key Key to delete
      * @return boolean Deletion result
      */
     public static function deleteByName($key)
@@ -348,16 +355,17 @@ class Configuration extends ObjectModel
             return false;
         }
         $result = Db::getInstance()->execute('
-		DELETE FROM `' . _DB_PREFIX_ . 'configuration_lang`
-		WHERE `id_configuration` IN (
-			SELECT `id_configuration`
-			FROM `' . _DB_PREFIX_ . 'configuration`
-			WHERE `name` = "' . pSQL($key) . '"
-		)');
+        DELETE FROM `' . _DB_PREFIX_ . 'configuration_lang`
+        WHERE `id_configuration` IN (
+            SELECT `id_configuration`
+            FROM `' . _DB_PREFIX_ . 'configuration`
+            WHERE `name` = "' . pSQL($key) . '"
+        )');
         $result2 = Db::getInstance()->execute('
-		DELETE FROM `' . _DB_PREFIX_ . 'configuration`
-		WHERE `name` = "' . pSQL($key) . '"');
+        DELETE FROM `' . _DB_PREFIX_ . 'configuration`
+        WHERE `name` = "' . pSQL($key) . '"');
         self::$_CONF = null;
+
         return $result && $result2;
     }
     /**
@@ -377,19 +385,19 @@ class Configuration extends ObjectModel
         }
         $id = Configuration::getIdByName($key, $id_shop_group, $id_shop);
         Db::getInstance()->execute('
-		DELETE FROM ' . _DB_PREFIX_ . 'configuration
-		WHERE id_configuration = ' . (int) $id);
+        DELETE FROM ' . _DB_PREFIX_ . 'configuration
+        WHERE id_configuration = ' . (int) $id);
         Db::getInstance()->execute('
-		DELETE FROM ' . _DB_PREFIX_ . 'configuration_lang
-		WHERE id_configuration = ' . (int) $id);
+        DELETE FROM ' . _DB_PREFIX_ . 'configuration_lang
+        WHERE id_configuration = ' . (int) $id);
         self::$_CONF = null;
     }
     /**
      * Check if configuration var is defined in given context
      *
      * @param string $key
-     * @param int $id_lang
-     * @param int $context
+     * @param int    $id_lang
+     * @param int    $context
      */
     public static function hasContext($key, $id_lang, $context)
     {
@@ -409,6 +417,7 @@ class Configuration extends ObjectModel
         } elseif ($context == Shop::CONTEXT_ALL && Configuration::hasKey($key, $id_lang)) {
             return true;
         }
+
         return false;
     }
     public static function isOverridenByCurrentContext($key)
@@ -423,12 +432,13 @@ class Configuration extends ObjectModel
         } else {
             $testContext = Shop::getContext() == Shop::CONTEXT_SHOP && Configuration::hasContext($key, null, Shop::CONTEXT_SHOP) || Shop::getContext() == Shop::CONTEXT_GROUP && Configuration::hasContext($key, null, Shop::CONTEXT_GROUP) ? true : false;
         }
+
         return Shop::isFeatureActive() && Shop::getContext() != Shop::CONTEXT_ALL && $testContext;
     }
     /**
      * Check if a key was loaded as multi lang
      *
-     * @param string $key
+     * @param  string $key
      * @return bool
      */
     public static function isLangKey($key)
@@ -438,8 +448,8 @@ class Configuration extends ObjectModel
     /**
      * Add SQL restriction on shops for configuration table
      *
-     * @param int $id_shop_group
-     * @param int $id_shop
+     * @param  int    $id_shop_group
+     * @param  int    $id_shop
      * @return string
      */
     protected static function sqlRestriction($id_shop_group, $id_shop)
@@ -464,15 +474,16 @@ class Configuration extends ObjectModel
     public function getWebserviceObjectList($sql_join, $sql_filter, $sql_sort, $sql_limit)
     {
         $query = '
-		SELECT DISTINCT main.`' . bqSQL($this->def['primary']) . '` FROM `' . _DB_PREFIX_ . bqSQL($this->def['table']) . '` main
-		' . $sql_join . '
-		WHERE id_configuration NOT IN
-		(	SELECT id_configuration
-			FROM ' . _DB_PREFIX_ . bqSQL($this->def['table']) . '_lang
-		) ' . $sql_filter . '
-		' . ($sql_sort != '' ? $sql_sort : '') . '
-		' . ($sql_limit != '' ? $sql_limit : '') . '
-		';
+        SELECT DISTINCT main.`' . bqSQL($this->def['primary']) . '` FROM `' . _DB_PREFIX_ . bqSQL($this->def['table']) . '` main
+        ' . $sql_join . '
+        WHERE id_configuration NOT IN
+        (	SELECT id_configuration
+            FROM ' . _DB_PREFIX_ . bqSQL($this->def['table']) . '_lang
+        ) ' . $sql_filter . '
+        ' . ($sql_sort != '' ? $sql_sort : '') . '
+        ' . ($sql_limit != '' ? $sql_limit : '') . '
+        ';
+
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
     }
 }

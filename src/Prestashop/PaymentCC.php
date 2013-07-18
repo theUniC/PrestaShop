@@ -57,11 +57,12 @@ class PaymentCC extends OrderPayment
     public function add($autodate = true, $nullValues = false)
     {
         Tools::displayAsDeprecated();
+
         return parent::add($autodate, $nullValues);
     }
     /**
      * Get the detailed payment of an order
-     * @param int $id_order
+     * @param  int   $id_order
      * @return array
      * @deprecated 1.5.0.1
      * @see OrderPaymentCore
@@ -70,6 +71,7 @@ class PaymentCC extends OrderPayment
     {
         Tools::displayAsDeprecated();
         $order = new Order($id_order);
+
         return OrderPayment::getByOrderReference($order->reference);
     }
 }

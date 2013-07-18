@@ -82,6 +82,7 @@ class PdfInvoiceController extends FrontController
         if (file_exists($iso_template)) {
             $template = $iso_template;
         }
+
         return $template;
     }
 }

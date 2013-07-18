@@ -86,6 +86,7 @@ abstract class PaymentModule extends Module
         }
         // Insert countries availability
         $return = $this->addCheckboxCountryRestrictionsForModule();
+
         return $return;
     }
     public function uninstall()
@@ -93,6 +94,7 @@ abstract class PaymentModule extends Module
         if (!Db::getInstance()->execute('DELETE FROM `' . _DB_PREFIX_ . 'module_country` WHERE id_module = ' . (int) $this->id) || !Db::getInstance()->execute('DELETE FROM `' . _DB_PREFIX_ . 'module_currency` WHERE id_module = ' . (int) $this->id) || !Db::getInstance()->execute('DELETE FROM `' . _DB_PREFIX_ . 'module_group` WHERE id_module = ' . (int) $this->id)) {
             return false;
         }
+
         return parent::uninstall();
     }
     /**
@@ -107,11 +109,12 @@ abstract class PaymentModule extends Module
         }
         foreach ($shops as $s) {
             if (!Db::getInstance()->execute('
-					INSERT INTO `' . _DB_PREFIX_ . 'module_currency` (`id_module`, `id_shop`, `id_currency`)
-					SELECT ' . (int) $this->id . ', "' . (int) $s . '", `id_currency` FROM `' . _DB_PREFIX_ . 'currency` WHERE deleted = 0')) {
+                    INSERT INTO `' . _DB_PREFIX_ . 'module_currency` (`id_module`, `id_shop`, `id_currency`)
+                    SELECT ' . (int) $this->id . ', "' . (int) $s . '", `id_currency` FROM `' . _DB_PREFIX_ . 'currency` WHERE deleted = 0')) {
                 return false;
             }
         }
+
         return true;
     }
     /**
@@ -126,10 +129,11 @@ abstract class PaymentModule extends Module
         }
         foreach ($shops as $s) {
             if (!Db::getInstance()->execute('INSERT INTO `' . _DB_PREFIX_ . 'module_currency` (`id_module`, `id_shop`, `id_currency`)
-				VALUES (' . (int) $this->id . ', "' . (int) $s . '", -2)')) {
+                VALUES (' . (int) $this->id . ', "' . (int) $s . '", -2)')) {
                 return false;
             }
         }
+
         return true;
     }
     /**
@@ -145,17 +149,18 @@ abstract class PaymentModule extends Module
         foreach ($countries as $country) {
             $country_ids[] = $country['id_country'];
         }
+
         return Country::addModuleRestrictions($shops, $countries, array(array('id_module' => (int) $this->id)));
     }
     /**
      * Validate an order in database
      * Function called from a payment module
      *
-     * @param integer $id_cart Value
+     * @param integer $id_cart        Value
      * @param integer $id_order_state Value
-     * @param float $amount_paid Amount really paid by customer (in the default currency)
-     * @param string $payment_method Payment method (eg. 'Credit card')
-     * @param string $message Message to attach to order
+     * @param float   $amount_paid    Amount really paid by customer (in the default currency)
+     * @param string  $payment_method Payment method (eg. 'Credit card')
+     * @param string  $message        Message to attach to order
      */
     public function validateOrder($id_cart, $id_order_state, $amount_paid, $payment_method = 'Unknown', $message = null, $extra_vars = array(), $currency_special = null, $dont_touch_amount = false, $secure_key = false, Shop $shop = null)
     {
@@ -366,21 +371,21 @@ abstract class PaymentModule extends Module
                             $customization_text = rtrim($customization_text, '---<br />');
                             $customization_quantity = (int) $product['customization_quantity'];
                             $products_list .= '<tr style="background-color: ' . ($key % 2 ? '#DDE2E6' : '#EBECEE') . ';">
-								<td style="padding: 0.6em 0.4em;width: 15%;">' . $product['reference'] . '</td>
-								<td style="padding: 0.6em 0.4em;width: 30%;"><strong>' . $product['name'] . (isset($product['attributes']) ? ' - ' . $product['attributes'] : '') . ' - ' . Tools::displayError('Customized') . (!empty($customization_text) ? ' - ' . $customization_text : '') . '</strong></td>
-								<td style="padding: 0.6em 0.4em; width: 20%;">' . Tools::displayPrice(Product::getTaxCalculationMethod() == PS_TAX_EXC ? Tools::ps_round($price, 2) : $price_wt, $this->context->currency, false) . '</td>
-								<td style="padding: 0.6em 0.4em; width: 15%;">' . $customization_quantity . '</td>
-								<td style="padding: 0.6em 0.4em; width: 20%;">' . Tools::displayPrice($customization_quantity * (Product::getTaxCalculationMethod() == PS_TAX_EXC ? Tools::ps_round($price, 2) : $price_wt), $this->context->currency, false) . '</td>
-							</tr>';
+                                <td style="padding: 0.6em 0.4em;width: 15%;">' . $product['reference'] . '</td>
+                                <td style="padding: 0.6em 0.4em;width: 30%;"><strong>' . $product['name'] . (isset($product['attributes']) ? ' - ' . $product['attributes'] : '') . ' - ' . Tools::displayError('Customized') . (!empty($customization_text) ? ' - ' . $customization_text : '') . '</strong></td>
+                                <td style="padding: 0.6em 0.4em; width: 20%;">' . Tools::displayPrice(Product::getTaxCalculationMethod() == PS_TAX_EXC ? Tools::ps_round($price, 2) : $price_wt, $this->context->currency, false) . '</td>
+                                <td style="padding: 0.6em 0.4em; width: 15%;">' . $customization_quantity . '</td>
+                                <td style="padding: 0.6em 0.4em; width: 20%;">' . Tools::displayPrice($customization_quantity * (Product::getTaxCalculationMethod() == PS_TAX_EXC ? Tools::ps_round($price, 2) : $price_wt), $this->context->currency, false) . '</td>
+                            </tr>';
                         }
                         if (!$customization_quantity || (int) $product['cart_quantity'] > $customization_quantity) {
                             $products_list .= '<tr style="background-color: ' . ($key % 2 ? '#DDE2E6' : '#EBECEE') . ';">
-								<td style="padding: 0.6em 0.4em;width: 15%;">' . $product['reference'] . '</td>
-								<td style="padding: 0.6em 0.4em;width: 30%;"><strong>' . $product['name'] . (isset($product['attributes']) ? ' - ' . $product['attributes'] : '') . '</strong></td>
-								<td style="padding: 0.6em 0.4em; width: 20%;">' . Tools::displayPrice(Product::getTaxCalculationMethod() == PS_TAX_EXC ? Tools::ps_round($price, 2) : $price_wt, $this->context->currency, false) . '</td>
-								<td style="padding: 0.6em 0.4em; width: 15%;">' . ((int) $product['cart_quantity'] - $customization_quantity) . '</td>
-								<td style="padding: 0.6em 0.4em; width: 20%;">' . Tools::displayPrice(((int) $product['cart_quantity'] - $customization_quantity) * (Product::getTaxCalculationMethod() == PS_TAX_EXC ? Tools::ps_round($price, 2) : $price_wt), $this->context->currency, false) . '</td>
-							</tr>';
+                                <td style="padding: 0.6em 0.4em;width: 15%;">' . $product['reference'] . '</td>
+                                <td style="padding: 0.6em 0.4em;width: 30%;"><strong>' . $product['name'] . (isset($product['attributes']) ? ' - ' . $product['attributes'] : '') . '</strong></td>
+                                <td style="padding: 0.6em 0.4em; width: 20%;">' . Tools::displayPrice(Product::getTaxCalculationMethod() == PS_TAX_EXC ? Tools::ps_round($price, 2) : $price_wt, $this->context->currency, false) . '</td>
+                                <td style="padding: 0.6em 0.4em; width: 15%;">' . ((int) $product['cart_quantity'] - $customization_quantity) . '</td>
+                                <td style="padding: 0.6em 0.4em; width: 20%;">' . Tools::displayPrice(((int) $product['cart_quantity'] - $customization_quantity) * (Product::getTaxCalculationMethod() == PS_TAX_EXC ? Tools::ps_round($price, 2) : $price_wt), $this->context->currency, false) . '</td>
+                            </tr>';
                         }
                         // Check if is not a virutal product for the displaying of shipping
                         if (!$product['is_virtual']) {
@@ -442,10 +447,10 @@ abstract class PaymentModule extends Module
                             $cart_rule_to_update->update();
                         }
                         $cart_rules_list .= '
-						<tr>
-							<td colspan="4" style="padding:0.6em 0.4em;text-align:right">' . Tools::displayError('Voucher name:') . ' ' . $cart_rule['obj']->name . '</td>
-							<td style="padding:0.6em 0.4em;text-align:right">' . ($values['tax_incl'] != 0.0 ? '-' : '') . Tools::displayPrice($values['tax_incl'], $this->context->currency, false) . '</td>
-						</tr>';
+                        <tr>
+                            <td colspan="4" style="padding:0.6em 0.4em;text-align:right">' . Tools::displayError('Voucher name:') . ' ' . $cart_rule['obj']->name . '</td>
+                            <td style="padding:0.6em 0.4em;text-align:right">' . ($values['tax_incl'] != 0.0 ? '-' : '') . Tools::displayPrice($values['tax_incl'], $this->context->currency, false) . '</td>
+                        </tr>';
                     }
                     // Specify order id for message
                     $old_message = Message::getMessageByCartId((int) $this->context->cart->id);
@@ -540,6 +545,7 @@ abstract class PaymentModule extends Module
             // End foreach $order_detail_list
             // Use the last order as currentOrder
             $this->currentOrder = (int) $order->id;
+
             return true;
         } else {
             $error = Tools::displayError('Cart cannot be loaded or an order has already been placed using this cart');
@@ -552,8 +558,8 @@ abstract class PaymentModule extends Module
         return $content;
     }
     /**
-     * @param Object Address $the_address that needs to be txt formated
-     * @return String the txt formated address block
+     * @param  Object Address $the_address that needs to be txt formated
+     * @return String         the txt formated address block
      */
     protected function _getTxtFormatedAddress($the_address)
     {
@@ -569,18 +575,19 @@ abstract class PaymentModule extends Module
         }
         $out = implode('
 ', $r_values);
+
         return $out;
     }
     /**
-     * @param Object Address $the_address that needs to be txt formated
-     * @return String the txt formated address block
+     * @param  Object Address $the_address that needs to be txt formated
+     * @return String         the txt formated address block
      */
     protected function _getFormatedAddress(Address $the_address, $line_sep, $fields_style = array())
     {
         return AddressFormat::generateAddress($the_address, array('avoid' => array()), $line_sep, ' ', $fields_style);
     }
     /**
-     * @param int $id_currency : this parameter is optionnal but on 1.5 version of Prestashop, it will be REQUIRED
+     * @param  int      $id_currency : this parameter is optionnal but on 1.5 version of Prestashop, it will be REQUIRED
      * @return Currency
      */
     public function getCurrency($current_id_currency = null)
@@ -593,6 +600,7 @@ abstract class PaymentModule extends Module
         }
         if ($this->currencies_mode == 'checkbox') {
             $currencies = Currency::getPaymentCurrencies($this->id);
+
             return $currencies;
         } elseif ($this->currencies_mode == 'radio') {
             $currencies = Currency::getPaymentCurrenciesSpecial($this->id);
@@ -608,14 +616,15 @@ abstract class PaymentModule extends Module
         if (!isset($id_currency) || empty($id_currency)) {
             return false;
         }
+
         return new Currency($id_currency);
     }
     /**
      * Allows specified payment modules to be used by a specific currency
      *
      * @since 1.4.5
-     * @param int $id_currency
-     * @param array $id_module_list
+     * @param  int     $id_currency
+     * @param  array   $id_module_list
      * @return boolean
      */
     public static function addCurrencyPermissions($id_currency, array $id_module_list = array())
@@ -633,9 +642,10 @@ abstract class PaymentModule extends Module
         }
         if (!empty($values)) {
             return Db::getInstance()->execute('
-			INSERT INTO `' . _DB_PREFIX_ . 'module_currency` (`id_module`, `id_currency`)
-			VALUES ' . rtrim($values, ','));
+            INSERT INTO `' . _DB_PREFIX_ . 'module_currency` (`id_module`, `id_currency`)
+            VALUES ' . rtrim($values, ','));
         }
+
         return true;
     }
     /**
@@ -651,14 +661,15 @@ abstract class PaymentModule extends Module
         if (Db::getInstance()->getValue('SELECT `id_hook` FROM `' . _DB_PREFIX_ . 'hook` WHERE `name` = \'displayPayment\'')) {
             $hook_payment = 'displayPayment';
         }
+
         return Db::getInstance()->executeS('
-			SELECT DISTINCT m.`id_module`, h.`id_hook`, m.`name`, hm.`position`
-			FROM `' . _DB_PREFIX_ . 'module` m
-			LEFT JOIN `' . _DB_PREFIX_ . 'hook_module` hm ON hm.`id_module` = m.`id_module`
-			LEFT JOIN `' . _DB_PREFIX_ . 'hook` h ON hm.`id_hook` = h.`id_hook`
-			INNER JOIN `' . _DB_PREFIX_ . 'module_shop` ms ON (m.`id_module` = ms.`id_module` AND ms.id_shop=' . (int) Context::getContext()->shop->id . ')
-			WHERE h.`name` = \'' . pSQL($hook_payment) . '\'
-		');
+            SELECT DISTINCT m.`id_module`, h.`id_hook`, m.`name`, hm.`position`
+            FROM `' . _DB_PREFIX_ . 'module` m
+            LEFT JOIN `' . _DB_PREFIX_ . 'hook_module` hm ON hm.`id_module` = m.`id_module`
+            LEFT JOIN `' . _DB_PREFIX_ . 'hook` h ON hm.`id_hook` = h.`id_hook`
+            INNER JOIN `' . _DB_PREFIX_ . 'module_shop` ms ON (m.`id_module` = ms.`id_module` AND ms.id_shop=' . (int) Context::getContext()->shop->id . ')
+            WHERE h.`name` = \'' . pSQL($hook_payment) . '\'
+        ');
     }
     public static function preCall($module_name)
     {
@@ -670,6 +681,7 @@ abstract class PaymentModule extends Module
                 return true;
             }
         }
+
         return false;
     }
 }

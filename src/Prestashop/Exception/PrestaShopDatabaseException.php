@@ -32,9 +32,8 @@ namespace Prestashop\Exception;
  */
 class PrestaShopDatabaseException extends PrestaShopException
 {
-	public function __toString()
-	{
-		return $this->message;
-	}
+    public function __toString()
+    {
+        return $this->message;
+    }
 }
-

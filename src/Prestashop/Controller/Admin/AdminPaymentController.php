@@ -53,9 +53,9 @@ class AdminPaymentController extends AdminController
                         $module->country = array();
                     }
                     $countries = DB::getInstance()->executeS('
-						SELECT id_country
-						FROM ' . _DB_PREFIX_ . 'module_country
-						WHERE id_module = ' . (int) $module->id . ' AND `id_shop`=' . (int) $shop_id);
+                        SELECT id_country
+                        FROM ' . _DB_PREFIX_ . 'module_country
+                        WHERE id_module = ' . (int) $module->id . ' AND `id_shop`=' . (int) $shop_id);
                     foreach ($countries as $country) {
                         $module->country[] = $country['id_country'];
                     }
@@ -63,9 +63,9 @@ class AdminPaymentController extends AdminController
                         $module->currency = array();
                     }
                     $currencies = DB::getInstance()->executeS('
-						SELECT id_currency
-						FROM ' . _DB_PREFIX_ . 'module_currency
-						WHERE id_module = ' . (int) $module->id . ' AND `id_shop`=' . (int) $shop_id);
+                        SELECT id_currency
+                        FROM ' . _DB_PREFIX_ . 'module_currency
+                        WHERE id_module = ' . (int) $module->id . ' AND `id_shop`=' . (int) $shop_id);
                     foreach ($currencies as $currency) {
                         $module->currency[] = $currency['id_currency'];
                     }
@@ -73,9 +73,9 @@ class AdminPaymentController extends AdminController
                         $module->group = array();
                     }
                     $groups = DB::getInstance()->executeS('
-						SELECT id_group
-						FROM ' . _DB_PREFIX_ . 'module_group
-						WHERE id_module = ' . (int) $module->id . ' AND `id_shop`=' . (int) $shop_id);
+                        SELECT id_group
+                        FROM ' . _DB_PREFIX_ . 'module_group
+                        WHERE id_module = ' . (int) $module->id . ' AND `id_shop`=' . (int) $shop_id);
                     foreach ($groups as $group) {
                         $module->group[] = $group['id_group'];
                     }
@@ -122,9 +122,9 @@ class AdminPaymentController extends AdminController
             }
         }
         Db::getInstance()->execute('
-			DELETE FROM `' . _DB_PREFIX_ . 'module_' . bqSQL($type) . '`
-			WHERE id_shop = ' . Context::getContext()->shop->id . '
-			AND `id_module` IN (' . implode(', ', $modules) . ')');
+            DELETE FROM `' . _DB_PREFIX_ . 'module_' . bqSQL($type) . '`
+            WHERE id_shop = ' . Context::getContext()->shop->id . '
+            AND `id_module` IN (' . implode(', ', $modules) . ')');
         // Fill the new restriction selection for active module.
         $values = array();
         foreach ($this->payment_modules as $module) {
@@ -136,15 +136,16 @@ class AdminPaymentController extends AdminController
         }
         if (count($values)) {
             Db::getInstance()->execute('
-				INSERT INTO `' . _DB_PREFIX_ . 'module_' . bqSQL($type) . '`
-				(`id_module`, `id_shop`, `id_' . bqSQL($type) . '`)
-				VALUES ' . implode(',', $values));
+                INSERT INTO `' . _DB_PREFIX_ . 'module_' . bqSQL($type) . '`
+                (`id_module`, `id_shop`, `id_' . bqSQL($type) . '`)
+                VALUES ' . implode(',', $values));
         }
         Tools::redirectAdmin(self::$currentIndex . '&conf=4' . '&token=' . $this->token);
     }
     public function initContent()
     {
         $this->display = 'view';
+
         return parent::initContent();
     }
     public function renderView()
@@ -154,6 +155,7 @@ class AdminPaymentController extends AdminController
         $shop_context = !Shop::isFeatureActive() || Shop::getContext() == Shop::CONTEXT_SHOP;
         if (!$shop_context) {
             $this->tpl_view_vars = array('shop_context' => $shop_context);
+
             return parent::renderView();
         }
         // link to modules page
@@ -197,6 +199,7 @@ class AdminPaymentController extends AdminController
             $lists[$key_list] = $list;
         }
         $this->tpl_view_vars = array('modules_list' => $this->renderModulesList(), 'display_restrictions' => $display_restrictions, 'lists' => $lists, 'ps_base_uri' => __PS_BASE_URI__, 'payment_modules' => $this->payment_modules, 'url_submit' => self::$currentIndex . '&token=' . $this->token, 'shop_context' => $shop_context);
+
         return parent::renderView();
     }
 }

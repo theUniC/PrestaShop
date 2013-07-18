@@ -72,6 +72,7 @@ class HTMLTemplateInvoice extends HTMLTemplate
         }
         $customer = new Customer((int) $this->order->id_customer);
         $this->smarty->assign(array('order' => $this->order, 'order_details' => $this->order_invoice->getProducts(), 'cart_rules' => $this->order->getCartRules($this->order_invoice->id), 'delivery_address' => $formatted_delivery_address, 'invoice_address' => $formatted_invoice_address, 'tax_excluded_display' => Group::getPriceDisplayMethod($customer->id_default_group), 'tax_tab' => $this->getTaxTabContent(), 'customer' => $customer));
+
         return $this->smarty->fetch($this->getTemplateByCountry($country->iso_code));
     }
     /**
@@ -83,6 +84,7 @@ class HTMLTemplateInvoice extends HTMLTemplate
         $tax_exempt = Configuration::get('VATNUMBER_MANAGEMENT') && !empty($address->vat_number) && $address->id_country != Configuration::get('VATNUMBER_COUNTRY');
         $carrier = new Carrier($this->order->id_carrier);
         $this->smarty->assign(array('tax_exempt' => $tax_exempt, 'use_one_after_another_method' => $this->order_invoice->useOneAfterAnotherTaxComputationMethod(), 'product_tax_breakdown' => $this->order_invoice->getProductTaxesBreakdown(), 'shipping_tax_breakdown' => $this->order_invoice->getShippingTaxesBreakdown($this->order), 'ecotax_tax_breakdown' => $this->order_invoice->getEcoTaxTaxesBreakdown(), 'wrapping_tax_breakdown' => $this->order_invoice->getWrappingTaxesBreakdown(), 'order' => $this->order, 'order_invoice' => $this->order_invoice, 'carrier' => $carrier));
+
         return $this->smarty->fetch($this->getTemplate('invoice.tax-tab'));
     }
     /**
@@ -98,6 +100,7 @@ class HTMLTemplateInvoice extends HTMLTemplate
         if (!$template) {
             $template = $this->getTemplate($file);
         }
+
         return $template;
     }
     /**

@@ -51,6 +51,7 @@ abstract class StockManagerModule extends Module
         if (call_user_func(array($class, 'isAvailable'))) {
             return new $class();
         }
+
         return false;
     }
 }

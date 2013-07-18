@@ -93,11 +93,12 @@ class AdminTrackingController extends AdminController
         $this->clearFilters();
         $this->_join = Shop::addSqlAssociation('category', 'a');
         $this->_filter = ' AND a.`id_category` NOT IN (
-			SELECT DISTINCT(cp.id_category)
-			FROM `' . _DB_PREFIX_ . 'category_product` cp
-		)
-		AND a.`id_category` != ' . (int) Category::getTopCategory()->id;
+            SELECT DISTINCT(cp.id_category)
+            FROM `' . _DB_PREFIX_ . 'category_product` cp
+        )
+        AND a.`id_category` != ' . (int) Category::getTopCategory()->id;
         $this->tpl_list_vars = array('sub_title' => $this->l('List of empty categories:'));
+
         return $this->renderList();
     }
     public function getCustomListProductsAttributesNoStock()
@@ -120,16 +121,17 @@ class AdminTrackingController extends AdminController
         $this->clearFilters();
         $this->_join = Shop::addSqlAssociation('product', 'a');
         $this->_filter = 'AND a.id_product IN (
-			SELECT p.id_product
-			FROM `' . _DB_PREFIX_ . 'product` p
-			' . Product::sqlStock('p') . '
-			WHERE p.id_product IN (
-				SELECT DISTINCT(id_product)
-				FROM `' . _DB_PREFIX_ . 'product_attribute`
-			)
-			AND IFNULL(stock.quantity, 0) <= 0
-		)';
+            SELECT p.id_product
+            FROM `' . _DB_PREFIX_ . 'product` p
+            ' . Product::sqlStock('p') . '
+            WHERE p.id_product IN (
+                SELECT DISTINCT(id_product)
+                FROM `' . _DB_PREFIX_ . 'product_attribute`
+            )
+            AND IFNULL(stock.quantity, 0) <= 0
+        )';
         $this->tpl_list_vars = array('sub_title' => $this->l('List of products with attributes but without available quantities for sale:'));
+
         return $this->renderList();
     }
     public function getCustomListProductsNoStock()
@@ -152,16 +154,17 @@ class AdminTrackingController extends AdminController
         $this->clearFilters();
         $this->_join = Shop::addSqlAssociation('product', 'a');
         $this->_filter = 'AND a.id_product IN (
-			SELECT p.id_product
-			FROM `' . _DB_PREFIX_ . 'product` p
-			' . Product::sqlStock('p') . '
-			WHERE p.id_product NOT IN (
-				SELECT DISTINCT(id_product)
-				FROM `' . _DB_PREFIX_ . 'product_attribute`
-			)
-			AND IFNULL(stock.quantity, 0) <= 0
-		)';
+            SELECT p.id_product
+            FROM `' . _DB_PREFIX_ . 'product` p
+            ' . Product::sqlStock('p') . '
+            WHERE p.id_product NOT IN (
+                SELECT DISTINCT(id_product)
+                FROM `' . _DB_PREFIX_ . 'product_attribute`
+            )
+            AND IFNULL(stock.quantity, 0) <= 0
+        )';
         $this->tpl_list_vars = array('sub_title' => $this->l('List of products without attributes and without available quantities for sale:'));
+
         return $this->renderList();
     }
     public function getCustomListProductsDisabled()
@@ -183,11 +186,13 @@ class AdminTrackingController extends AdminController
         $this->fields_list = array('id_product' => array('title' => $this->l('ID'), 'width' => 50), 'reference' => array('title' => $this->l('Reference'), 'width' => 150), 'name' => array('title' => $this->l('Name'), 'filter_key' => 'b!name'));
         $this->clearFilters();
         $this->_join = Shop::addSqlAssociation('product', 'a');
+
         return $this->renderList();
     }
     public function renderList()
     {
         $this->processFilter();
+
         return parent::renderList();
     }
     public function displayEnableLink($token, $id, $value, $active, $id_category = null, $id_product = null)
@@ -195,6 +200,7 @@ class AdminTrackingController extends AdminController
         $this->_helper_list->currentIndex = $this->_list_index;
         $this->_helper_list->identifier = $this->identifier;
         $this->_helper_list->table = $this->table;
+
         return $this->_helper_list->displayEnableLink($this->_list_token, $id, $value, $active, $id_category, $id_product);
     }
     public function displayDeleteLink($token = null, $id, $name = null)
@@ -202,6 +208,7 @@ class AdminTrackingController extends AdminController
         $this->_helper_list->currentIndex = $this->_list_index;
         $this->_helper_list->identifier = $this->identifier;
         $this->_helper_list->table = $this->table;
+
         return $this->_helper_list->displayDeleteLink($this->_list_token, $id, $name);
     }
     public function displayEditLink($token = null, $id, $name = null)
@@ -209,6 +216,7 @@ class AdminTrackingController extends AdminController
         $this->_helper_list->currentIndex = $this->_list_index;
         $this->_helper_list->identifier = $this->identifier;
         $this->_helper_list->table = $this->table;
+
         return $this->_helper_list->displayEditLink($this->_list_token, $id, $name);
     }
     protected function clearFilters()

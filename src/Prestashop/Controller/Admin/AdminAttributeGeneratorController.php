@@ -58,6 +58,7 @@ class AdminAttributeGeneratorController extends AdminController
         if ($this->product->id) {
             return array('id_product' => (int) $this->product->id, 'price' => (double) $price, 'weight' => (double) $weight, 'ecotax' => 0, 'quantity' => (int) Tools::getValue('quantity'), 'reference' => pSQL($_POST['reference']), 'default_on' => 0, 'available_date' => '0000-00-00');
         }
+
         return array();
     }
     protected static function createCombinations($list)
@@ -73,6 +74,7 @@ class AdminAttributeGeneratorController extends AdminController
                 $res[] = is_array($to_add) ? array_merge($to_add, array($attribute)) : array($to_add, $attribute);
             }
         }
+
         return $res;
     }
     public function initProcess()
@@ -135,19 +137,20 @@ class AdminAttributeGeneratorController extends AdminController
             $attribute_js[$attribute['id_attribute_group']][$attribute['id_attribute']] = $attribute['name'];
         }
         echo '
-		<script type="text/javascript">
-			var attrs = new Array();
-			attrs[0] = new Array(0, \'---\');';
+        <script type="text/javascript">
+            var attrs = new Array();
+            attrs[0] = new Array(0, \'---\');';
         foreach ($attribute_js as $idgrp => $group) {
             echo '
-				attrs[' . $idgrp . '] = new Array(0, \'---\' ';
+                attrs[' . $idgrp . '] = new Array(0, \'---\' ';
             foreach ($group as $idattr => $attrname) {
                 echo ', ' . $idattr . ', \'' . addslashes($attrname) . '\'';
             }
             echo ');';
         }
         echo '
-		</script>';
+        </script>';
+
         return $attribute_js;
     }
     protected static function setAttributesImpacts($id_product, $tab)
@@ -160,17 +163,18 @@ class AdminAttributeGeneratorController extends AdminController
                 $attributes[] = '(' . (int) $id_product . ', ' . (int) $attribute . ', ' . (double) $price . ', ' . (double) $weight . ')';
             }
         }
+
         return Db::getInstance()->execute('
-		INSERT INTO `' . _DB_PREFIX_ . 'attribute_impact` (`id_product`, `id_attribute`, `price`, `weight`)
-		VALUES ' . implode(',', $attributes) . '
-		ON DUPLICATE KEY UPDATE `price` = VALUES(price), `weight` = VALUES(weight)');
+        INSERT INTO `' . _DB_PREFIX_ . 'attribute_impact` (`id_product`, `id_attribute`, `price`, `weight`)
+        VALUES ' . implode(',', $attributes) . '
+        ON DUPLICATE KEY UPDATE `price` = VALUES(price), `weight` = VALUES(weight)');
     }
     protected static function getAttributesImpacts($id_product)
     {
         $tab = array();
         $result = Db::getInstance()->executeS('SELECT ai.`id_attribute`, ai.`price`, ai.`weight`
-			FROM `' . _DB_PREFIX_ . 'attribute_impact` ai
-			WHERE ai.`id_product` = ' . (int) $id_product);
+            FROM `' . _DB_PREFIX_ . 'attribute_impact` ai
+            WHERE ai.`id_product` = ' . (int) $id_product);
         if (!$result) {
             return array();
         }
@@ -178,6 +182,7 @@ class AdminAttributeGeneratorController extends AdminController
             $tab[$impact['id_attribute']]['price'] = (double) $impact['price'];
             $tab[$impact['id_attribute']]['weight'] = (double) $impact['weight'];
         }
+
         return $tab;
     }
     public function initGroupTable()
@@ -203,7 +208,8 @@ class AdminAttributeGeneratorController extends AdminController
     {
         if (!Combination::isFeatureActive()) {
             $this->displayWarning($this->l('This feature has been disabled. You can activate it at:') . '
-				<a href="index.php?tab=AdminPerformance&token=' . Tools::getAdminTokenLite('AdminPerformance') . '#featuresDetachables">' . $this->l('Performance') . '</a>');
+                <a href="index.php?tab=AdminPerformance&token=' . Tools::getAdminTokenLite('AdminPerformance') . '#featuresDetachables">' . $this->l('Performance') . '</a>');
+
             return;
         }
         // Init toolbar

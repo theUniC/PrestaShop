@@ -155,6 +155,7 @@ class AdminTranslationsController extends AdminController
         $this->tpl_view_vars = array('theme_default' => self::DEFAULT_THEME_NAME, 'theme_lang_dir' => _THEME_LANG_DIR_, 'token' => $this->token, 'languages' => $this->languages, 'translations_type' => $this->translations_informations, 'packs_to_install' => $packs_to_install, 'packs_to_update' => $packs_to_update, 'url_submit' => self::$currentIndex . '&token=' . $this->token, 'themes' => $this->themes, 'id_theme_current' => $this->context->shop->id_theme, 'url_create_language' => 'index.php?controller=AdminLanguages&addlang&token=' . $token);
         $this->toolbar_scroll = false;
         $this->base_tpl_view = 'main.tpl';
+
         return parent::renderView();
     }
     /**
@@ -184,7 +185,7 @@ class AdminTranslationsController extends AdminController
      * When a translation file is copied for a module, its translation key is wrong.
      * We have to change the translation key and rewrite the file.
      *
-     * @param string $dest file name
+     * @param  string $dest file name
      * @return bool
      */
     protected function checkDirAndCreate($dest)
@@ -200,6 +201,7 @@ class AdminTranslationsController extends AdminController
                 $this->errors[] = sprintf($this->l('Cannot create the folder "%s". Please check your directory writing permisions.'), $path);
             }
         }
+
         return $bool;
     }
     /**
@@ -244,7 +246,6 @@ class AdminTranslationsController extends AdminController
             fwrite($fd, '<?php
 
 namespace Prestashop\\Controller\\Admin;
-
 
 global $' . $tab . ';
 $' . $tab . ' = array();
@@ -316,9 +317,9 @@ $' . $tab . ' = array();
     /**
      * Change the key translation to according it to theme name.
      *
-     * @param string $path
-     * @param string $theme_from
-     * @param string $theme_to
+     * @param  string  $path
+     * @param  string  $theme_from
+     * @param  string  $theme_to
      * @return boolean
      */
     public function changeModulesKeyTranslation($path, $theme_from, $theme_to)
@@ -333,6 +334,7 @@ $' . $tab . ' = array();
             $content = str_replace(array_keys($arr_replace), array_values($arr_replace), $content);
             $bool_flag = file_put_contents($path, $content) === false ? false : true;
         }
+
         return $bool_flag;
     }
     public function exportTabs()
@@ -386,7 +388,7 @@ return $tabs;';
             $file_name = _PS_TRANSLATIONS_DIR_ . '/export/' . $this->lang_selected->iso_code . '.gzip';
             $gz = new Archive_Tar($file_name, true);
             if ($gz->createModify($items, null, _PS_ROOT_DIR_)) {
-                
+
             }
             ob_start();
             header('Pragma: public');
@@ -531,6 +533,7 @@ return $tabs;';
                 }
             }
         }
+
         return $errors;
     }
     public static function checkTranslationFile($content)
@@ -568,8 +571,10 @@ namespace Prestashop\\Controller\\Admin;
             if (preg_match('/^return\\s+\\$' . preg_quote($global, '/') . '\\s*;$/i', $line, $matches)) {
                 continue;
             }
+
             return false;
         }
+
         return true;
     }
     public function submitImportLang()
@@ -623,6 +628,7 @@ namespace Prestashop\\Controller\\Admin;
                             $tab_errors = AdminTranslationsController::addNewTabs($iso_code, $files_list);
                             if (count($tab_errors)) {
                                 $this->errors += $tab_errors;
+
                                 return false;
                             }
                         }
@@ -683,11 +689,11 @@ namespace Prestashop\\Controller\\Admin;
      * This method check each file (tpl or php file), get its sentences to translate,
      * compare with posted values and write in iso code translation file.
      *
-     * @param string $file_name
-     * @param array $files
-     * @param string $theme_name
-     * @param string $module_name
-     * @param string|boolean $dir
+     * @param  string         $file_name
+     * @param  array          $files
+     * @param  string         $theme_name
+     * @param  string         $module_name
+     * @param  string|boolean $dir
      * @return void
      */
     protected function findAndWriteTranslationsIntoFile($file_name, $files, $theme_name, $module_name, $dir = false)
@@ -764,9 +770,9 @@ $_MODULE = array();
      * Clear the list of module file by type (file or directory)
      *
      * @param $files : list of files
-     * @param string $type_clear (file|directory)
-     * @param string $path
-     * @return array : list of a good files
+     * @param  string $type_clear (file|directory)
+     * @param  string $path
+     * @return array  : list of a good files
      */
     public function clearModuleFiles($files, $type_clear = 'file', $path = '')
     {
@@ -787,6 +793,7 @@ $_MODULE = array();
                 }
             }
         }
+
         return $files;
     }
     /**
@@ -794,11 +801,11 @@ $_MODULE = array();
      * compare with global $_MODULES array and fill AdminTranslations::modules_translations array
      * With key as English sentences and values as their iso code translations.
      *
-     * @param array $files
-     * @param string $theme_name
-     * @param string $module_name
-     * @param string|boolean $dir
-     * @param string $iso_code
+     * @param  array          $files
+     * @param  string         $theme_name
+     * @param  string         $module_name
+     * @param  string|boolean $dir
+     * @param  string         $iso_code
      * @return void
      */
     protected function findAndFillTranslations($files, $theme_name, $module_name, $dir = false)
@@ -893,6 +900,7 @@ $_MODULE = array();
                 $directories['php'] = array_merge($directories['php'], $this->getModulesHasMails());
                 break;
         }
+
         return $directories;
     }
     /**
@@ -900,9 +908,9 @@ $_MODULE = array();
      *
      * @param $content
      * @param $type_translation : front, back, errors, modules...
-     * @param string|bool $type_file : (tpl|php)
-     * @param string $module_name : name of the module
-     * @return return $matches
+     * @param  string|bool $type_file   : (tpl|php)
+     * @param  string      $module_name : name of the module
+     * @return return      $matches
      */
     protected function userParseFile($content, $type_translation, $type_file = false, $module_name = '')
     {
@@ -946,6 +954,7 @@ $_MODULE = array();
                 break;
         }
         preg_match_all($regex, $content, $matches);
+
         return $matches[1];
     }
     /**
@@ -1021,6 +1030,7 @@ $_MODULE = array();
         /* PrestaShop demo mode */
         if (_PS_MODE_DEMO_) {
             $this->errors[] = Tools::displayError('This functionality has been disabled.');
+
             return;
         }
         /* PrestaShop demo mode */
@@ -1141,7 +1151,7 @@ $_MODULE = array();
      * This method redirect in the translation main page or in the translation page
      *
      * @param bool $save_and_stay : true if the user has clicked on the button "save and stay"
-     * @param bool $conf : id of confirmation message
+     * @param bool $conf          : id of confirmation message
      */
     protected function redirect($save_and_stay = false, $conf = false)
     {
@@ -1159,11 +1169,11 @@ $_MODULE = array();
         return '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/strict.dtd">
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>#title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>#title</title>
 </head>
 <body>
-	#content
+    #content
 </body>
 </html>';
     }
@@ -1296,30 +1306,32 @@ $' . $var . ' = array();
             $this->displayWarning(Tools::displayError('This file must be writable:') . ' ' . $dir . '/' . $file);
         }
         include $dir . DIRECTORY_SEPARATOR . $file;
+
         return ${$var};
     }
     public function displayToggleButton($closed = false)
     {
         $str_output = '
-		<script type="text/javascript">';
+        <script type="text/javascript">';
         if (Tools::getValue('type') == 'mails') {
             $str_output .= '$(document).ready(function(){
-				openCloseAllDiv(\'' . $this->type_selected . '_div\', this.value == openAll); toggleElemValue(this.id, openAll, closeAll);
-				});';
+                openCloseAllDiv(\'' . $this->type_selected . '_div\', this.value == openAll); toggleElemValue(this.id, openAll, closeAll);
+                });';
         }
         $str_output .= '
-			var openAll = \'' . html_entity_decode($this->l('Expand all fieldsets'), ENT_NOQUOTES, 'UTF-8') . '\';
-			var closeAll = \'' . html_entity_decode($this->l('Close all fieldsets'), ENT_NOQUOTES, 'UTF-8') . '\';
-		</script>
-		<input type="button" class="button" id="buttonall" onclick="openCloseAllDiv(\'' . $this->type_selected . '_div\', this.value == openAll); toggleElemValue(this.id, openAll, closeAll);" />
-		<script type="text/javascript">toggleElemValue(\'buttonall\', ' . ($closed ? 'openAll' : 'closeAll') . ', ' . ($closed ? 'closeAll' : 'openAll') . ');</script>';
+            var openAll = \'' . html_entity_decode($this->l('Expand all fieldsets'), ENT_NOQUOTES, 'UTF-8') . '\';
+            var closeAll = \'' . html_entity_decode($this->l('Close all fieldsets'), ENT_NOQUOTES, 'UTF-8') . '\';
+        </script>
+        <input type="button" class="button" id="buttonall" onclick="openCloseAllDiv(\'' . $this->type_selected . '_div\', this.value == openAll); toggleElemValue(this.id, openAll, closeAll);" />
+        <script type="text/javascript">toggleElemValue(\'buttonall\', ' . ($closed ? 'openAll' : 'closeAll') . ', ' . ($closed ? 'closeAll' : 'openAll') . ');</script>';
+
         return $str_output;
     }
     protected function displaySubmitButtons($name)
     {
         return '
-			<input type="submit" name="submitTranslations' . ucfirst($name) . '" value="' . $this->l('Update translations') . '" class="button" />
-			<input type="submit" name="submitTranslations' . ucfirst($name) . 'AndStay" value="' . $this->l('Update and stay') . '" class="button" />';
+            <input type="submit" name="submitTranslations' . ucfirst($name) . '" value="' . $this->l('Update translations') . '" class="button" />
+            <input type="submit" name="submitTranslations' . ucfirst($name) . 'AndStay" value="' . $this->l('Update and stay') . '" class="button" />';
     }
     /**
      * Init js variables for translation with google
@@ -1332,6 +1344,7 @@ $' . $var . ' = array();
         $this->addJS(_PS_JS_DIR_ . 'gg-translate.js');
         $this->addJS(_PS_JS_DIR_ . 'admin-translations.js');
         $language_code = Tools::htmlentitiesUTF8(Language::getLanguageCodeByIso(Tools::getValue('lang')));
+
         return array('language_code' => $language_code, 'not_available' => addslashes(html_entity_decode($this->l('This language is not available in Google Translate\'s API'), ENT_QUOTES, 'utf-8')), 'tooltip_title' => addslashes(html_entity_decode($this->l('Google Translate suggests :'), ENT_QUOTES, 'utf-8')));
     }
     public function displayLimitPostWarning($count)
@@ -1347,6 +1360,7 @@ $' . $var . ' = array();
             $return['max_input_vars'] = ini_get('max_input_vars');
             $return['needed_limit'] = $count + 100;
         }
+
         return $return;
     }
     /**
@@ -1360,6 +1374,7 @@ $' . $var . ' = array();
         if (preg_match_all('#(?:%%|%(?:[0-9]+\\$)?[+-]?(?:[ 0]|\'.)?-?[0-9]*(?:\\.[0-9]+)?[bcdeufFosxX])#', $key, $matches)) {
             return implode(', ', $matches[0]);
         }
+
         return false;
     }
     /**
@@ -1369,6 +1384,7 @@ $' . $var . ' = array();
     {
         if (!$this->theme_exists(Tools::getValue('theme'))) {
             $this->errors[] = sprintf(Tools::displayError('Invalid theme "%s"'), Tools::getValue('theme'));
+
             return;
         }
         $missing_translations_front = array();
@@ -1427,6 +1443,7 @@ $' . $var . ' = array();
         //$this->tpl_view_vars = array_merge($this->tpl_view_vars, $this->initAutoTranslate());
         $this->initToolbar();
         $this->base_tpl_view = 'translation_form.tpl';
+
         return parent::renderView();
     }
     /**
@@ -1587,6 +1604,7 @@ $' . $var . ' = array();
         //$this->tpl_view_vars = array_merge($this->tpl_view_vars, $this->initAutoTranslate());
         $this->initToolbar();
         $this->base_tpl_view = 'translation_form.tpl';
+
         return parent::renderView();
     }
     /**
@@ -1608,6 +1626,7 @@ $' . $var . ' = array();
         foreach ($modules as &$module) {
             $module = $module['name'];
         }
+
         return $modules;
     }
     /**
@@ -1655,6 +1674,7 @@ $' . $var . ' = array();
         $this->tpl_view_vars = array_merge($this->tpl_view_vars, array('count' => count($string_to_translate), 'limit_warning' => $this->displayLimitPostWarning(count($string_to_translate)), 'errorsArray' => $string_to_translate, 'missing_translations' => $count_empty));
         $this->initToolbar();
         $this->base_tpl_view = 'translation_errors.tpl';
+
         return parent::renderView();
     }
     /**
@@ -1729,15 +1749,16 @@ $' . $var . ' = array();
         $this->tpl_view_vars = array_merge($this->tpl_view_vars, array('count' => $count, 'limit_warning' => $this->displayLimitPostWarning($count), 'tabsArray' => $tabs_array, 'missing_translations' => $missing_translations_fields));
         $this->initToolbar();
         $this->base_tpl_view = 'translation_form.tpl';
+
         return parent::renderView();
     }
     /**
      * Get each informations for each mails founded in the folder $dir.
      *
      * @since 1.4.0.14
-     * @param string $dir
-     * @param string $group_name
-     * @return array : list of mails
+     * @param  string $dir
+     * @param  string $group_name
+     * @return array  : list of mails
      */
     public function getMailFiles($dir, $group_name = 'mail')
     {
@@ -1785,15 +1806,16 @@ $' . $var . ' = array();
         } else {
             $this->warnings[] = sprintf(Tools::displayError('A mail directory exists for %1$s but not for English in %2$s'), $this->lang_selected->iso_code, str_replace(_PS_ROOT_DIR_, '', $dir));
         }
+
         return $arr_return;
     }
     /**
      * Get content of the mail file.
      *
      * @since 1.4.0.14
-     * @param string $dir
-     * @param string $file
-     * @return array : content of file
+     * @param  string $dir
+     * @param  string $file
+     * @return array  : content of file
      */
     protected function getMailContent($dir, $file)
     {
@@ -1801,6 +1823,7 @@ $' . $var . ' = array();
         if (Tools::strlen($content) === 0) {
             $content = '';
         }
+
         return $content;
     }
     /**
@@ -1808,12 +1831,12 @@ $' . $var . ' = array();
      * This was create for factorize the html displaying
      *
      * @since 1.4.0.14
-     * @param array $mails
-     * @param array $all_subject_mail
-     * @param Language $obj_lang
-     * @param string $id_html use for set html id attribute for the block
-     * @param string $title Set the title for the block
-     * @param string|boolean $name_for_module is not false define add a name for disntiguish mails module
+     * @param array          $mails
+     * @param array          $all_subject_mail
+     * @param Language       $obj_lang
+     * @param string         $id_html          use for set html id attribute for the block
+     * @param string         $title            Set the title for the block
+     * @param string|boolean $name_for_module  is not false define add a name for disntiguish mails module
      */
     protected function displayMailContent($mails, $all_subject_mail, $obj_lang, $id_html, $title, $name_for_module = false)
     {
@@ -1823,9 +1846,9 @@ $' . $var . ' = array();
             $group_name = $mails['group_name'];
         }
         $str_return .= '
-		<div class="mails_field" >
-			<h3 style="cursor : pointer" onclick="$(\'#' . $id_html . '\').slideToggle();">' . $title . ' - <font color="red">' . $mails['empty_values'] . '</font> ' . sprintf($this->l('missing translation(s) on %1$s template(s) for %2$s'), '<font color="blue">' . ((int) $mails['empty_values'] + (int) $mails['total_filled']) . '</font>', $obj_lang->name) . ':</h3>
-			<div name="mails_div" id="' . $id_html . '">';
+        <div class="mails_field" >
+            <h3 style="cursor : pointer" onclick="$(\'#' . $id_html . '\').slideToggle();">' . $title . ' - <font color="red">' . $mails['empty_values'] . '</font> ' . sprintf($this->l('missing translation(s) on %1$s template(s) for %2$s'), '<font color="blue">' . ((int) $mails['empty_values'] + (int) $mails['total_filled']) . '</font>', $obj_lang->name) . ':</h3>
+            <div name="mails_div" id="' . $id_html . '">';
         if (!empty($mails['files'])) {
             $topic_already_displayed = array();
             foreach ($mails['files'] as $mail_name => $mail_files) {
@@ -1839,10 +1862,10 @@ $' . $var . ' = array();
                             $topic_already_displayed[] = $subject_key;
                             $value_subject_mail = isset($mails['subject'][$subject_mail]) ? $mails['subject'][$subject_mail] : '';
                             $str_return .= '
-							<div class="label-subject" style="text-align:center;">
-								<label style="text-align:right">' . sprintf($this->l('Subject for %s:'), '<em>' . $mail_name . '</em>') . '</label>
-								<div class="mail-form" style="text-align:left">
-									<b>' . $subject_mail . '</b><br />';
+                            <div class="label-subject" style="text-align:center;">
+                                <label style="text-align:right">' . sprintf($this->l('Subject for %s:'), '<em>' . $mail_name . '</em>') . '</label>
+                                <div class="mail-form" style="text-align:left">
+                                    <b>' . $subject_mail . '</b><br />';
                             if (isset($value_subject_mail['trad']) && $value_subject_mail['trad']) {
                                 $str_return .= '<input type="text" name="subject[' . Tools::htmlentitiesUTF8($group_name) . '][' . Tools::htmlentitiesUTF8($subject_mail) . ']" value="' . $value_subject_mail['trad'] . '" />';
                             } else {
@@ -1850,17 +1873,17 @@ $' . $var . ' = array();
                             }
                             if (isset($value_subject_mail['use_sprintf']) && $value_subject_mail['use_sprintf']) {
                                 $str_return .= '<a class="useSpecialSyntax" title="' . $this->l('This expression uses a special syntax:') . ' ' . $value_subject_mail['use_sprintf'] . '" style="cursor:pointer">
-									<img src="' . _PS_IMG_ . 'admin/error.png" alt="' . $value_subject_mail['use_sprintf'] . '" />
-								</a>';
+                                    <img src="' . _PS_IMG_ . 'admin/error.png" alt="' . $value_subject_mail['use_sprintf'] . '" />
+                                </a>';
                             }
                             $str_return .= '</div>
-							</div>';
+                            </div>';
                         }
                     } else {
                         $str_return .= '
-						<div class="label-subject">
-							<b>' . sprintf($this->l('No Subject was found for %s in the database.'), '<em>' . $mail_name . '</em>') . '</b>
-						</div>';
+                        <div class="label-subject">
+                            <b>' . sprintf($this->l('No Subject was found for %s in the database.'), '<em>' . $mail_name . '</em>') . '</b>
+                        </div>';
                     }
                     if (array_key_exists('html', $mail_files)) {
                         $base_uri = str_replace(_PS_ROOT_DIR_, __PS_BASE_URI__, $mails['directory']);
@@ -1875,45 +1898,46 @@ $' . $var . ' = array();
             }
         } else {
             $str_return .= '<p class="error">
-				' . $this->l('There was a problem getting the mail files.') . '<br />
-				' . sprintf($this->l('English language files must exist in %s folder'), '<em>' . preg_replace('@/[a-z]{2}(/?)$@', '/en$1', $mails['directory']) . '</em>') . '
-			</p>';
+                ' . $this->l('There was a problem getting the mail files.') . '<br />
+                ' . sprintf($this->l('English language files must exist in %s folder'), '<em>' . preg_replace('@/[a-z]{2}(/?)$@', '/en$1', $mails['directory']) . '</em>') . '
+            </p>';
         }
         $str_return .= '
-			</div><!-- #' . $id_html . ' -->
-			<div class="clear"></div>
-		</div>';
+            </div><!-- #' . $id_html . ' -->
+            <div class="clear"></div>
+        </div>';
+
         return $str_return;
     }
     /**
      * Just build the html structure for display txt mails
      *
      * @since 1.4.0.14
-     * @param array $content with english and language needed contents
-     * @param string $lang iso code of the needed language
-     * @param string $mail_name name of the file to translate (same for txt and html files)
-     * @param string $group_name group name allow to distinguish each block of mail.
+     * @param array          $content         with english and language needed contents
+     * @param string         $lang            iso code of the needed language
+     * @param string         $mail_name       name of the file to translate (same for txt and html files)
+     * @param string         $group_name      group name allow to distinguish each block of mail.
      * @param string|boolean $name_for_module is not false define add a name for disntiguish mails module
      */
     protected function displayMailBlockTxt($content, $lang, $mail_name, $group_name, $name_for_module = false)
     {
         return '
-				<div class="block-mail" >
-					<label>' . $mail_name . '.txt</label>
-					<div class="mail-form">
-						<div><textarea class="rte mailrte noEditor" cols="80" rows="30" name="' . $group_name . '[txt][' . ($name_for_module ? $name_for_module . '|' : '') . $mail_name . ']" style="width:560px;margin=0;">' . Tools::htmlentitiesUTF8(stripslashes(strip_tags($content[$lang]))) . '</textarea></div>
-					</div><!-- .mail-form -->
-				</div><!-- .block-mail -->';
+                <div class="block-mail" >
+                    <label>' . $mail_name . '.txt</label>
+                    <div class="mail-form">
+                        <div><textarea class="rte mailrte noEditor" cols="80" rows="30" name="' . $group_name . '[txt][' . ($name_for_module ? $name_for_module . '|' : '') . $mail_name . ']" style="width:560px;margin=0;">' . Tools::htmlentitiesUTF8(stripslashes(strip_tags($content[$lang]))) . '</textarea></div>
+                    </div><!-- .mail-form -->
+                </div><!-- .block-mail -->';
     }
     /**
      * Just build the html structure for display html mails.
      *
      * @since 1.4.0.14
-     * @param array $content with english and language needed contents
-     * @param string $lang iso code of the needed language
-     * @param string $url for the html page and displaying an outline
-     * @param string $mail_name name of the file to translate (same for txt and html files)
-     * @param string $group_name group name allow to distinguish each block of mail.
+     * @param array          $content         with english and language needed contents
+     * @param string         $lang            iso code of the needed language
+     * @param string         $url             for the html page and displaying an outline
+     * @param string         $mail_name       name of the file to translate (same for txt and html files)
+     * @param string         $group_name      group name allow to distinguish each block of mail.
      * @param string|boolean $name_for_module is not false define add a name for disntiguish mails module
      */
     protected function displayMailBlockHtml($content, $lang, $url, $mail_name, $group_name, $name_for_module = false)
@@ -1937,22 +1961,23 @@ $' . $var . ' = array();
         $name_for_module = $name_for_module ? $name_for_module . '|' : '';
         $content[$lang] = isset($content[$lang]) ? Tools::htmlentitiesUTF8(stripslashes($content[$lang])) : '';
         $str_return .= '
-		<div class="block-mail" >
-			<label>' . $mail_name . '.html</label>
-			<div class="mail-form">
-				<div>';
+        <div class="block-mail" >
+            <label>' . $mail_name . '.html</label>
+            <div class="mail-form">
+                <div>';
         $str_return .= '
-				<div class="label-subject">
-					<b>' . $this->l('"title" tag:') . '</b>&nbsp;' . (isset($title['en']) ? $title['en'] : '') . '<br />
-					<input type="text" name="title_' . $group_name . '_' . $mail_name . '" value="' . (isset($title[$lang]) ? $title[$lang] : '') . '" />
-				</div><!-- .label-subject -->';
+                <div class="label-subject">
+                    <b>' . $this->l('"title" tag:') . '</b>&nbsp;' . (isset($title['en']) ? $title['en'] : '') . '<br />
+                    <input type="text" name="title_' . $group_name . '_' . $mail_name . '" value="' . (isset($title[$lang]) ? $title[$lang] : '') . '" />
+                </div><!-- .label-subject -->';
         $str_return .= '
-				<iframe style="background:white;border:1px solid #DFD5C3;" border="0" src ="' . $url . '?' . rand(0, 1000000000) . '" width="565" height="497"></iframe>
-					<a style="display:block;margin-top:5px;width:130px;" href="#" onclick="$(this).parent().hide(); displayTiny($(this).parent().next()); return false;" class="button">' . $this->l('Edit this email template.') . '</a>
-				</div>
-				<textarea style="display:none;" class="rte mailrte" cols="80" rows="30" name="' . $group_name . '[html][' . $name_for_module . $mail_name . ']">' . $content[$lang] . '</textarea>
-			</div><!-- .mail-form -->
-		</div><!-- .block-mail -->';
+                <iframe style="background:white;border:1px solid #DFD5C3;" border="0" src ="' . $url . '?' . rand(0, 1000000000) . '" width="565" height="497"></iframe>
+                    <a style="display:block;margin-top:5px;width:130px;" href="#" onclick="$(this).parent().hide(); displayTiny($(this).parent().next()); return false;" class="button">' . $this->l('Edit this email template.') . '</a>
+                </div>
+                <textarea style="display:none;" class="rte mailrte" cols="80" rows="30" name="' . $group_name . '[html][' . $name_for_module . $mail_name . ']">' . $content[$lang] . '</textarea>
+            </div><!-- .mail-form -->
+        </div><!-- .block-mail -->';
+
         return $str_return;
     }
     /**
@@ -1980,6 +2005,7 @@ $' . $var . ' = array();
                 }
             }
         }
+
         return $arr_modules;
     }
     protected function getTinyMCEForMails($iso_lang)
@@ -1987,22 +2013,24 @@ $' . $var . ' = array();
         // TinyMCE
         $iso_tiny_mce = Tools::file_exists_cache(_PS_ROOT_DIR_ . '/js/tiny_mce/langs/' . $iso_lang . '.js') ? $iso_lang : 'en';
         $ad = dirname($_SERVER['PHP_SELF']);
+
         return '
-			<script type="text/javascript">
-			var iso = \'' . $iso_tiny_mce . '\' ;
-			var pathCSS = \'' . _THEME_CSS_DIR_ . '\' ;
-			var ad = \'' . $ad . '\' ;
-			</script>
-			<script type="text/javascript" src="' . __PS_BASE_URI__ . 'js/tiny_mce/tiny_mce.js"></script>
-			<script type="text/javascript" src="' . __PS_BASE_URI__ . 'js/tinymce.inc.js"></script>
-			<script type="text/javascript">
-			$(document).ready(function () {
-				tinySetup();
-			});
-			function displayTiny(obj) {
-				tinyMCE.get(obj.attr(\'name\')).show();
-			}
-			</script>';
+            <script type="text/javascript">
+            var iso = \'' . $iso_tiny_mce . '\' ;
+            var pathCSS = \'' . _THEME_CSS_DIR_ . '\' ;
+            var ad = \'' . $ad . '\' ;
+            </script>
+            <script type="text/javascript" src="' . __PS_BASE_URI__ . 'js/tiny_mce/tiny_mce.js"></script>
+            <script type="text/javascript" src="' . __PS_BASE_URI__ . 'js/tinymce.inc.js"></script>
+            <script type="text/javascript">
+            $(document).ready(function () {
+                tinySetup();
+            });
+            function displayTiny(obj)
+            {
+                tinyMCE.get(obj.attr(\'name\')).show();
+            }
+            </script>';
     }
     /**
      * This method generate the form for mails translations
@@ -2043,11 +2071,13 @@ $' . $var . ' = array();
                 $total += (int) $mod_infos['total_filled'];
                 $empty += (int) $mod_infos['empty_values'];
             }
+
             return array('total' => $total, 'empty' => $empty);
         }
         $this->tpl_view_vars = array_merge($this->tpl_view_vars, array('limit_warning' => $this->displayLimitPostWarning($this->total_expression), 'tinyMCE' => $this->getTinyMCEForMails($this->lang_selected->iso_code), 'mail_content' => $this->displayMailContent($core_mails, $subject_mail, $this->lang_selected, 'core', $this->l('Core emails')), 'module_mails' => $module_mails, 'theme_name' => $this->theme_selected));
         $this->initToolbar();
         $this->base_tpl_view = 'translation_mails.tpl';
+
         return parent::renderView();
     }
     /**
@@ -2085,6 +2115,7 @@ $' . $var . ' = array();
         if (!in_array($file, self::$ignore_folder) && is_dir($dir . '/' . $file)) {
             $subject_mail = $this->getSubjectMail($dir, $file, $subject_mail);
         }
+
         return $subject_mail;
     }
     /**
@@ -2107,6 +2138,7 @@ $' . $var . ' = array();
         } else {
             $this->errors[] = sprintf($this->l('Subject mail translation file not found in "%s"'), $directory);
         }
+
         return $subject_mail_content;
     }
     protected function writeSubjectTranslationFile($sub, $path)
@@ -2145,10 +2177,10 @@ $_' . $tab . ' = array();
      * This get files to translate in module directory.
      * Recursive method allow to get each files for a module no matter his depth.
      *
-     * @param string $path directory path to scan
-     * @param array $array_files by reference - array which saved files to parse.
-     * @param string $module_name module name
-     * @param string $lang_file full path of translation file
+     * @param string  $path        directory path to scan
+     * @param array   $array_files by reference - array which saved files to parse.
+     * @param string  $module_name module name
+     * @param string  $lang_file   full path of translation file
      * @param boolean $is_default
      */
     protected function recursiveGetModuleFiles($path, &$array_files, $module_name, $lang_file, $is_default = false)
@@ -2172,9 +2204,9 @@ $_' . $tab . ' = array();
      * This method get translation in each translations file.
      * The file depend on $lang param.
      *
-     * @param array $modules list of modules
-     * @param string $root_dir path where it get each modules
-     * @param string $lang iso code of choosen language to translate
+     * @param array   $modules    list of modules
+     * @param string  $root_dir   path where it get each modules
+     * @param string  $lang       iso code of choosen language to translate
      * @param boolean $is_default set it if modules are located in root/prestashop/modules folder
      * 				  This allow to distinguish overrided prestashop theme and original module
      */
@@ -2222,6 +2254,7 @@ $_' . $tab . ' = array();
                 $this->recursiveGetModuleFiles($root_dir . $module . '/', $array_files, $module, $lang_file, $is_default);
             }
         }
+
         return $array_files;
     }
     /**
@@ -2240,17 +2273,18 @@ $_' . $tab . ' = array();
             $this->tpl_view_vars = array_merge($this->tpl_view_vars, array('default_theme_name' => self::DEFAULT_THEME_NAME, 'count' => $this->total_expression, 'limit_warning' => $this->displayLimitPostWarning($this->total_expression), 'textarea_sized' => TEXTAREA_SIZED, 'modules_translations' => isset($this->modules_translations) ? $this->modules_translations : array(), 'missing_translations' => $this->missing_translations));
             $this->initToolbar();
             $this->base_tpl_view = 'translation_modules.tpl';
+
             return parent::renderView();
         }
     }
     /** Parse PDF class
      *
-     * @param string $file_path file to parse
-     * @param string $file_type type of file
-     * @param array $langArray contains expression in the chosen language
-     * @param string $tab name to use with the md5 key
-     * @param array $tabs_array
-     * @return array containing all datas needed for building the translation form
+     * @param  string $file_path  file to parse
+     * @param  string $file_type  type of file
+     * @param  array  $langArray  contains expression in the chosen language
+     * @param  string $tab        name to use with the md5 key
+     * @param  array  $tabs_array
+     * @return array  containing all datas needed for building the translation form
      * @since 1.4.5.0
      */
     protected function parsePdfClass($file_path, $file_type, $lang_array, $tab, $tabs_array, &$count_missing)
@@ -2272,6 +2306,7 @@ $_' . $tab . ' = array();
             }
             $tabs_array[$tab][$key]['use_sprintf'] = $this->checkIfKeyUseSprintf($key);
         }
+
         return $tabs_array;
     }
     /**
@@ -2340,6 +2375,7 @@ $_' . $tab . ' = array();
         $this->tpl_view_vars = array_merge($this->tpl_view_vars, array('count' => count($tabs_array['PDF']), 'limit_warning' => $this->displayLimitPostWarning(count($tabs_array['PDF'])), 'tabsArray' => $tabs_array, 'missing_translations' => $missing_translations_pdf));
         $this->initToolbar();
         $this->base_tpl_view = 'translation_form.tpl';
+
         return parent::renderView();
     }
     /**
@@ -2361,6 +2397,7 @@ $_' . $tab . ' = array();
                 }
             }
         }
+
         return $list;
     }
     protected function theme_exists($theme)
@@ -2374,6 +2411,7 @@ $_' . $tab . ' = array();
                 return true;
             }
         }
+
         return false;
     }
 }

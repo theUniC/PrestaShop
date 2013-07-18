@@ -179,11 +179,11 @@ abstract class AdminTab
     /**
      * use translations files to replace english expression.
      *
-     * @param mixed $string term or expression in english
-     * @param string $class
-     * @param boolan $addslashes if set to true, the return value will pass through addslashes(). Otherwise, stripslashes().
-     * @param boolean $htmlentities if set to true(default), the return value will pass through htmlentities($string, ENT_QUOTES, 'utf-8')
-     * @return string the translation if available, or the english default text.
+     * @param  mixed   $string       term or expression in english
+     * @param  string  $class
+     * @param  boolan  $addslashes   if set to true, the return value will pass through addslashes(). Otherwise, stripslashes().
+     * @param  boolean $htmlentities if set to true(default), the return value will pass through htmlentities($string, ENT_QUOTES, 'utf-8')
+     * @return string  the translation if available, or the english default text.
      */
     protected function l($string, $class = 'AdminTab', $addslashes = FALSE, $htmlentities = TRUE)
     {
@@ -191,6 +191,7 @@ abstract class AdminTab
         $currentClass = get_class($this);
         if (Module::getModuleNameFromClass($currentClass)) {
             $string = str_replace('\'', '\\\'', $string);
+
             return Translate::getModuleTranslation(Module::$classInModule[$currentClass], $string, $currentClass);
         }
         global $_LANGADM;
@@ -200,6 +201,7 @@ abstract class AdminTab
         $key = md5(str_replace('\'', '\\\'', $string));
         $str = key_exists(get_class($this) . $key, $_LANGADM) ? $_LANGADM[get_class($this) . $key] : (key_exists($class . $key, $_LANGADM) ? $_LANGADM[$class . $key] : $string);
         $str = $htmlentities ? htmlentities($str, ENT_QUOTES, 'utf-8') : $str;
+
         return str_replace('"', '&quot;', $addslashes ? addslashes($str) : stripslashes($str));
     }
     /**
@@ -209,7 +211,7 @@ abstract class AdminTab
      */
     public function displayAjax()
     {
-        
+
     }
     /**
      * Manage page display (form, list...)
@@ -218,7 +220,7 @@ abstract class AdminTab
     {
         // Include other tab in current tab
         if ($this->includeSubTab('display', array('submitAdd2', 'add', 'update', 'view'))) {
-            
+
         } elseif (Tools::getValue('submitAdd' . $this->table) && count($this->_errors) || isset($_GET['add' . $this->table])) {
             if ($this->tabAccess['add'] === '1') {
                 $this->displayForm();
@@ -259,16 +261,16 @@ abstract class AdminTab
             $required_class_fields[] = $required;
         }
         echo '<br />
-		<p><a href="#" onclick="if ($(\'.requiredFieldsParameters:visible\').length == 0) $(\'.requiredFieldsParameters\').slideDown(\'slow\'); else $(\'.requiredFieldsParameters\').slideUp(\'slow\'); return false;"><img src="../img/admin/duplicate.gif" alt="" /> ' . $this->l('Set required fields for this section') . '</a></p>
-		<fieldset style="display:none" class="width1 requiredFieldsParameters">
-		<legend>' . $this->l('Required Fields') . '</legend>
-		<form name="updateFields" action="' . self::$currentIndex . '&submitFields' . $this->table . '=1&token=' . $this->token . '" method="post">
-		<p><b>' . $this->l('Select the fields you would like to be required for this section.') . '<br />
-		<table cellspacing="0" cellpadding="0" class="table width1 clear">
-		<tr>
-			<th><input type="checkbox" onclick="checkDelBoxes(this.form, \'fieldsBox[]\', this.checked)" class="noborder" name="checkme"></th>
-			<th>' . $this->l('Field Name') . '</th>
-		</tr>';
+        <p><a href="#" onclick="if ($(\'.requiredFieldsParameters:visible\').length == 0) $(\'.requiredFieldsParameters\').slideDown(\'slow\'); else $(\'.requiredFieldsParameters\').slideUp(\'slow\'); return false;"><img src="../img/admin/duplicate.gif" alt="" /> ' . $this->l('Set required fields for this section') . '</a></p>
+        <fieldset style="display:none" class="width1 requiredFieldsParameters">
+        <legend>' . $this->l('Required Fields') . '</legend>
+        <form name="updateFields" action="' . self::$currentIndex . '&submitFields' . $this->table . '=1&token=' . $this->token . '" method="post">
+        <p><b>' . $this->l('Select the fields you would like to be required for this section.') . '<br />
+        <table cellspacing="0" cellpadding="0" class="table width1 clear">
+        <tr>
+            <th><input type="checkbox" onclick="checkDelBoxes(this.form, \'fieldsBox[]\', this.checked)" class="noborder" name="checkme"></th>
+            <th>' . $this->l('Field Name') . '</th>
+        </tr>';
         $object = new $this->className();
         $res = $object->getFieldsRequiredDatabase();
         $required_fields = array();
@@ -282,13 +284,13 @@ abstract class AdminTab
                 continue;
             }
             echo '<tr class="' . ($irow++ % 2 ? 'alt_row' : '') . '">
-						<td class="noborder"><input type="checkbox" name="fieldsBox[]" value="' . $field['Field'] . '" ' . (in_array($field['Field'], $required_fields) ? 'checked="checked"' : '') . ' /></td>
-						<td>' . $field['Field'] . '</td>
-					</tr>';
+                        <td class="noborder"><input type="checkbox" name="fieldsBox[]" value="' . $field['Field'] . '" ' . (in_array($field['Field'], $required_fields) ? 'checked="checked"' : '') . ' /></td>
+                        <td>' . $field['Field'] . '</td>
+                    </tr>';
         }
         echo '</table><br />
-				<center><input style="margin-left:15px;" class="button" type="submit" value="' . $this->l('   Save   ') . '" name="submitFields" /></center>
-		</fieldset>';
+                <center><input style="margin-left:15px;" class="button" type="submit" value="' . $this->l('   Save   ') . '" name="submitFields" /></center>
+        </fieldset>';
     }
     public function includeSubTab($methodname, $actions = array())
     {
@@ -303,7 +305,7 @@ abstract class AdminTab
             if (($module = Db::getInstance()->getValue('SELECT `module` FROM `' . _DB_PREFIX_ . 'tab` WHERE `class_name` = \'' . pSQL($classname) . '\'')) && file_exists(_PS_MODULE_DIR_ . '/' . $module . '/' . $classname . '.php')) {
                 include_once _PS_MODULE_DIR_ . '/' . $module . '/' . $classname . '.php';
             } elseif (file_exists(_PS_ADMIN_DIR_ . '/tabs/' . $classname . '.php')) {
-                include_once 'tabs/' . $classname . '.php';
+                include_once 'tabs/'. $classname . '.php';
             }
             if (!isset($this->_includeObj[$key])) {
                 $this->_includeObj[$key] = new $classname();
@@ -352,6 +354,7 @@ abstract class AdminTab
             if (isset($ok_inc) && $ok_inc || !count($actions)) {
                 if (!$adminTab->viewAccess()) {
                     echo Tools::displayError('Access denied.');
+
                     return false;
                 }
                 if (!count($actions)) {
@@ -369,6 +372,7 @@ abstract class AdminTab
             }
             $key++;
         }
+
         return $inc;
     }
     /**
@@ -451,7 +455,7 @@ abstract class AdminTab
      */
     protected function _childValidation()
     {
-        
+
     }
     /**
      * Overload this method for custom checking
@@ -482,6 +486,7 @@ abstract class AdminTab
                 return false;
             }
         }
+
         return true;
     }
     /**
@@ -491,7 +496,7 @@ abstract class AdminTab
      */
     public function ajaxPreProcess()
     {
-        
+
     }
     /**
      * ajaxProcess is the default handle method for request with ajax-tab.php
@@ -500,7 +505,7 @@ abstract class AdminTab
      */
     public function ajaxProcess()
     {
-        
+
     }
     /**
      * Manage page processing
@@ -815,7 +820,7 @@ abstract class AdminTab
         Db::getInstance()->execute('DELETE FROM ' . _DB_PREFIX_ . $this->table . '_' . $assos[1] . ($id_object ? ' WHERE `' . $this->identifier . '`=' . (int) $id_object : ''));
         foreach ($assos[0] as $asso) {
             Db::getInstance()->execute('INSERT INTO ' . _DB_PREFIX_ . $this->table . '_' . $assos[1] . ' (`' . pSQL($this->identifier) . '`, id_' . $assos[1] . ')
-											VALUES(' . (int) $asso['id_object'] . ', ' . (int) $asso['id_' . $assos[1]] . ')');
+                                            VALUES(' . (int) $asso['id_object'] . ', ' . (int) $asso['id_' . $assos[1]] . ')');
         }
     }
     protected static function getAssoShop($table, $id_object = false)
@@ -833,6 +838,7 @@ abstract class AdminTab
             $id_asso_object = !empty($res[1]) ? $res[1] : $id_object;
             $assos[] = array('id_object' => (int) $id_asso_object, 'id_' . $type => (int) $res[2]);
         }
+
         return array($assos, $type);
     }
     /**
@@ -936,7 +942,7 @@ abstract class AdminTab
      */
     public function beforeUpdateOptions()
     {
-        
+
     }
     protected function validateField($value, $field)
     {
@@ -944,10 +950,12 @@ abstract class AdminTab
             if ((!isset($field['empty']) || !$field['empty'] || isset($field['empty']) && $field['empty'] && $value) && method_exists('Validate', $field['validation'])) {
                 if (!Validate::$field['validation']($value)) {
                     $this->_errors[] = Tools::displayError($field['title'] . ' : Incorrect value');
+
                     return false;
                 }
             }
         }
+
         return true;
     }
     protected function uploadImage($id, $name, $dir, $ext = false, $width = NULL, $height = NULL)
@@ -976,17 +984,20 @@ abstract class AdminTab
                 }
                 if ($this->afterImageUpload()) {
                     unlink($tmpName);
+
                     return true;
                 }
+
                 return false;
             }
         }
+
         return true;
     }
     /**
      * Overload this method for custom checking
      *
-     * @param integer $id Object id used for deleting images
+     * @param  integer $id Object id used for deleting images
      * @return boolean
      */
     protected function postImage($id)
@@ -1000,13 +1011,14 @@ abstract class AdminTab
                 }
             }
         }
+
         return !count($this->_errors) ? true : false;
     }
     /**
      * Copy datas from $_POST to object
      *
      * @param object &$object Object
-     * @param string $table Object table
+     * @param string $table   Object table
      */
     protected function copyFromPost(&$object, $table)
     {
@@ -1044,16 +1056,17 @@ abstract class AdminTab
     {
         if ($nbErrors = count($this->_errors) && $this->_includeContainer) {
             echo '<script type="text/javascript">
-				$(document).ready(function() {
-					$(\'#hideError\').unbind(\'click\').click(function(){
-						$(\'.error\').hide(\'slow\', function (){
-							$(\'.error\').remove();
-						});
-						return false;
-					});
-				});
-			  </script>
-			<div class="error"><span style="float:right"><a id="hideError" href=""><img alt="X" src="../img/admin/close.png" /></a></span><img src="../img/admin/error2.png" />';
+                $(document).ready(function() {
+                    $(\'#hideError\').unbind(\'click\').click(function(){
+                        $(\'.error\').hide(\'slow\', function (){
+                            $(\'.error\').remove();
+                        });
+
+                        return false;
+                    });
+                });
+              </script>
+            <div class="error"><span style="float:right"><a id="hideError" href=""><img alt="X" src="../img/admin/close.png" /></a></span><img src="../img/admin/error2.png" />';
             if (count($this->_errors) == 1) {
                 echo $this->_errors[0];
             } else {
@@ -1077,34 +1090,37 @@ abstract class AdminTab
         $str_output = '';
         if (!empty($warn)) {
             $str_output .= '<script type="text/javascript">
-					$(document).ready(function() {
-						$(\'#linkSeeMore\').unbind(\'click\').click(function(){
-							$(\'#seeMore\').show(\'slow\');
-							$(this).hide();
-							$(\'#linkHide\').show();
-							return false;
-						});
-						$(\'#linkHide\').unbind(\'click\').click(function(){
-							$(\'#seeMore\').hide(\'slow\');
-							$(this).hide();
-							$(\'#linkSeeMore\').show();
-							return false;
-						});
-						$(\'#hideWarn\').unbind(\'click\').click(function(){
-							$(\'.warn\').hide(\'slow\', function (){
-								$(\'.warn\').remove();
-							});
-							return false;
-						});
-					});
-				  </script>
-			<div class="warn">';
+                    $(document).ready(function() {
+                        $(\'#linkSeeMore\').unbind(\'click\').click(function(){
+                            $(\'#seeMore\').show(\'slow\');
+                            $(this).hide();
+                            $(\'#linkHide\').show();
+
+                            return false;
+                        });
+                        $(\'#linkHide\').unbind(\'click\').click(function(){
+                            $(\'#seeMore\').hide(\'slow\');
+                            $(this).hide();
+                            $(\'#linkSeeMore\').show();
+
+                            return false;
+                        });
+                        $(\'#hideWarn\').unbind(\'click\').click(function(){
+                            $(\'.warn\').hide(\'slow\', function (){
+                                $(\'.warn\').remove();
+                            });
+
+                            return false;
+                        });
+                    });
+                  </script>
+            <div class="warn">';
             if (!is_array($warn)) {
                 $str_output .= '<img src="../img/admin/warn2.png" />' . $warn;
             } else {
                 $str_output .= '<span style="float:right"><a id="hideWarn" href=""><img alt="X" src="../img/admin/close.png" /></a></span><img src="../img/admin/warn2.png" />' . (count($warn) > 1 ? $this->l('There are') : $this->l('There is')) . ' ' . count($warn) . ' ' . (count($warn) > 1 ? $this->l('warnings') : $this->l('warning')) . '<span style="margin-left:20px;" id="labelSeeMore">
-				<a id="linkSeeMore" href="#" style="text-decoration:underline">' . $this->l('Click here to see more') . '</a>
-				<a id="linkHide" href="#" style="text-decoration:underline;display:none">' . $this->l('Hide warning') . '</a></span><ul style="display:none;" id="seeMore">';
+                <a id="linkSeeMore" href="#" style="text-decoration:underline">' . $this->l('Click here to see more') . '</a>
+                <a id="linkHide" href="#" style="text-decoration:underline;display:none">' . $this->l('Hide warning') . '</a></span><ul style="display:none;" id="seeMore">';
                 foreach ($warn as $val) {
                     $str_output .= '<li>' . $val . '</li>';
                 }
@@ -1121,19 +1137,19 @@ abstract class AdminTab
     {
         if ($conf = Tools::getValue('conf')) {
             echo '
-			<div class="conf">
-				' . $this->_conf[(int) $conf] . '
-			</div>';
+            <div class="conf">
+                ' . $this->_conf[(int) $conf] . '
+            </div>';
         }
     }
     /**
      * Get the current objects' list form the database
      *
-     * @param integer $id_lang Language used for display
-     * @param string $orderBy ORDER BY clause
-     * @param string $_orderWay Order way (ASC, DESC)
-     * @param integer $start Offset in LIMIT clause
-     * @param integer $limit Row count in LIMIT clause
+     * @param integer $id_lang   Language used for display
+     * @param string  $orderBy   ORDER BY clause
+     * @param string  $_orderWay Order way (ASC, DESC)
+     * @param integer $start     Offset in LIMIT clause
+     * @param integer $limit     Row count in LIMIT clause
      */
     public function getList($id_lang, $orderBy = NULL, $orderWay = NULL, $start = 0, $limit = NULL, $id_lang_shop = false)
     {
@@ -1171,7 +1187,7 @@ abstract class AdminTab
         if ($this->shopLinkType) {
             $selectShop = ', shop.name as shop_name ';
             $joinShop = ' LEFT JOIN ' . _DB_PREFIX_ . $this->shopLinkType . ' shop
-							ON a.id_' . $this->shopLinkType . ' = shop.id_' . $this->shopLinkType;
+                            ON a.id_' . $this->shopLinkType . ' = shop.id_' . $this->shopLinkType;
             $whereShop = Shop::addSqlRestriction($this->shopShareDatas, 'a', $this->shopLinkType);
         }
         $asso = Shop::getAssoTable($this->table);
@@ -1195,29 +1211,29 @@ abstract class AdminTab
         ///////////////////////
         /* Query in order to get results with all fields */
         $sql = 'SELECT SQL_CALC_FOUND_ROWS
-			' . ($this->_tmpTableFilter ? ' * FROM (SELECT ' : '') . '
-			' . ($this->lang ? 'b.*, ' : '') . 'a.*' . (isset($this->_select) ? ', ' . $this->_select . ' ' : '') . $selectShop . '
-			FROM `' . _DB_PREFIX_ . $sqlTable . '` a
-			' . $filterShop . '
-			' . ($this->lang ? 'LEFT JOIN `' . _DB_PREFIX_ . $this->table . '_lang` b ON (b.`' . $this->identifier . '` = a.`' . $this->identifier . '` AND b.`id_lang` = ' . (int) $id_lang . ($id_lang_shop ? ' AND b.`id_shop`=' . (int) $id_lang_shop : '') . ')' : '') . '
-			' . (isset($this->_join) ? $this->_join . ' ' : '') . '
-			' . $joinShop . '
-			WHERE 1 ' . (isset($this->_where) ? $this->_where . ' ' : '') . ($this->deleted ? 'AND a.`deleted` = 0 ' : '') . (isset($this->_filter) ? $this->_filter : '') . $whereShop . '
-			' . (isset($this->_group) ? $this->_group . ' ' : '') . '
-			' . (isset($this->_filterHaving) || isset($this->_having) ? 'HAVING ' : '') . (isset($this->_filterHaving) ? ltrim($this->_filterHaving, ' AND ') : '') . (isset($this->_having) ? $this->_having . ' ' : '') . '
-			ORDER BY ' . ($orderBy == $this->identifier ? 'a.' : '') . '`' . pSQL($orderBy) . '` ' . pSQL($orderWay) . ($this->_tmpTableFilter ? ') tmpTable WHERE 1' . $this->_tmpTableFilter : '') . '
-			LIMIT ' . (int) $start . ',' . (int) $limit;
+            ' . ($this->_tmpTableFilter ? ' * FROM (SELECT ' : '') . '
+            ' . ($this->lang ? 'b.*, ' : '') . 'a.*' . (isset($this->_select) ? ', ' . $this->_select . ' ' : '') . $selectShop . '
+            FROM `' . _DB_PREFIX_ . $sqlTable . '` a
+            ' . $filterShop . '
+            ' . ($this->lang ? 'LEFT JOIN `' . _DB_PREFIX_ . $this->table . '_lang` b ON (b.`' . $this->identifier . '` = a.`' . $this->identifier . '` AND b.`id_lang` = ' . (int) $id_lang . ($id_lang_shop ? ' AND b.`id_shop`=' . (int) $id_lang_shop : '') . ')' : '') . '
+            ' . (isset($this->_join) ? $this->_join . ' ' : '') . '
+            ' . $joinShop . '
+            WHERE 1 ' . (isset($this->_where) ? $this->_where . ' ' : '') . ($this->deleted ? 'AND a.`deleted` = 0 ' : '') . (isset($this->_filter) ? $this->_filter : '') . $whereShop . '
+            ' . (isset($this->_group) ? $this->_group . ' ' : '') . '
+            ' . (isset($this->_filterHaving) || isset($this->_having) ? 'HAVING ' : '') . (isset($this->_filterHaving) ? ltrim($this->_filterHaving, ' AND ') : '') . (isset($this->_having) ? $this->_having . ' ' : '') . '
+            ORDER BY ' . ($orderBy == $this->identifier ? 'a.' : '') . '`' . pSQL($orderBy) . '` ' . pSQL($orderWay) . ($this->_tmpTableFilter ? ') tmpTable WHERE 1' . $this->_tmpTableFilter : '') . '
+            LIMIT ' . (int) $start . ',' . (int) $limit;
         $this->_list = Db::getInstance()->executeS($sql);
         $this->_listTotal = Db::getInstance()->getValue('SELECT FOUND_ROWS() AS `' . _DB_PREFIX_ . $this->table . '`');
     }
     /**
      * Display image aside object form
      *
-     * @param integer $id Object id
-     * @param string $image Local image filepath
-     * @param integer $size Image width
-     * @param integer $id_image Image id (for products with several images)
-     * @param string $token Employee token used in the image deletion link
+     * @param integer $id           Object id
+     * @param string  $image        Local image filepath
+     * @param integer $size         Image width
+     * @param integer $id_image     Image id (for products with several images)
+     * @param string  $token        Employee token used in the image deletion link
      * @param boolean $disableCache When turned on a timestamp will be added to the image URI to disable the HTTP cache
      */
     public function displayImage($id, $image, $size, $id_image = NULL, $token = NULL, $disableCache = false)
@@ -1227,12 +1243,12 @@ abstract class AdminTab
         }
         if ($id && file_exists($image)) {
             echo '
-			<div id="image" >
-				' . ImageManager::thumbnail($image, $this->table . '_' . (int) $id . '.' . $this->imageType, $size, $this->imageType, $disableCache) . '
-				<p align="center">' . $this->l('File size') . ' ' . filesize($image) / 1000 . 'kb</p>
-				<a href="' . self::$currentIndex . '&' . $this->identifier . '=' . (int) $id . '&token=' . $token . ($id_image ? '&id_image=' . (int) $id_image : '') . '&deleteImage=1">
-				<img src="../img/admin/delete.gif" alt="' . $this->l('Delete') . '" /> ' . $this->l('Delete') . '</a>
-			</div>';
+            <div id="image" >
+                ' . ImageManager::thumbnail($image, $this->table . '_' . (int) $id . '.' . $this->imageType, $size, $this->imageType, $disableCache) . '
+                <p align="center">' . $this->l('File size') . ' ' . filesize($image) / 1000 . 'kb</p>
+                <a href="' . self::$currentIndex . '&' . $this->identifier . '=' . (int) $id . '&token=' . $token . ($id_image ? '&id_image=' . (int) $id_image : '') . '&deleteImage=1">
+                <img src="../img/admin/delete.gif" alt="' . $this->l('Delete') . '" /> ' . $this->l('Delete') . '</a>
+            </div>';
         }
     }
     /**
@@ -1263,11 +1279,11 @@ abstract class AdminTab
             echo '&' . $this->table . 'Orderby=' . urlencode($this->_orderBy) . '&' . $this->table . 'Orderway=' . urlencode(strtolower($this->_orderWay));
         }
         echo '#' . $this->table . '" class="form">
-		<input type="hidden" id="submitFilter' . $this->table . '" name="submitFilter' . $this->table . '" value="0">
-		<table>
-			<tr>
-				<td style="vertical-align: bottom;">
-					<span style="float: left;">';
+        <input type="hidden" id="submitFilter' . $this->table . '" name="submitFilter' . $this->table . '" value="0">
+        <table>
+            <tr>
+                <td style="vertical-align: bottom;">
+                    <span style="float: left;">';
         /* Determine current page number */
         $page = (int) Tools::getValue('submitFilter' . $this->table);
         if (!$page) {
@@ -1275,51 +1291,51 @@ abstract class AdminTab
         }
         if ($page > 1) {
             echo '
-						<input type="image" src="../img/admin/list-prev2.gif" onclick="getE(\'submitFilter' . $this->table . '\').value=1"/>
-						&nbsp; <input type="image" src="../img/admin/list-prev.gif" onclick="getE(\'submitFilter' . $this->table . '\').value=' . ($page - 1) . '"/> ';
+                        <input type="image" src="../img/admin/list-prev2.gif" onclick="getE(\'submitFilter' . $this->table . '\').value=1"/>
+                        &nbsp; <input type="image" src="../img/admin/list-prev.gif" onclick="getE(\'submitFilter' . $this->table . '\').value=' . ($page - 1) . '"/> ';
         }
         echo $this->l('Page') . ' <b>' . $page . '</b> / ' . $totalPages;
         if ($page < $totalPages) {
             echo '
-						<input type="image" src="../img/admin/list-next.gif" onclick="getE(\'submitFilter' . $this->table . '\').value=' . ($page + 1) . '"/>
-						 &nbsp;<input type="image" src="../img/admin/list-next2.gif" onclick="getE(\'submitFilter' . $this->table . '\').value=' . $totalPages . '"/>';
+                        <input type="image" src="../img/admin/list-next.gif" onclick="getE(\'submitFilter' . $this->table . '\').value=' . ($page + 1) . '"/>
+                         &nbsp;<input type="image" src="../img/admin/list-next2.gif" onclick="getE(\'submitFilter' . $this->table . '\').value=' . $totalPages . '"/>';
         }
         echo '			| ' . $this->l('Display') . '
-						<select name="pagination">';
+                        <select name="pagination">';
         /* Choose number of results per page */
         $selectedPagination = Tools::getValue('pagination', isset($this->context->cookie->{$this->table . '_pagination'}) ? $this->context->cookie->{$this->table . '_pagination'} : NULL);
         foreach ($this->_pagination as $value) {
             echo '<option value="' . (int) $value . '"' . ($selectedPagination == $value ? ' selected="selected"' : ($selectedPagination == NULL && $value == $this->_pagination[1] ? ' selected="selected2"' : '')) . '>' . (int) $value . '</option>';
         }
         echo '
-						</select>
-						/ ' . (int) $this->_listTotal . ' ' . $this->l('result(s)') . '
-					</span>
-					<span style="float: right;">
-						<input type="submit" name="submitReset' . $this->table . '" value="' . $this->l('Reset') . '" class="button" />
-						<input type="submit" id="submitFilterButton_' . $this->table . '" name="submitFilter" value="' . $this->l('Filter') . '" class="button" />
-					</span>
-					<span class="clear"></span>
-				</td>
-			</tr>
-			<tr>
-				<td>';
+                        </select>
+                        / ' . (int) $this->_listTotal . ' ' . $this->l('result(s)') . '
+                    </span>
+                    <span style="float: right;">
+                        <input type="submit" name="submitReset' . $this->table . '" value="' . $this->l('Reset') . '" class="button" />
+                        <input type="submit" id="submitFilterButton_' . $this->table . '" name="submitFilter" value="' . $this->l('Filter') . '" class="button" />
+                    </span>
+                    <span class="clear"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>';
         /* Display column names and arrows for ordering (ASC, DESC) */
         if (array_key_exists($this->identifier, $this->identifiersDnd) && $this->_orderBy == 'position') {
             echo '
-			<script type="text/javascript" src="../js/jquery/jquery.tablednd_0_5.js"></script>
-			<script type="text/javascript">
-				var token = \'' . ($token != NULL ? $token : $this->token) . '\';
-				var come_from = \'' . $this->table . '\';
-				var alternate = \'' . ($this->_orderWay == 'DESC' ? '1' : '0') . '\';
-			</script>
-			<script type="text/javascript" src="../js/admin-dnd.js"></script>
-			';
+            <script type="text/javascript" src="../js/jquery/jquery.tablednd_0_5.js"></script>
+            <script type="text/javascript">
+                var token = \'' . ($token != NULL ? $token : $this->token) . '\';
+                var come_from = \'' . $this->table . '\';
+                var alternate = \'' . ($this->_orderWay == 'DESC' ? '1' : '0') . '\';
+            </script>
+            <script type="text/javascript" src="../js/admin-dnd.js"></script>
+            ';
         }
         echo '<table' . (array_key_exists($this->identifier, $this->identifiersDnd) ? ' id="' . ((int) Tools::getValue($this->identifiersDnd[$this->identifier], 1) ? substr($this->identifier, 3, strlen($this->identifier)) : '') . '"' : '') . ' class="table' . (array_key_exists($this->identifier, $this->identifiersDnd) && ($this->_orderBy != 'position ' and $this->_orderWay != 'DESC') ? ' tableDnD' : '') . '" cellpadding="0" cellspacing="0">
-			<thead>
-				<tr class="nodrag nodrop">
-					<th>';
+            <thead>
+                <tr class="nodrag nodrop">
+                    <th>';
         if ($this->delete) {
             echo '		<input type="checkbox" name="checkme" class="noborder" onclick="checkDelBoxes(this.form, \'' . $this->table . 'Box[]\', this.checked)" />';
         }
@@ -1332,8 +1348,8 @@ abstract class AdminTab
                     self::$currentIndex = preg_replace('/&' . $this->table . 'Orderby=([a-z _]*)&' . $this->table . 'Orderway=([a-z]*)/i', '', self::$currentIndex);
                 }
                 echo '	<br />
-						<a href="' . self::$currentIndex . '&' . $this->identifier . '=' . $id_cat . '&' . $this->table . 'Orderby=' . urlencode($key) . '&' . $this->table . 'Orderway=desc&token=' . $token . '"><img border="0" src="../img/admin/down' . (isset($this->_orderBy) && $key == $this->_orderBy && $this->_orderWay == 'DESC' ? '_d' : '') . '.gif" /></a>
-						<a href="' . self::$currentIndex . '&' . $this->identifier . '=' . $id_cat . '&' . $this->table . 'Orderby=' . urlencode($key) . '&' . $this->table . 'Orderway=asc&token=' . $token . '"><img border="0" src="../img/admin/up' . (isset($this->_orderBy) && $key == $this->_orderBy && $this->_orderWay == 'ASC' ? '_d' : '') . '.gif" /></a>';
+                        <a href="' . self::$currentIndex . '&' . $this->identifier . '=' . $id_cat . '&' . $this->table . 'Orderby=' . urlencode($key) . '&' . $this->table . 'Orderway=desc&token=' . $token . '"><img border="0" src="../img/admin/down' . (isset($this->_orderBy) && $key == $this->_orderBy && $this->_orderWay == 'DESC' ? '_d' : '') . '.gif" /></a>
+                        <a href="' . self::$currentIndex . '&' . $this->identifier . '=' . $id_cat . '&' . $this->table . 'Orderby=' . urlencode($key) . '&' . $this->table . 'Orderway=asc&token=' . $token . '"><img border="0" src="../img/admin/up' . (isset($this->_orderBy) && $key == $this->_orderBy && $this->_orderWay == 'ASC' ? '_d' : '') . '.gif" /></a>';
             }
             echo '	</th>';
         }
@@ -1345,8 +1361,8 @@ abstract class AdminTab
             echo '	<th style="width: 52px">' . $this->l('Actions') . '</th>';
         }
         echo '	</tr>
-				<tr class="nodrag nodrop" style="height: 35px;">
-					<td class="center">';
+                <tr class="nodrag nodrop" style="height: 35px;">
+                    <td class="center">';
         if ($this->delete) {
             echo '		--';
         }
@@ -1368,11 +1384,11 @@ abstract class AdminTab
             switch ($params['type']) {
                 case 'bool':
                     echo '
-					<select name="' . $this->table . 'Filter_' . $key . '">
-						<option value="">--</option>
-						<option value="1"' . ($value == 1 ? ' selected="selected"' : '') . '>' . $this->l('Yes') . '</option>
-						<option value="0"' . ($value == 0 && $value != '' ? ' selected="selected"' : '') . '>' . $this->l('No') . '</option>
-					</select>';
+                    <select name="' . $this->table . 'Filter_' . $key . '">
+                        <option value="">--</option>
+                        <option value="1"' . ($value == 1 ? ' selected="selected"' : '') . '>' . $this->l('Yes') . '</option>
+                        <option value="0"' . ($value == 0 && $value != '' ? ' selected="selected"' : '') . '>' . $this->l('No') . '</option>
+                    </select>';
                     break;
                 case 'date':
                 case 'datetime':
@@ -1386,12 +1402,12 @@ abstract class AdminTab
                     $nameId = str_replace('!', '__', $name);
                     includeDatepicker(array($nameId . '_0', $nameId . '_1'));
                     echo $this->l('From') . ' <input type="text" id="' . $nameId . '_0" name="' . $name . '[0]" value="' . (isset($value[0]) ? $value[0] : '') . '"' . $width . ' ' . $keyPress . ' /><br />
-					' . $this->l('To') . ' <input type="text" id="' . $nameId . '_1" name="' . $name . '[1]" value="' . (isset($value[1]) ? $value[1] : '') . '"' . $width . ' ' . $keyPress . ' />';
+                    ' . $this->l('To') . ' <input type="text" id="' . $nameId . '_1" name="' . $name . '[1]" value="' . (isset($value[1]) ? $value[1] : '') . '"' . $width . ' ' . $keyPress . ' />';
                     break;
                 case 'select':
                     if (isset($params['filter_key'])) {
                         echo '<select onchange="$(\'#submitFilter' . $this->table . '\').focus();$(\'#submitFilter' . $this->table . '\').click();" name="' . $this->table . 'Filter_' . $params['filter_key'] . '" ' . (isset($params['width']) ? 'style="width: ' . $params['width'] . 'px"' : '') . '>
-								<option value=""' . ($value == 0 && $value != '' ? ' selected="selected"' : '') . '>--</option>';
+                                <option value=""' . ($value == 0 && $value != '' ? ' selected="selected"' : '') . '>--</option>';
                         if (isset($params['select']) && is_array($params['select'])) {
                             foreach ($params['select'] as $optionValue => $optionDisplay) {
                                 echo '<option value="' . $optionValue . '"' . (isset($_POST[$this->table . 'Filter_' . $params['filter_key']]) && Tools::getValue($this->table . 'Filter_' . $params['filter_key']) == $optionValue && Tools::getValue($this->table . 'Filter_' . $params['filter_key']) != '' ? ' selected="selected"' : '') . '>' . $optionDisplay . '</option>';
@@ -1416,11 +1432,11 @@ abstract class AdminTab
             echo '<td class="center">--</td>';
         }
         echo '</tr>
-			</thead>';
+            </thead>';
     }
     public function displayTop()
     {
-        
+
     }
     /**
      * Display list
@@ -1434,6 +1450,7 @@ abstract class AdminTab
         /* Append when we get a syntax error in SQL query */
         if ($this->_list === false) {
             $this->displayWarning($this->l('Bad SQL query'));
+
             return false;
         }
         /* Display list header (filtering, pagination and column names) */
@@ -1461,7 +1478,7 @@ abstract class AdminTab
         // default categ
         $irow = 0;
         if ($this->_list && isset($this->fieldsDisplay['position'])) {
-            $positions = array_map(create_function('$elem', 'return (int)$elem[\'position\'];'), $this->_list);
+            $positions = array_map(create_function('$elem', 'return (int) $elem[\'position\'];'), $this->_list);
             sort($positions);
         }
         if ($this->_list) {
@@ -1473,7 +1490,7 @@ abstract class AdminTab
             foreach ($this->_list as $tr) {
                 $id = $tr[$this->identifier];
                 echo '<tr' . (array_key_exists($this->identifier, $this->identifiersDnd) ? ' id="tr_' . (($id_category = (int) Tools::getValue('id_' . ($isCms ? 'cms_' : '') . 'category', '1')) ? $id_category : '') . '_' . $id . '_' . $tr['position'] . '"' : '') . ($irow++ % 2 ? ' class="alt_row"' : '') . ' ' . (isset($tr['color']) && $this->colorOnBackground ? 'style="background-color: ' . $tr['color'] . '"' : '') . '>
-							<td class="center">';
+                            <td class="center">';
                 if ($this->delete && (!isset($this->_listSkipDelete) || !in_array($id, $this->_listSkipDelete))) {
                     echo '<input type="checkbox" name="' . $this->table . 'Box[]" value="' . $id . '" class="noborder" />';
                 }
@@ -1482,7 +1499,7 @@ abstract class AdminTab
                     $tmp = explode('!', $key);
                     $key = isset($tmp[1]) ? $tmp[1] : $tmp[0];
                     echo '
-					<td ' . (isset($params['position']) ? ' id="td_' . (isset($id_category) && $id_category ? $id_category : 0) . '_' . $id . '"' : '') . ' class="' . (!isset($this->noLink) || !$this->noLink ? 'pointer' : '') . (isset($params['position']) && $this->_orderBy == 'position' ? ' dragHandle' : '') . (isset($params['align']) ? ' ' . $params['align'] : '') . '" ';
+                    <td ' . (isset($params['position']) ? ' id="td_' . (isset($id_category) && $id_category ? $id_category : 0) . '_' . $id . '"' : '') . ' class="' . (!isset($this->noLink) || !$this->noLink ? 'pointer' : '') . (isset($params['position']) && $this->_orderBy == 'position' ? ' dragHandle' : '') . (isset($params['align']) ? ' ' . $params['align'] : '') . '" ';
                     if (!isset($params['position']) && (!isset($this->noLink) || !$this->noLink)) {
                         echo ' onclick="document.location = \'' . self::$currentIndex . '&' . $this->identifier . '=' . $id . ($this->view ? '&view' : '&update') . $this->table . '&token=' . ($token != NULL ? $token : $this->token) . '\'">' . (isset($params['prefix']) ? $params['prefix'] : '');
                     } else {
@@ -1492,17 +1509,17 @@ abstract class AdminTab
                         $this->_displayEnableLink($token, $id, $tr[$key], $params['active'], Tools::getValue('id_category'), Tools::getValue('id_product'));
                     } elseif (isset($params['activeVisu']) && isset($tr[$key])) {
                         echo '<img src="../img/admin/' . ($tr[$key] ? 'enabled.gif' : 'disabled.gif') . '"
-						alt="' . ($tr[$key] ? $this->l('Enabled') : $this->l('Disabled')) . '" title="' . ($tr[$key] ? $this->l('Enabled') : $this->l('Disabled')) . '" />';
+                        alt="' . ($tr[$key] ? $this->l('Enabled') : $this->l('Disabled')) . '" title="' . ($tr[$key] ? $this->l('Enabled') : $this->l('Disabled')) . '" />';
                     } elseif (isset($params['position'])) {
                         if ($this->_orderBy == 'position' && $this->_orderWay != 'DESC') {
                             echo '<a' . (!($tr[$key] != $positions[count($positions) - 1]) ? ' style="display: none;"' : '') . ' href="' . self::$currentIndex . '&' . $keyToGet . '=' . (int) $id_category . '&' . $this->identifiersDnd[$this->identifier] . '=' . $id . '
-									&way=1&position=' . (int) ($tr['position'] + 1) . '&token=' . ($token != NULL ? $token : $this->token) . '">
-									<img src="../img/admin/' . ($this->_orderWay == 'ASC' ? 'down' : 'up') . '.gif"
-									alt="' . $this->l('Down') . '" title="' . $this->l('Down') . '" /></a>';
+                                    &way=1&position=' . (int) ($tr['position'] + 1) . '&token=' . ($token != NULL ? $token : $this->token) . '">
+                                    <img src="../img/admin/' . ($this->_orderWay == 'ASC' ? 'down' : 'up') . '.gif"
+                                    alt="' . $this->l('Down') . '" title="' . $this->l('Down') . '" /></a>';
                             echo '<a' . (!($tr[$key] != $positions[0]) ? ' style="display: none;"' : '') . ' href="' . self::$currentIndex . '&' . $keyToGet . '=' . (int) $id_category . '&' . $this->identifiersDnd[$this->identifier] . '=' . $id . '
-									&way=0&position=' . (int) ($tr['position'] - 1) . '&token=' . ($token != NULL ? $token : $this->token) . '">
-									<img src="../img/admin/' . ($this->_orderWay == 'ASC' ? 'up' : 'down') . '.gif"
-									alt="' . $this->l('Up') . '" title="' . $this->l('Up') . '" /></a>';
+                                    &way=0&position=' . (int) ($tr['position'] - 1) . '&token=' . ($token != NULL ? $token : $this->token) . '">
+                                    <img src="../img/admin/' . ($this->_orderWay == 'ASC' ? 'up' : 'down') . '.gif"
+                                    alt="' . $this->l('Up') . '" title="' . $this->l('Up') . '" /></a>';
                         } else {
                             echo (int) ($tr[$key] + 1);
                         }
@@ -1574,8 +1591,8 @@ abstract class AdminTab
     protected function _displayEnableLink($token, $id, $value, $active, $id_category = NULL, $id_product = NULL)
     {
         echo '<a href="' . self::$currentIndex . '&' . $this->identifier . '=' . $id . '&' . $active . $this->table . ((int) $id_category && (int) $id_product ? '&id_category=' . $id_category : '') . '&token=' . ($token != NULL ? $token : $this->token) . '">
-	        <img src="../img/admin/' . ($value ? 'enabled.gif' : 'disabled.gif') . '"
-	        alt="' . ($value ? $this->l('Enabled') : $this->l('Disabled')) . '" title="' . ($value ? $this->l('Enabled') : $this->l('Disabled')) . '" /></a>';
+            <img src="../img/admin/' . ($value ? 'enabled.gif' : 'disabled.gif') . '"
+            alt="' . ($value ? $this->l('Enabled') : $this->l('Disabled')) . '" title="' . ($value ? $this->l('Enabled') : $this->l('Disabled')) . '" /></a>';
     }
     protected function _displayDuplicate($token = NULL, $id)
     {
@@ -1583,30 +1600,30 @@ abstract class AdminTab
         $_cacheLang['Copy images too?'] = $this->l('Copy images too?', __CLASS__, TRUE, FALSE);
         $duplicate = self::$currentIndex . '&' . $this->identifier . '=' . $id . '&duplicate' . $this->table;
         echo '
-			<a class="pointer" onclick="if (confirm(\'' . $_cacheLang['Copy images too?'] . '\')) document.location = \'' . $duplicate . '&token=' . ($token != NULL ? $token : $this->token) . '\'; else document.location = \'' . $duplicate . '&noimage=1&token=' . ($token ? $token : $this->token) . '\';">
-    		<img src="../img/admin/duplicate.png" alt="' . $_cacheLang['Duplicate'] . '" title="' . $_cacheLang['Duplicate'] . '" /></a>';
+            <a class="pointer" onclick="if (confirm(\'' . $_cacheLang['Copy images too?'] . '\')) document.location = \'' . $duplicate . '&token=' . ($token != NULL ? $token : $this->token) . '\'; else document.location = \'' . $duplicate . '&noimage=1&token=' . ($token ? $token : $this->token) . '\';">
+            <img src="../img/admin/duplicate.png" alt="' . $_cacheLang['Duplicate'] . '" title="' . $_cacheLang['Duplicate'] . '" /></a>';
     }
     protected function _displayViewLink($token = NULL, $id)
     {
         $_cacheLang['View'] = $this->l('View');
         echo '
-			<a href="' . self::$currentIndex . '&' . $this->identifier . '=' . $id . '&view' . $this->table . '&token=' . ($token != NULL ? $token : $this->token) . '">
-			<img src="../img/admin/details.gif" alt="' . $_cacheLang['View'] . '" title="' . $_cacheLang['View'] . '" /></a>';
+            <a href="' . self::$currentIndex . '&' . $this->identifier . '=' . $id . '&view' . $this->table . '&token=' . ($token != NULL ? $token : $this->token) . '">
+            <img src="../img/admin/details.gif" alt="' . $_cacheLang['View'] . '" title="' . $_cacheLang['View'] . '" /></a>';
     }
     protected function _displayEditLink($token = NULL, $id)
     {
         $_cacheLang['Edit'] = $this->l('Edit');
         echo '
-    		<a href="' . self::$currentIndex . '&' . $this->identifier . '=' . $id . '&update' . $this->table . '&token=' . ($token != NULL ? $token : $this->token) . '">
-    		<img src="../img/admin/edit.gif" alt="" title="' . $_cacheLang['Edit'] . '" /></a>';
+            <a href="' . self::$currentIndex . '&' . $this->identifier . '=' . $id . '&update' . $this->table . '&token=' . ($token != NULL ? $token : $this->token) . '">
+            <img src="../img/admin/edit.gif" alt="" title="' . $_cacheLang['Edit'] . '" /></a>';
     }
     protected function _displayDeleteLink($token = NULL, $id)
     {
         $_cacheLang['Delete'] = $this->l('Delete');
         $_cacheLang['DeleteItem'] = $this->l('Delete item #', __CLASS__, TRUE, FALSE);
         echo '
-			<a href="' . self::$currentIndex . '&' . $this->identifier . '=' . $id . '&delete' . $this->table . '&token=' . ($token != NULL ? $token : $this->token) . '" onclick="return confirm(\'' . $_cacheLang['DeleteItem'] . $id . ' ?' . (!is_null($this->specificConfirmDelete) ? '\\r' . $this->specificConfirmDelete : '') . '\');">
-			<img src="../img/admin/delete.gif" alt="' . $_cacheLang['Delete'] . '" title="' . $_cacheLang['Delete'] . '" /></a>';
+            <a href="' . self::$currentIndex . '&' . $this->identifier . '=' . $id . '&delete' . $this->table . '&token=' . ($token != NULL ? $token : $this->token) . '" onclick="return confirm(\'' . $_cacheLang['DeleteItem'] . $id . ' ?' . (!is_null($this->specificConfirmDelete) ? '\\r' . $this->specificConfirmDelete : '') . '\');">
+            <img src="../img/admin/delete.gif" alt="' . $_cacheLang['Delete'] . '" title="' . $_cacheLang['Delete'] . '" /></a>';
     }
     /**
      * Close list table and submit button
@@ -1618,11 +1635,11 @@ abstract class AdminTab
             echo '<p><input type="submit" class="button" name="submitDel' . $this->table . '" value="' . $this->l('Delete selection') . '" onclick="return confirm(\'' . $this->l('Delete selected items?', __CLASS__, TRUE, FALSE) . '\');" /></p>';
         }
         echo '
-				</td>
-			</tr>
-		</table>
-		<input type="hidden" name="token" value="' . ($token ? $token : $this->token) . '" />
-		</form>';
+                </td>
+            </tr>
+        </table>
+        <input type="hidden" name="token" value="' . ($token ? $token : $this->token) . '" />
+        </form>';
         if (isset($this->_includeTab) && count($this->_includeTab)) {
             echo '<br /><br />';
         }
@@ -1642,8 +1659,8 @@ abstract class AdminTab
         }
         echo '<br />';
         echo '<script type="text/javascript">
-			id_language = Number(' . $this->context->language->id . ');
-		</script>';
+            id_language = Number(' . $this->context->language->id . ');
+        </script>';
         echo '<form action="' . self::$currentIndex . '&submitOptions' . $this->table . '=1&token=' . $this->token . '" method="post" enctype="multipart/form-data">';
         foreach ($this->optionsList as $category => $categoryData) {
             $required = false;
@@ -1704,10 +1721,10 @@ abstract class AdminTab
                 // Multishop default value
                 if (Shop::isFeatureActive() && Shop::getContext() != Shop::CONTEXT_ALL && !$isInvisible) {
                     echo '<div class="preference_default_multishop">
-							<label>
-								<input type="checkbox" name="multishopOverrideOption[' . $key . ']" value="1" ' . ($isDisabled ? 'checked="checked"' : '') . ' onclick="checkMultishopDefaultValue(this, \'' . $key . '\')" /> ' . $this->l('Use default value') . '
-							</label>
-						</div>';
+                            <label>
+                                <input type="checkbox" name="multishopOverrideOption[' . $key . ']" value="1" ' . ($isDisabled ? 'checked="checked"' : '') . ' onclick="checkMultishopDefaultValue(this, \'' . $key . '\')" /> ' . $this->l('Use default value') . '
+                            </label>
+                        </div>';
                 }
                 // Field description
                 //echo (isset($field['desc']) ? '<p class="preference_description">'.((isset($field['thumb']) AND $field['thumb'] AND $field['thumb']['pos'] == 'after') ? '<img src="'.$field['thumb']['file'].'" alt="'.$field['title'].'" title="'.$field['title'].'" style="float:left;" />' : '' ).$field['desc'].'</p>' : '');
@@ -1732,14 +1749,14 @@ abstract class AdminTab
      */
     public function displayTopOptionCategory($category, $data)
     {
-        
+
     }
     /**
      * Can be overriden
      */
     public function displayBottomOptionCategory($category, $data)
     {
-        
+
     }
     /**
      * Type = select
@@ -1813,17 +1830,17 @@ abstract class AdminTab
         echo '<table cellspacing="0" cellpadding="0">';
         echo '<tr>';
         /*if ($name == 'themes')
-        			echo '
-        			<td colspan="'.sizeof($field['list']).'">
-        				<b>'.$this->l('In order to use a new theme, please follow these steps:', get_class()).'</b>
-        				<ul>
-        					<li>'.$this->l('Import your theme using this module:', get_class()).' <a href="index.php?tab=AdminModules&token='.Tools::getAdminTokenLite('AdminModules').'&filtername=themeinstallator" style="text-decoration: underline;">'.$this->l('Theme installer', get_class()).'</a></li>
-        					<li>'.$this->l('When your theme is imported, please select the theme in this page', get_class()).'</li>
-        				</ul>
-        			</td>
-        			</tr>
-        			<tr>
-        			';*/
+                    echo '
+                    <td colspan="'.sizeof($field['list']).'">
+                        <b>'.$this->l('In order to use a new theme, please follow these steps:', get_class()).'</b>
+                        <ul>
+                            <li>'.$this->l('Import your theme using this module:', get_class()).' <a href="index.php?tab=AdminModules&token='.Tools::getAdminTokenLite('AdminModules').'&filtername=themeinstallator" style="text-decoration: underline;">'.$this->l('Theme installer', get_class()).'</a></li>
+                            <li>'.$this->l('When your theme is imported, please select the theme in this page', get_class()).'</li>
+                        </ul>
+                    </td>
+                    </tr>
+                    <tr>
+                    ';*/
         $i = 0;
         foreach ($field['list'] as $theme) {
             echo '<td class="center" style="width: 180px; padding:0px 20px 20px 0px;">';
@@ -1909,7 +1926,7 @@ abstract class AdminTab
      * Load class object using identifier in $_GET (if possible)
      * otherwise return an empty object, or die
      *
-     * @param boolean $opt Return an empty object if load fail
+     * @param  boolean $opt Return an empty object if load fail
      * @return object
      */
     protected function loadObject($opt = false)
@@ -1924,6 +1941,7 @@ abstract class AdminTab
             $this->_errors[] = Tools::displayError('Object cannot be loaded (not found)');
         } elseif ($opt) {
             $this->_object = new $this->className();
+
             return $this->_object;
         } else {
             $this->_errors[] = Tools::displayError('Object cannot be loaded (identifier missing or invalid)');
@@ -1936,9 +1954,9 @@ abstract class AdminTab
      * Case 1 : Return value if present in $_POST / $_GET
      * Case 2 : Return object value
      *
-     * @param object $obj Object
-     * @param string $key Field name
-     * @param integer $id_lang Language id (optional)
+     * @param  object  $obj     Object
+     * @param  string  $key     Field name
+     * @param  integer $id_lang Language id (optional)
      * @return string
      */
     public function getFieldValue($obj, $key, $id_lang = NULL, $id_shop = null)
@@ -1951,6 +1969,7 @@ abstract class AdminTab
         } else {
             $defaultValue = isset($obj->{$key}) ? $obj->{$key} : '';
         }
+
         return Tools::getValue($key . ($id_lang ? '_' . $id_shop . '_' . $id_lang : ''), $defaultValue);
     }
     /**
@@ -1979,22 +1998,22 @@ abstract class AdminTab
         // Only if it is the first call to displayForm, otherwise it has already been defined
         if ($firstCall) {
             echo '
-			<script type="text/javascript">
-				$(document).ready(function() {
-					id_language = ' . $this->_defaultFormLanguage . ';
-					languages = new Array();';
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    id_language = ' . $this->_defaultFormLanguage . ';
+                    languages = new Array();';
             foreach ($this->_languages as $k => $language) {
                 echo '
-					languages[' . $k . '] = {
-						id_lang: ' . (int) $language['id_lang'] . ',
-						iso_code: \'' . $language['iso_code'] . '\',
-						name: \'' . htmlentities($language['name'], ENT_COMPAT, 'UTF-8') . '\'
-					};';
+                    languages[' . $k . '] = {
+                        id_lang: ' . (int) $language['id_lang'] . ',
+                        iso_code: \'' . $language['iso_code'] . '\',
+                        name: \'' . htmlentities($language['name'], ENT_COMPAT, 'UTF-8') . '\'
+                    };';
             }
             echo '
-					displayFlags(languages, id_language, ' . $allowEmployeeFormLang . ');
-				});
-			</script>';
+                    displayFlags(languages, id_language, ' . $allowEmployeeFormLang . ');
+                });
+            </script>';
         }
     }
     /**
@@ -2002,12 +2021,12 @@ abstract class AdminTab
      */
     public function viewDetails()
     {
-        
+
     }
     /**
      * Called before deletion
      *
-     * @param object $object Object
+     * @param  object  $object Object
      * @return boolean
      */
     protected function beforeDelete($object)
@@ -2017,7 +2036,7 @@ abstract class AdminTab
     /**
      * Called before deletion
      *
-     * @param object $object Object
+     * @param  object  $object Object
      * @return boolean
      */
     protected function afterDelete($object, $oldId)
@@ -2055,6 +2074,7 @@ abstract class AdminTab
         if ($this->tabAccess['view'] === '1') {
             return true;
         }
+
         return false;
     }
     /**
@@ -2063,16 +2083,17 @@ abstract class AdminTab
     public function checkToken()
     {
         $token = Tools::getValue('token');
+
         return !empty($token) && $token === $this->token;
     }
     /**
      * Display flags in forms for translations
      *
-     * @param array $languages All languages available
-     * @param integer $default_language Default language id
-     * @param string $ids Multilingual div ids in form
-     * @param string $id Current div id]
-     * @param boolean $return define the return way : false for a display, true for a return
+     * @param array   $languages               All languages available
+     * @param integer $default_language        Default language id
+     * @param string  $ids                     Multilingual div ids in form
+     * @param string  $id                      Current div id]
+     * @param boolean $return                  define the return way : false for a display, true for a return
      * @param boolean $use_vars_instead_of_ids use an js vars instead of ids seperate by "¤"
      */
     public function displayFlags($languages, $default_language, $ids, $id, $return = false, $use_vars_instead_of_ids = false)
@@ -2081,11 +2102,11 @@ abstract class AdminTab
             return false;
         }
         $output = '
-		<div class="displayed_flag">
-			<img src="../img/l/' . $default_language . '.jpg" class="pointer" id="language_current_' . $id . '" onclick="toggleLanguageFlags(this);" alt="" />
-		</div>
-		<div id="languages_' . $id . '" class="language_flags">
-			' . $this->l('Choose language:') . '<br /><br />';
+        <div class="displayed_flag">
+            <img src="../img/l/' . $default_language . '.jpg" class="pointer" id="language_current_' . $id . '" onclick="toggleLanguageFlags(this);" alt="" />
+        </div>
+        <div id="languages_' . $id . '" class="language_flags">
+            ' . $this->l('Choose language:') . '<br /><br />';
         foreach ($languages as $language) {
             if ($use_vars_instead_of_ids) {
                 $output .= '<img src="../img/l/' . (int) $language['id_lang'] . '.jpg" class="pointer" alt="' . $language['name'] . '" title="' . $language['name'] . '" onclick="changeLanguage(\'' . $id . '\', ' . $ids . ', ' . $language['id_lang'] . ', \'' . $language['iso_code'] . '\');" /> ';
@@ -2109,13 +2130,14 @@ abstract class AdminTab
         if (array_key_exists($filter, $this->fieldsDisplay)) {
             return $this->fieldsDisplay[$filter];
         }
+
         return false;
     }
     protected function warnDomainName()
     {
         if ($_SERVER['HTTP_HOST'] != Configuration::get('PS_SHOP_DOMAIN') && $_SERVER['HTTP_HOST'] != Configuration::get('PS_SHOP_DOMAIN_SSL')) {
             $this->displayWarning($this->l('Your are currently connected with the following domain name:') . ' <span style="color: #CC0000;">' . $_SERVER['HTTP_HOST'] . '</span><br />' . $this->l('This one is different from the main shop domain name set in "Preferences > SEO & URLs":') . ' <span style="color: #CC0000;">' . Configuration::get('PS_SHOP_DOMAIN') . '</span><br />
-			<a href="index.php?tab=AdminMeta&token=' . Tools::getAdminTokenLite('AdminMeta') . '#SEO%20%26%20URLs">' . $this->l('Click here if you want to modify the main shop domain name') . '</a>');
+            <a href="index.php?tab=AdminMeta&token=' . Tools::getAdminTokenLite('AdminMeta') . '#SEO%20%26%20URLs">' . $this->l('Click here if you want to modify the main shop domain name') . '</a>');
         }
     }
     protected function displayAssoShop()
@@ -2125,68 +2147,61 @@ abstract class AdminTab
         }
         $assos = array();
         $sql = 'SELECT id_shop, `' . pSQL($this->identifier) . '`
-				FROM `' . _DB_PREFIX_ . pSQL($this->table) . '_shop`';
+                FROM `' . _DB_PREFIX_ . pSQL($this->table) . '_shop`';
         foreach (Db::getInstance()->executeS($sql) as $row) {
             $assos[$row['id_shop']][] = $row[$this->identifier];
         }
         $html = '			<script type="text/javascript">
-			$().ready(function()
-			{
-				// Click on "all shop"
-				$(\'.input_all_shop\').click(function()
-				{
-					var checked = $(this).prop(\'checked\');
-					$(\'.input_shop_group\').attr(\'checked\', checked);
-					$(\'.input_shop\').attr(\'checked\', checked);
-				});
+            $().ready(function() {
+                // Click on "all shop"
+                $(\'.input_all_shop\').click(function() {
+                    var checked = $(this).prop(\'checked\');
+                    $(\'.input_shop_group\').attr(\'checked\', checked);
+                    $(\'.input_shop\').attr(\'checked\', checked);
+                });
 
-				// Click on a group shop
-				$(\'.input_shop_group\').click(function()
-				{
-					$(\'.input_shop[value=\'+$(this).val()+\']\').attr(\'checked\', $(this).prop(\'checked\'));
-					check_all_shop();
-				});
+                // Click on a group shop
+                $(\'.input_shop_group\').click(function() {
+                    $(\'.input_shop[value=\'+$(this).val()+\']\').attr(\'checked\', $(this).prop(\'checked\'));
+                    check_all_shop();
+                });
 
-				// Click on a shop
-				$(\'.input_shop\').click(function()
-				{
-					check_shop_group_status($(this).val());
-					check_all_shop();
-				});
+                // Click on a shop
+                $(\'.input_shop\').click(function() {
+                    check_shop_group_status($(this).val());
+                    check_all_shop();
+                });
 
-				// Initialize checkbox
-				$(\'.input_shop\').each(function(k, v)
-				{
-					check_shop_group_status($(v).val());
-					check_all_shop();
-				});
-			});
+                // Initialize checkbox
+                $(\'.input_shop\').each(function(k, v) {
+                    check_shop_group_status($(v).val());
+                    check_all_shop();
+                });
+            });
 
-			function check_shop_group_status(id_group)
-			{
-				var groupChecked = true;
-				$(\'.input_shop[value=\'+id_group+\']\').each(function(k, v)
-				{
-					if (!$(v).prop(\'checked\'))
-						groupChecked = false;
-				});
-				$(\'.input_shop_group[value=\'+id_group+\']\').attr(\'checked\', groupChecked);
-			}
+            function check_shop_group_status(id_group)
+            {
+                var groupChecked = true;
+                $(\'.input_shop[value=\'+id_group+\']\').each(function(k, v) {
+                    if (!$(v).prop(\'checked\'))
+                        groupChecked = false;
+                });
+                $(\'.input_shop_group[value=\'+id_group+\']\').attr(\'checked\', groupChecked);
+            }
 
-			function check_all_shop()
-			{
-				var allChecked = true;
-				$(\'.input_shop_group\').each(function(k, v)
-				{
-					if (!$(v).prop(\'checked\'))
-						allChecked = false;
-				});
-				$(\'.input_all_shop\').attr(\'checked\', allChecked);
-			}
-			</script>';
+            function check_all_shop()
+            {
+                var allChecked = true;
+                $(\'.input_shop_group\').each(function(k, v) {
+                    if (!$(v).prop(\'checked\'))
+                        allChecked = false;
+                });
+                $(\'.input_all_shop\').attr(\'checked\', allChecked);
+            }
+            </script>';
         $html .= '<div class="assoShop">';
         $html .= '<table class="table" cellpadding="0" cellspacing="0" width="100%">
-					<tr><th>' . $this->l('Shop') . '</th></tr>';
+                    <tr><th>' . $this->l('Shop') . '</th></tr>';
         $html .= '<tr><td><label class="t"><input class="input_all_shop" type="checkbox" /> ' . $this->l('All shops') . '</label></td></tr>';
         foreach (Shop::getTree() as $groupID => $groupData) {
             $html .= '<tr class="alt_row">';
@@ -2210,7 +2225,7 @@ abstract class AdminTab
     /**
      * Get current URL
      *
-     * @param array $remove List of keys to remove from URL
+     * @param  array  $remove List of keys to remove from URL
      * @return string
      */
     protected function getCurrentUrl($remove = array())
@@ -2227,6 +2242,7 @@ abstract class AdminTab
         if ($url[$len - 1] == '&') {
             $url = substr($url, 0, $len - 1);
         }
+
         return $url;
     }
 }

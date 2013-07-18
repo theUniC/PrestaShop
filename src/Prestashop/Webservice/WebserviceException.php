@@ -52,6 +52,7 @@ class WebserviceException extends Exception
     public function setType($type)
     {
         $this->type = $type;
+
         return $this;
     }
     public function setStatus($status)
@@ -59,6 +60,7 @@ class WebserviceException extends Exception
         if (Validate::isInt($status)) {
             $this->status = $status;
         }
+
         return $this;
     }
     public function getStatus()
@@ -74,6 +76,7 @@ class WebserviceException extends Exception
         $this->type = self::DID_YOU_MEAN;
         $this->wrong_value = $wrong_value;
         $this->available_values = $available_values;
+
         return $this;
     }
     public function getAvailableValues()

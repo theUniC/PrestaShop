@@ -79,6 +79,7 @@ class WebserviceSpecificManagementImages implements WebserviceSpecificManagement
     public function setObjectOutput(WebserviceOutputBuilderCore $obj)
     {
         $this->objOutput = $obj;
+
         return $this;
     }
     public function getObjectOutput()
@@ -88,6 +89,7 @@ class WebserviceSpecificManagementImages implements WebserviceSpecificManagement
     public function setWsObject(WebserviceRequestCore $obj)
     {
         $this->wsObject = $obj;
+
         return $this;
     }
     public function getWsObject()
@@ -118,6 +120,7 @@ class WebserviceSpecificManagementImages implements WebserviceSpecificManagement
                     if (array_key_exists($this->imgExtension, $types)) {
                         $this->objOutput->setHeaderParams('Content-Type', $types[$this->imgExtension]['Content-Type']);
                     }
+
                     return file_get_contents($this->imgToDisplay);
                 }
             }
@@ -126,6 +129,7 @@ class WebserviceSpecificManagementImages implements WebserviceSpecificManagement
     public function manage()
     {
         $this->manageImages();
+
         return $this->wsObject->getOutputEnabled();
     }
     /**
@@ -259,6 +263,7 @@ class WebserviceSpecificManagementImages implements WebserviceSpecificManagement
                         $directory = _PS_STORE_IMG_DIR_;
                         break;
                 }
+
                 return $this->manageDeclinatedImages($directory);
                 break;
             // product image management : many image for one entity (product)
@@ -273,6 +278,7 @@ class WebserviceSpecificManagementImages implements WebserviceSpecificManagement
                     $this->output .= $this->objOutput->getObjectRender()->renderNodeHeader($imageTypeName, array(), $more_attr, false);
                 }
                 $this->output .= $this->objOutput->getObjectRender()->renderNodeFooter('image_types', array());
+
                 return true;
                 break;
             default:
@@ -333,6 +339,7 @@ class WebserviceSpecificManagementImages implements WebserviceSpecificManagement
                     $this->output .= $this->objOutput->getObjectRender()->renderNodeHeader($generalImageTypeName, array(), $more_attr, false);
                 }
                 $this->output .= $this->objOutput->getObjectRender()->renderNodeFooter('general_image_types', array());
+
                 return true;
                 break;
             // If the image type does not exist...
@@ -345,6 +352,7 @@ class WebserviceSpecificManagementImages implements WebserviceSpecificManagement
             case 'GET':
             case 'HEAD':
                 $this->imgToDisplay = $path != '' && file_exists($path) && is_file($path) ? $path : $alternative_path;
+
                 return true;
                 break;
             case 'PUT':
@@ -355,6 +363,7 @@ class WebserviceSpecificManagementImages implements WebserviceSpecificManagement
                         Configuration::updateValue('SHOP_LOGO_HEIGHT', (int) round($height));
                     }
                     $this->imgToDisplay = $path;
+
                     return true;
                 } else {
                     throw new WebserviceException('Error while copying image to the directory', array(54, 400));
@@ -383,6 +392,7 @@ class WebserviceSpecificManagementImages implements WebserviceSpecificManagement
                 $this->output .= $this->objOutput->getObjectRender()->renderNodeHeader('language', array(), $more_attr, false);
             }
             $this->output .= $this->objOutput->getObjectRender()->renderNodeFooter('languages', array());
+
             return true;
         } else {
             $lang_iso = $this->wsObject->urlSegment[3];
@@ -393,6 +403,7 @@ class WebserviceSpecificManagementImages implements WebserviceSpecificManagement
                 $filename = $directory . $lang_iso . '.jpg';
             }
             $filename_exists = file_exists($filename);
+
             return $this->manageDeclinatedImagesCRUD($filename_exists, $filename, $normal_image_sizes, $directory);
         }
     }
@@ -435,6 +446,7 @@ class WebserviceSpecificManagementImages implements WebserviceSpecificManagement
             }
         }
         $this->output .= $this->objOutput->getObjectRender()->renderNodeFooter('images', array());
+
         return true;
     }
     protected function manageEntityDeclinatedImages($directory, $normal_image_sizes)
@@ -515,9 +527,11 @@ class WebserviceSpecificManagementImages implements WebserviceSpecificManagement
             }
             // Display the resized specific image
             $this->imgToDisplay = $filename;
+
             return true;
         } elseif (isset($orig_filename)) {
             $orig_filename_exists = file_exists($orig_filename);
+
             return $this->manageDeclinatedImagesCRUD($orig_filename_exists, $orig_filename, $normal_image_sizes, $directory);
         } else {
             return $this->manageDeclinatedImagesCRUD(false, '', $normal_image_sizes, $directory);
@@ -526,7 +540,7 @@ class WebserviceSpecificManagementImages implements WebserviceSpecificManagement
     /**
      * Management of normal images (as categories, suppliers, manufacturers and stores)
      *
-     * @param string $directory the file path of the root of the images folder type
+     * @param  string  $directory the file path of the root of the images folder type
      * @return boolean
      */
     protected function manageDeclinatedImages($directory)
@@ -554,10 +568,10 @@ class WebserviceSpecificManagementImages implements WebserviceSpecificManagement
     /**
      * Management of normal images CRUD
      *
-     * @param boolean $filename_exists if the filename exists
-     * @param string $filename the image path
-     * @param array $imageSizes The
-     * @param string $directory
+     * @param  boolean $filename_exists if the filename exists
+     * @param  string  $filename        the image path
+     * @param  array   $imageSizes      The
+     * @param  string  $directory
      * @return boolean
      */
     protected function manageDeclinatedImagesCRUD($filename_exists, $filename, $imageSizes, $directory)
@@ -577,6 +591,7 @@ class WebserviceSpecificManagementImages implements WebserviceSpecificManagement
                 if ($filename_exists) {
                     if ($this->writePostedImageOnDisk($filename, null, null, $imageSizes, $directory)) {
                         $this->imgToDisplay = $filename;
+
                         return true;
                     } else {
                         throw new WebserviceException('Unable to save this image.', array(62, 500));
@@ -591,9 +606,11 @@ class WebserviceSpecificManagementImages implements WebserviceSpecificManagement
                     // Delete products image in DB
                     if ($this->imageType == 'products') {
                         $image = new Image((int) $this->wsObject->urlSegment[3]);
+
                         return $image->delete();
                     } elseif (in_array($this->imageType, array('categories', 'manufacturers', 'suppliers', 'stores'))) {
                         $object = new $this->wsObject->resourceList[$this->imageType]['class']((int) $this->wsObject->urlSegment[2]);
+
                         return $object->deleteImage(true);
                     } else {
                         return $this->deleteImageOnDisk($filename, $imageSizes, $directory);
@@ -621,9 +638,9 @@ class WebserviceSpecificManagementImages implements WebserviceSpecificManagement
     /**
      * 	Delete the image on disk
      *
-     * @param string $filePath the image file path
-     * @param array $imageTypes The differents sizes
-     * @param string $parentPath The parent path
+     * @param  string  $filePath   the image file path
+     * @param  array   $imageTypes The differents sizes
+     * @param  string  $parentPath The parent path
      * @return boolean
      */
     protected function deleteImageOnDisk($filePath, $imageTypes = null, $parentPath = null)
@@ -643,25 +660,28 @@ class WebserviceSpecificManagementImages implements WebserviceSpecificManagement
                     }
                     if (!@unlink($declination_path)) {
                         $this->objOutput->setStatus(204);
+
                         return false;
                     }
                 }
             }
+
             return true;
         } else {
             $this->objOutput->setStatus(204);
+
             return false;
         }
     }
     /**
      * Write the image on disk
      *
-     * @param string $basePath
-     * @param string $newPath
-     * @param int $destWidth
-     * @param int $destHeight
-     * @param array $imageTypes
-     * @param string $parentPath
+     * @param  string $basePath
+     * @param  string $newPath
+     * @param  int    $destWidth
+     * @param  int    $destHeight
+     * @param  array  $imageTypes
+     * @param  string $parentPath
      * @return string
      */
     protected function writeImageOnDisk($basePath, $newPath, $destWidth = null, $destHeight = null, $imageTypes = null, $parentPath = null)
@@ -745,16 +765,17 @@ class WebserviceSpecificManagementImages implements WebserviceSpecificManagement
                 }
             }
         }
+
         return $newPath;
     }
     /**
      * Write the posted image on disk
      *
-     * @param string $sreceptionPath
-     * @param int $destWidth
-     * @param int $destHeight
-     * @param array $imageTypes
-     * @param string $parentPath
+     * @param  string  $sreceptionPath
+     * @param  int     $destWidth
+     * @param  int     $destHeight
+     * @param  array   $imageTypes
+     * @param  string  $parentPath
      * @return boolean
      */
     protected function writePostedImageOnDisk($receptionPath, $destWidth = null, $destHeight = null, $imageTypes = null, $parentPath = null)
@@ -796,6 +817,7 @@ class WebserviceSpecificManagementImages implements WebserviceSpecificManagement
                     $result = $this->writeImageOnDisk($tmpName, $receptionPath, $destWidth, $destHeight, $imageTypes, $parentPath);
                 }
                 @unlink($tmpName);
+
                 return $result;
             } else {
                 throw new WebserviceException('Please set an "image" parameter with image data for value', array(76, 400));
@@ -876,6 +898,7 @@ class WebserviceSpecificManagementImages implements WebserviceSpecificManagement
                         @unlink(_PS_TMP_IMG_DIR_ . $tmpName);
                         $this->imgToDisplay = $receptionPath;
                     }
+
                     return true;
                 }
             }

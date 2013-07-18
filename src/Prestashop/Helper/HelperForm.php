@@ -59,6 +59,7 @@ class HelperForm extends Helper
     public function generateForm($fields_form)
     {
         $this->fields_form = $fields_form;
+
         return $this->generate();
     }
     public function generate()
@@ -131,6 +132,7 @@ class HelperForm extends Helper
             }
         }
         $this->tpl->assign(array('title' => $this->title, 'toolbar_btn' => $this->toolbar_btn, 'show_toolbar' => $this->show_toolbar, 'toolbar_scroll' => $this->toolbar_scroll, 'submit_action' => $this->submit_action, 'firstCall' => $this->first_call, 'current' => $this->currentIndex, 'token' => $this->token, 'table' => $this->table, 'identifier' => $this->identifier, 'name_controller' => $this->name_controller, 'languages' => $this->languages, 'defaultFormLanguage' => $this->default_form_language, 'allowEmployeeFormLang' => $this->allow_employee_form_lang, 'form_id' => $this->id, 'fields' => $this->fields_form, 'fields_value' => $this->fields_value, 'required_fields' => $this->getFieldsRequired(), 'vat_number' => file_exists(_PS_MODULE_DIR_ . 'vatnumber/ajax.php'), 'module_dir' => _MODULE_DIR_, 'contains_states' => isset($this->fields_value['id_country']) && isset($this->fields_value['id_state']) ? Country::containsStates($this->fields_value['id_country']) : null));
+
         return parent::generate();
     }
     /**
@@ -147,6 +149,7 @@ class HelperForm extends Helper
                 }
             }
         }
+
         return false;
     }
     /**
@@ -162,8 +165,8 @@ class HelperForm extends Helper
         $assos = array();
         if ((int) $this->id) {
             $sql = 'SELECT `id_shop`, `' . bqSQL($this->identifier) . '`
-					FROM `' . _DB_PREFIX_ . bqSQL($this->table) . '_shop`
-					WHERE `' . bqSQL($this->identifier) . '` = ' . (int) $this->id;
+                    FROM `' . _DB_PREFIX_ . bqSQL($this->table) . '_shop`
+                    WHERE `' . bqSQL($this->identifier) . '` = ' . (int) $this->id;
             foreach (Db::getInstance()->executeS($sql) as $row) {
                 $assos[$row['id_shop']] = $row['id_shop'];
             }
@@ -192,6 +195,7 @@ class HelperForm extends Helper
             $nb_shop += count($value['shops']);
         }
         $tpl->assign(array('input' => array('type' => 'shop', 'values' => $tree), 'fields_value' => array('shop' => $assos), 'form_id' => $this->id, 'table' => $this->table, 'nb_shop' => $nb_shop));
+
         return $tpl->fetch();
     }
 }

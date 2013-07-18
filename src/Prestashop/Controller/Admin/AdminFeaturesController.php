@@ -63,6 +63,7 @@ class AdminFeaturesController extends AdminController
         // Added specific button in toolbar
         $this->toolbar_btn['newAttributes'] = array('href' => self::$currentIndex . '&amp;addfeature_value&amp;token=' . $this->token, 'desc' => $this->l('Add new feature values'));
         $this->toolbar_btn['new'] = array('href' => self::$currentIndex . '&amp;addfeature&amp;token=' . $this->token, 'desc' => $this->l('Add a new feature'));
+
         return parent::renderList();
     }
     /**
@@ -136,6 +137,7 @@ class AdminFeaturesController extends AdminController
             $this->fields_form['input'][] = array('type' => 'shop', 'label' => $this->l('Shop association:'), 'name' => 'checkBoxShopAsso');
         }
         $this->fields_form['submit'] = array('title' => $this->l('   Save   '), 'class' => 'button');
+
         return parent::renderForm();
     }
     /**
@@ -269,6 +271,7 @@ class AdminFeaturesController extends AdminController
         } elseif (Tools::isSubmit('submitAdd' . $this->table . 'AndStay') && count($this->errors)) {
             $this->display = 'editFeatureValue';
         }
+
         return $object;
     }
     /**
@@ -281,6 +284,7 @@ class AdminFeaturesController extends AdminController
         if (Tools::isSubmit('submitAdd' . $this->table . 'AndStay') && !count($this->errors)) {
             $this->redirect_after = self::$currentIndex . '&' . $this->identifier . '=&conf=3&update' . $this->table . '&token=' . $this->token;
         }
+
         return $object;
     }
     /**
@@ -295,8 +299,8 @@ class AdminFeaturesController extends AdminController
             // Adding last position to the feature if not exist
             if ($id_feature <= 0) {
                 $sql = 'SELECT `position`+1
-						FROM `' . _DB_PREFIX_ . 'feature`
-						ORDER BY position DESC';
+                        FROM `' . _DB_PREFIX_ . 'feature`
+                        ORDER BY position DESC';
                 // set the position of the new feature in $_POST for postProcess() method
                 $_POST['position'] = DB::getInstance()->getValue($sql);
             }
@@ -307,6 +311,7 @@ class AdminFeaturesController extends AdminController
                 }
             }
         }
+
         return parent::processSave();
     }
     /**

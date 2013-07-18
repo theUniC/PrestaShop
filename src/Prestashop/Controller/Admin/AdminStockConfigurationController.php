@@ -101,6 +101,7 @@ class AdminStockConfigurationController extends AdminController
                 }
             }
         }
+
         return parent::renderForm();
     }
     /**
@@ -161,6 +162,7 @@ class AdminStockConfigurationController extends AdminController
         $this->toolbar_title = $this->l('Stock: Supply order status');
         $this->initToolbar();
         $this->fields_list = array('name' => array('title' => $this->l('Name'), 'color' => 'color'), 'editable' => array('title' => $this->l('Editable?'), 'align' => 'center', 'icon' => array('1' => 'enabled.gif', '0' => 'disabled.gif'), 'type' => 'bool', 'width' => 170, 'orderby' => false), 'delivery_note' => array('title' => $this->l('Is there a delivery note available?'), 'align' => 'center', 'icon' => array('1' => 'enabled.gif', '0' => 'disabled.gif'), 'type' => 'bool', 'width' => 170, 'orderby' => false), 'pending_receipt' => array('title' => $this->l('Is there a pending receipt?'), 'align' => 'center', 'icon' => array('1' => 'enabled.gif', '0' => 'disabled.gif'), 'type' => 'bool', 'width' => 170, 'orderby' => false), 'receipt_state' => array('title' => $this->l('Delivery state?'), 'align' => 'center', 'icon' => array('1' => 'enabled.gif', '0' => 'disabled.gif'), 'type' => 'bool', 'width' => 170, 'orderby' => false), 'enclosed' => array('title' => $this->l('Enclosed order state?'), 'align' => 'center', 'icon' => array('1' => 'enabled.gif', '0' => 'disabled.gif'), 'type' => 'bool', 'width' => 170, 'orderby' => false));
+
         return parent::renderList();
     }
     /**
@@ -185,6 +187,7 @@ class AdminStockConfigurationController extends AdminController
                 $this->deleted = true;
             }
         }
+
         return parent::postProcess();
     }
     /**
@@ -211,6 +214,7 @@ class AdminStockConfigurationController extends AdminController
     {
         if (!Configuration::get('PS_ADVANCED_STOCK_MANAGEMENT')) {
             $this->warnings[md5('PS_ADVANCED_STOCK_MANAGEMENT')] = $this->l('You need to activate advanced stock management before using this feature.');
+
             return false;
         }
         parent::initContent();
@@ -219,6 +223,7 @@ class AdminStockConfigurationController extends AdminController
     {
         if (!Configuration::get('PS_ADVANCED_STOCK_MANAGEMENT')) {
             $this->warnings[md5('PS_ADVANCED_STOCK_MANAGEMENT')] = $this->l('You need to activate advanced stock management before using this feature.');
+
             return false;
         }
         parent::initProcess();

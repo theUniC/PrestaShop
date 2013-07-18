@@ -53,6 +53,7 @@ class ShopGroup extends ObjectModel
         if (!$this->share_customer || !$this->share_stock) {
             $this->share_order = false;
         }
+
         return parent::getFields();
     }
     public static function getShopGroups($active = true)
@@ -62,6 +63,7 @@ class ShopGroup extends ObjectModel
         if ($active) {
             $groups->where('active', '=', true);
         }
+
         return $groups;
     }
     /**
@@ -78,35 +80,38 @@ class ShopGroup extends ObjectModel
     public function getTotalShops()
     {
         $sql = 'SELECT COUNT(*)
-				FROM ' . _DB_PREFIX_ . 'shop s
-				WHERE id_shop_group=' . (int) $this->id;
+                FROM ' . _DB_PREFIX_ . 'shop s
+                WHERE id_shop_group=' . (int) $this->id;
+
         return (int) Db::getInstance()->getValue($sql);
     }
     public static function getShopsFromGroup($id_group)
     {
         $sql = 'SELECT s.`id_shop`
-				FROM ' . _DB_PREFIX_ . 'shop s
-				WHERE id_shop_group=' . (int) $id_group;
+                FROM ' . _DB_PREFIX_ . 'shop s
+                WHERE id_shop_group=' . (int) $id_group;
+
         return Db::getInstance()->executeS($sql);
     }
     /**
      * Return a group shop ID from group shop name
      *
-     * @param string $name
+     * @param  string $name
      * @return int
      */
     public static function getIdByName($name)
     {
         $sql = 'SELECT id_shop_group
-				FROM ' . _DB_PREFIX_ . 'shop_group
-				WHERE name = \'' . pSQL($name) . '\'';
+                FROM ' . _DB_PREFIX_ . 'shop_group
+                WHERE name = \'' . pSQL($name) . '\'';
+
         return (int) Db::getInstance()->getValue($sql);
     }
     /**
      * Detect dependency with customer or orders
      *
-     * @param int $id_shop_group
-     * @param string $check all|customer|order
+     * @param  int    $id_shop_group
+     * @param  string $check         all|customer|order
      * @return bool
      */
     public static function hasDependency($id_shop_group, $check = 'all')
@@ -117,31 +122,32 @@ class ShopGroup extends ObjectModel
         }
         if ($check == 'all' || $check == 'customer') {
             $total_customer = (int) Db::getInstance()->getValue('
-				SELECT count(*)
-				FROM `' . _DB_PREFIX_ . 'customer`
-				WHERE `id_shop` IN (' . implode(', ', $list_shops) . ')');
+                SELECT count(*)
+                FROM `' . _DB_PREFIX_ . 'customer`
+                WHERE `id_shop` IN (' . implode(', ', $list_shops) . ')');
             if ($total_customer) {
                 return true;
             }
         }
         if ($check == 'all' || $check == 'order') {
             $total_order = (int) Db::getInstance()->getValue('
-				SELECT count(*)
-				FROM `' . _DB_PREFIX_ . 'orders`
-				WHERE `id_shop` IN (' . implode(', ', $list_shops) . ')');
+                SELECT count(*)
+                FROM `' . _DB_PREFIX_ . 'orders`
+                WHERE `id_shop` IN (' . implode(', ', $list_shops) . ')');
             if ($total_order) {
                 return true;
             }
         }
+
         return false;
     }
     public function shopNameExists($name, $id_shop = false)
     {
         return Db::getInstance()->getValue('
-			SELECT id_shop
-			FROM ' . _DB_PREFIX_ . 'shop
-			WHERE name = "' . pSQL($name) . '"
-			AND id_shop_group = ' . (int) $this->id . '
-			' . ($id_shop ? 'AND id_shop != ' . (int) $id_shop : ''));
+            SELECT id_shop
+            FROM ' . _DB_PREFIX_ . 'shop
+            WHERE name = "' . pSQL($name) . '"
+            AND id_shop_group = ' . (int) $this->id . '
+            ' . ($id_shop ? 'AND id_shop != ' . (int) $id_shop : ''));
     }
 }

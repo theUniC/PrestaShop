@@ -129,6 +129,7 @@ class StockManager implements StockManagerInterface
         $stock_mvt = new StockMvt();
         $stock_mvt->hydrate($mvt_params);
         $stock_mvt->add();
+
         return true;
     }
     /**
@@ -208,14 +209,14 @@ class StockManager implements StockManagerInterface
                             continue;
                         }
                         $resource = Db::getInstance(_PS_USE_SQL_SLAVE_)->query('
-							SELECT sm.`id_stock_mvt`, sm.`date_add`, sm.`physical_quantity`,
-								IF ((sm2.`physical_quantity` is null), sm.`physical_quantity`, (sm.`physical_quantity` - SUM(sm2.`physical_quantity`))) as qty
-							FROM `' . _DB_PREFIX_ . 'stock_mvt` sm
-							LEFT JOIN `' . _DB_PREFIX_ . 'stock_mvt` sm2 ON sm2.`referer` = sm.`id_stock_mvt`
-							WHERE sm.`sign` = 1
-							AND sm.`id_stock` = ' . (int) $stock->id . '
-							GROUP BY sm.`id_stock_mvt`
-							ORDER BY sm.`date_add` DESC');
+                            SELECT sm.`id_stock_mvt`, sm.`date_add`, sm.`physical_quantity`,
+                                IF ((sm2.`physical_quantity` is null), sm.`physical_quantity`, (sm.`physical_quantity` - SUM(sm2.`physical_quantity`))) as qty
+                            FROM `' . _DB_PREFIX_ . 'stock_mvt` sm
+                            LEFT JOIN `' . _DB_PREFIX_ . 'stock_mvt` sm2 ON sm2.`referer` = sm.`id_stock_mvt`
+                            WHERE sm.`sign` = 1
+                            AND sm.`id_stock` = ' . (int) $stock->id . '
+                            GROUP BY sm.`id_stock_mvt`
+                            ORDER BY sm.`date_add` DESC');
                         while ($row = Db::getInstance()->nextRow($resource)) {
                             // break - in FIFO mode, we have to retreive the oldest positive mvts for which there are left quantities
                             if ($warehouse->management_type == 'FIFO') {
@@ -284,6 +285,7 @@ class StockManager implements StockManagerInterface
         if ($is_usable) {
             Hook::exec('actionProductCoverage', array('id_product' => $id_product, 'id_product_attribute' => $id_product_attribute, 'warehouse' => $warehouse));
         }
+
         return $return;
     }
     /**
@@ -314,6 +316,7 @@ class StockManager implements StockManagerInterface
         if (count($ids_warehouse)) {
             $query->where('s.id_warehouse IN(' . implode(', ', $ids_warehouse) . ')');
         }
+
         return (int) Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($query);
     }
     /**
@@ -342,7 +345,7 @@ class StockManager implements StockManagerInterface
         $query->leftJoin('order_state', 'os', 'os.id_order_state = oh.id_order_state');
         $query->where('os.shipped != 1');
         $query->where('o.valid = 1 OR (os.id_order_state != ' . (int) Configuration::get('PS_OS_ERROR') . '
-					   AND os.id_order_state != ' . (int) Configuration::get('PS_OS_CANCELED') . ')');
+                       AND os.id_order_state != ' . (int) Configuration::get('PS_OS_CANCELED') . ')');
         $query->groupBy('od.id_order_detail');
         if (count($ids_warehouse)) {
             $query->where('od.id_warehouse IN(' . implode(', ', $ids_warehouse) . ')');
@@ -414,6 +417,7 @@ class StockManager implements StockManagerInterface
                 return false;
             }
         }
+
         return true;
     }
     /**
@@ -432,22 +436,22 @@ class StockManager implements StockManagerInterface
         // Week by default
         // gets all stock_mvt for the given coverage period
         $query = '
-			SELECT SUM(view.quantity) as quantity_out
-			FROM
-			(	SELECT sm.`physical_quantity` as quantity
-				FROM `' . _DB_PREFIX_ . 'stock_mvt` sm
-				LEFT JOIN `' . _DB_PREFIX_ . 'stock` s ON (sm.`id_stock` = s.`id_stock`)
-				LEFT JOIN `' . _DB_PREFIX_ . 'product` p ON (p.`id_product` = s.`id_product`)
-				' . Shop::addSqlAssociation('product', 'p') . '
-				LEFT JOIN `' . _DB_PREFIX_ . 'product_attribute` pa ON (p.`id_product` = pa.`id_product`)
-				' . Shop::addSqlAssociation('product_attribute', 'pa', false) . '
-				WHERE sm.`sign` = -1
-				AND sm.`id_stock_mvt_reason` != ' . Configuration::get('PS_STOCK_MVT_TRANSFER_FROM') . '
-				AND TO_DAYS(NOW()) - TO_DAYS(sm.`date_add`) <= ' . (int) $coverage . '
-				AND s.`id_product` = ' . (int) $id_product . '
-				AND s.`id_product_attribute` = ' . (int) $id_product_attribute . ($id_warehouse ? ' AND s.`id_warehouse` = ' . (int) $id_warehouse : '') . '
-				GROUP BY sm.`id_stock_mvt`
-			) as view';
+            SELECT SUM(view.quantity) as quantity_out
+            FROM
+            (	SELECT sm.`physical_quantity` as quantity
+                FROM `' . _DB_PREFIX_ . 'stock_mvt` sm
+                LEFT JOIN `' . _DB_PREFIX_ . 'stock` s ON (sm.`id_stock` = s.`id_stock`)
+                LEFT JOIN `' . _DB_PREFIX_ . 'product` p ON (p.`id_product` = s.`id_product`)
+                ' . Shop::addSqlAssociation('product', 'p') . '
+                LEFT JOIN `' . _DB_PREFIX_ . 'product_attribute` pa ON (p.`id_product` = pa.`id_product`)
+                ' . Shop::addSqlAssociation('product_attribute', 'pa', false) . '
+                WHERE sm.`sign` = -1
+                AND sm.`id_stock_mvt_reason` != ' . Configuration::get('PS_STOCK_MVT_TRANSFER_FROM') . '
+                AND TO_DAYS(NOW()) - TO_DAYS(sm.`date_add`) <= ' . (int) $coverage . '
+                AND s.`id_product` = ' . (int) $id_product . '
+                AND s.`id_product_attribute` = ' . (int) $id_product_attribute . ($id_warehouse ? ' AND s.`id_warehouse` = ' . (int) $id_warehouse : '') . '
+                GROUP BY sm.`id_stock_mvt`
+            ) as view';
         $quantity_out = Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($query);
         if (!$quantity_out) {
             return -1;
@@ -455,16 +459,17 @@ class StockManager implements StockManagerInterface
         $quantity_per_day = Tools::ps_round($quantity_out / $coverage);
         $physical_quantity = $this->getProductPhysicalQuantities($id_product, $id_product_attribute, $id_warehouse ? array($id_warehouse) : null, true);
         $time_left = $quantity_per_day == 0 ? -1 : Tools::ps_round($physical_quantity / $quantity_per_day);
+
         return $time_left;
     }
     /**
      * For a given stock, calculates its new WA(Weighted Average) price based on the new quantities and price
      * Formula : (physicalStock * lastCump + quantityToAdd * unitPrice) / (physicalStock + quantityToAdd)
      *
-     * @param Stock $stock
-     * @param int $quantity
-     * @param float $price_te
-     * @return int WA
+     * @param  Stock $stock
+     * @param  int   $quantity
+     * @param  float $price_te
+     * @return int   WA
      */
     protected function calculateWA(Stock $stock, $quantity, $price_te)
     {
@@ -473,10 +478,10 @@ class StockManager implements StockManagerInterface
     /**
      * For a given product, retrieves the stock collection
      *
-     * @param int $id_product
-     * @param int $id_product_attribute
-     * @param int $id_warehouse Optional
-     * @param int $price_te Optional
+     * @param  int        $id_product
+     * @param  int        $id_product_attribute
+     * @param  int        $id_warehouse         Optional
+     * @param  int        $price_te             Optional
      * @return Collection of Stock
      */
     protected function getStockCollection($id_product, $id_product_attribute, $id_warehouse = null, $price_te = null)
@@ -490,6 +495,7 @@ class StockManager implements StockManagerInterface
         if ($price_te) {
             $stocks->where('price_te', '=', $price_te);
         }
+
         return $stocks;
     }
 }

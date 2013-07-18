@@ -70,9 +70,9 @@ class OrderHistory extends ObjectModel
     /**
      * Sets the new state of the given order
      *
-     * @param int $new_order_state
+     * @param int        $new_order_state
      * @param int/object $id_order
-     * @param bool $use_existing_payment
+     * @param bool       $use_existing_payment
      */
     public function changeIdOrderState($new_order_state, $id_order, $use_existing_payment = false)
     {
@@ -235,8 +235,8 @@ class OrderHistory extends ObjectModel
                     $payment->conversion_rate = 1;
                     $payment->save();
                     Db::getInstance()->execute('
-					INSERT INTO `' . _DB_PREFIX_ . 'order_invoice_payment`
-					VALUES(' . (int) $invoice->id . ', ' . (int) $payment->id . ', ' . (int) $order->id . ')');
+                    INSERT INTO `' . _DB_PREFIX_ . 'order_invoice_payment`
+                    VALUES(' . (int) $invoice->id . ', ' . (int) $payment->id . ', ' . (int) $order->id . ')');
                 }
             }
         }
@@ -250,7 +250,7 @@ class OrderHistory extends ObjectModel
     }
     /**
      * Returns the last order state
-     * @param int $id_order
+     * @param  int             $id_order
      * @return OrderState|bool
      * @deprecated 1.5.0.4
      * @see Order->current_state
@@ -259,10 +259,10 @@ class OrderHistory extends ObjectModel
     {
         Tools::displayAsDeprecated();
         $id_order_state = Db::getInstance()->getValue('
-		SELECT `id_order_state`
-		FROM `' . _DB_PREFIX_ . 'order_history`
-		WHERE `id_order` = ' . (int) $id_order . '
-		ORDER BY `date_add` DESC, `id_order_history` DESC');
+        SELECT `id_order_state`
+        FROM `' . _DB_PREFIX_ . 'order_history`
+        WHERE `id_order` = ' . (int) $id_order . '
+        ORDER BY `date_add` DESC, `id_order_history` DESC');
         // returns false if there is no state
         if (!$id_order_state) {
             return false;
@@ -271,9 +271,9 @@ class OrderHistory extends ObjectModel
         return new OrderState($id_order_state, Configuration::get('PS_LANG_DEFAULT'));
     }
     /**
-     * @param bool $autodate Optional
-     * @param array $template_vars Optional
-     * @param Context $context Optional
+     * @param  bool    $autodate      Optional
+     * @param  array   $template_vars Optional
+     * @param  Context $context       Optional
      * @return bool
      */
     public function addWithemail($autodate = true, $template_vars = false, Context $context = null)
@@ -286,13 +286,13 @@ class OrderHistory extends ObjectModel
             return false;
         }
         $result = Db::getInstance()->getRow('
-			SELECT osl.`template`, c.`lastname`, c.`firstname`, osl.`name` AS osname, c.`email`, os.`module_name`
-			FROM `' . _DB_PREFIX_ . 'order_history` oh
-				LEFT JOIN `' . _DB_PREFIX_ . 'orders` o ON oh.`id_order` = o.`id_order`
-				LEFT JOIN `' . _DB_PREFIX_ . 'customer` c ON o.`id_customer` = c.`id_customer`
-				LEFT JOIN `' . _DB_PREFIX_ . 'order_state` os ON oh.`id_order_state` = os.`id_order_state`
-				LEFT JOIN `' . _DB_PREFIX_ . 'order_state_lang` osl ON (os.`id_order_state` = osl.`id_order_state` AND osl.`id_lang` = o.`id_lang`)
-			WHERE oh.`id_order_history` = ' . (int) $this->id . ' AND os.`send_email` = 1');
+            SELECT osl.`template`, c.`lastname`, c.`firstname`, osl.`name` AS osname, c.`email`, os.`module_name`
+            FROM `' . _DB_PREFIX_ . 'order_history` oh
+                LEFT JOIN `' . _DB_PREFIX_ . 'orders` o ON oh.`id_order` = o.`id_order`
+                LEFT JOIN `' . _DB_PREFIX_ . 'customer` c ON o.`id_customer` = c.`id_customer`
+                LEFT JOIN `' . _DB_PREFIX_ . 'order_state` os ON oh.`id_order_state` = os.`id_order_state`
+                LEFT JOIN `' . _DB_PREFIX_ . 'order_state_lang` osl ON (os.`id_order_state` = osl.`id_order_state` AND osl.`id_lang` = o.`id_lang`)
+            WHERE oh.`id_order_history` = ' . (int) $this->id . ' AND os.`send_email` = 1');
         if (isset($result['template']) && Validate::isEmail($result['email'])) {
             ShopUrl::cacheMainDomainForShop($order->id_shop);
             $topic = $result['osname'];
@@ -313,6 +313,7 @@ class OrderHistory extends ObjectModel
             }
             ShopUrl::resetMainDomainCache();
         }
+
         return true;
     }
     public function add($autodate = true, $null_values = false)
@@ -325,6 +326,7 @@ class OrderHistory extends ObjectModel
         $order->current_state = $this->id_order_state;
         $order->update();
         Hook::exec('actionOrderHistoryAddAfter', array('order_history' => $this));
+
         return true;
     }
     /**
@@ -333,10 +335,10 @@ class OrderHistory extends ObjectModel
     public function isValidated()
     {
         return Db::getInstance()->getValue('
-		SELECT COUNT(oh.`id_order_history`) AS nb
-		FROM `' . _DB_PREFIX_ . 'order_state` os
-		LEFT JOIN `' . _DB_PREFIX_ . 'order_history` oh ON (os.`id_order_state` = oh.`id_order_state`)
-		WHERE oh.`id_order` = ' . (int) $this->id_order . '
-		AND os.`logable` = 1');
+        SELECT COUNT(oh.`id_order_history`) AS nb
+        FROM `' . _DB_PREFIX_ . 'order_state` os
+        LEFT JOIN `' . _DB_PREFIX_ . 'order_history` oh ON (os.`id_order_state` = oh.`id_order_state`)
+        WHERE oh.`id_order` = ' . (int) $this->id_order . '
+        AND os.`logable` = 1');
     }
 }

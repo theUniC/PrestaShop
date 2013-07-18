@@ -308,7 +308,7 @@ class AdminController extends Controller
     /**
      * Check rights to view the current tab
      *
-     * @param bool $disable
+     * @param  bool    $disable
      * @return boolean
      */
     public function viewAccess($disable = false)
@@ -319,6 +319,7 @@ class AdminController extends Controller
         if ($this->tabAccess['view'] === '1') {
             return true;
         }
+
         return false;
     }
     /**
@@ -327,6 +328,7 @@ class AdminController extends Controller
     public function checkToken()
     {
         $token = Tools::getValue('token');
+
         return !empty($token) && $token === $this->token;
     }
     public function ajaxProcessHelpAccess()
@@ -452,12 +454,14 @@ class AdminController extends Controller
                     // Hook After Action
                     Hook::exec('actionAdmin' . ucfirst($this->action) . 'After', array('controller' => $this, 'return' => $return));
                     Hook::exec('action' . get_class($this) . ucfirst($this->action) . 'After', array('controller' => $this, 'return' => $return));
+
                     return $return;
                 }
             }
         } catch (PrestaShopException $e) {
             $this->errors[] = $e->getMessage();
         }
+
         return false;
     }
     /**
@@ -476,6 +480,7 @@ class AdminController extends Controller
             }
         }
         $this->errors[] = Tools::displayError('An error occurred while attempting to delet the image. (cannot load object).');
+
         return $object;
     }
     public function processExport()
@@ -554,6 +559,7 @@ class AdminController extends Controller
         } else {
             $this->errors[] = Tools::displayError('An error occurred while deleting the object.') . ' <b>' . $this->table . '</b> ' . Tools::displayError('(cannot load object)');
         }
+
         return $object;
     }
     /**
@@ -565,6 +571,7 @@ class AdminController extends Controller
     {
         if ($this->id_object) {
             $this->object = $this->loadObject();
+
             return $this->processUpdate();
         } else {
             return $this->processAdd();
@@ -606,8 +613,10 @@ class AdminController extends Controller
         if (!empty($this->errors)) {
             // if we have errors, we stay on the form instead of going back to the list
             $this->display = 'edit';
+
             return false;
         }
+
         return $this->object;
     }
     /**
@@ -683,11 +692,13 @@ class AdminController extends Controller
         if (!empty($this->errors)) {
             // if we have errors, we stay on the form instead of going back to the list
             $this->display = 'edit';
+
             return false;
         }
         if (isset($object)) {
             return $object;
         }
+
         return;
     }
     /**
@@ -704,6 +715,7 @@ class AdminController extends Controller
         } else {
             $this->redirect_after = self::$currentIndex . '&conf=4&token=' . $this->token;
         }
+
         return $object;
     }
     /**
@@ -721,6 +733,7 @@ class AdminController extends Controller
         } else {
             $this->errors[] = Tools::displayError('An error occurred while updating the status for an object.') . ' <b>' . $this->table . '</b> ' . Tools::displayError('(cannot load object)');
         }
+
         return $object;
     }
     /**
@@ -737,6 +750,7 @@ class AdminController extends Controller
             $redirect = self::$currentIndex . '&' . $this->table . 'Orderby=position&' . $this->table . 'Orderway=asc&conf=5' . $id_identifier_str . '&token=' . $this->token;
             $this->redirect_after = $redirect;
         }
+
         return $object;
     }
     /**
@@ -919,7 +933,7 @@ class AdminController extends Controller
      * Load class object using identifier in $_GET (if possible)
      * otherwise return an empty object, or die
      *
-     * @param boolean $opt Return an empty object if load fail
+     * @param  boolean $opt Return an empty object if load fail
      * @return object
      */
     protected function loadObject($opt = false)
@@ -934,16 +948,20 @@ class AdminController extends Controller
             }
             // throw exception
             $this->errors[] = Tools::displayError('The object cannot be loaded (or found)');
+
             return false;
         } elseif ($opt) {
             if (!$this->object) {
                 $this->object = new $this->className();
             }
+
             return $this->object;
         } else {
             $this->errors[] = Tools::displayError('The object cannot be loaded (the dentifier is missing or invalid)');
+
             return false;
         }
+
         return $this->object;
     }
     /**
@@ -963,8 +981,10 @@ class AdminController extends Controller
                 $url = str_replace('&token', '?controller=AdminHome&token', $url);
             }
             $this->context->smarty->assign('url', htmlentities($url));
+
             return false;
         }
+
         return true;
     }
     protected function filterToField($key, $filter)
@@ -977,11 +997,12 @@ class AdminController extends Controller
         if (array_key_exists($filter, $this->fields_list)) {
             return $this->fields_list[$filter];
         }
+
         return false;
     }
     public function displayNoSmarty()
     {
-        
+
     }
     public function displayAjax()
     {
@@ -989,6 +1010,7 @@ class AdminController extends Controller
             $this->context->smarty->assign(array('json' => true, 'status' => $this->status));
         }
         $this->layout = 'layout-ajax.tpl';
+
         return $this->display();
     }
     protected function redirect()
@@ -1175,6 +1197,7 @@ class AdminController extends Controller
     {
         if (!$this->viewAccess()) {
             $this->errors[] = Tools::displayError('You do not have permission to view this.');
+
             return;
         }
         $this->getLanguages();
@@ -1248,6 +1271,7 @@ class AdminController extends Controller
     {
         if ($this->getModulesList($this->filter_modules_list)) {
             $helper = new Helper();
+
             return $helper->renderModulesList($this->modules_list);
         }
     }
@@ -1264,6 +1288,7 @@ class AdminController extends Controller
         // Empty list is ok
         if (!is_array($this->_list)) {
             $this->displayWarning($this->l('Bad SQL query', 'Helper') . '<br />' . htmlspecialchars($this->_list_error));
+
             return false;
         }
         $this->setHelperDisplay($helper);
@@ -1277,6 +1302,7 @@ class AdminController extends Controller
         }
         $helper->is_cms = $this->is_cms;
         $list = $helper->generateList($this->_list, $this->fields_list);
+
         return $list;
     }
     /**
@@ -1291,6 +1317,7 @@ class AdminController extends Controller
             $helper->base_tpl = $this->base_tpl_view;
         }
         $view = $helper->generateView();
+
         return $view;
     }
     /**
@@ -1325,6 +1352,7 @@ class AdminController extends Controller
                 }
             }
             $form = $helper->generateForm($this->fields_form);
+
             return $form;
         }
     }
@@ -1346,13 +1374,14 @@ class AdminController extends Controller
             $helper->id = $this->id;
             $helper->tpl_vars = $this->tpl_option_vars;
             $options = $helper->generateOptions($this->fields_options);
+
             return $options;
         }
     }
     /**
      * this function set various display option for helper list
      *
-     * @param Helper $helper
+     * @param  Helper $helper
      * @return void
      */
     public function setHelperDisplay(Helper $helper)
@@ -1424,11 +1453,11 @@ class AdminController extends Controller
     /**
      * non-static method which uses AdminController::translate()
      *
-     * @param mixed $string term or expression in english
-     * @param string $class name of the class
-     * @param boolan $addslashes if set to true, the return value will pass through addslashes(). Otherwise, stripslashes().
-     * @param boolean $htmlentities if set to true(default), the return value will pass through htmlentities($string, ENT_QUOTES, 'utf-8')
-     * @return string the translation if available, or the english default text.
+     * @param  mixed   $string       term or expression in english
+     * @param  string  $class        name of the class
+     * @param  boolan  $addslashes   if set to true, the return value will pass through addslashes(). Otherwise, stripslashes().
+     * @param  boolean $htmlentities if set to true(default), the return value will pass through htmlentities($string, ENT_QUOTES, 'utf-8')
+     * @return string  the translation if available, or the english default text.
      */
     protected function l($string, $class = 'AdminTab', $addslashes = false, $htmlentities = true)
     {
@@ -1439,6 +1468,7 @@ class AdminController extends Controller
         } elseif ($class == 'AdminTab') {
             $class = substr(get_class($this), 0, -10);
         }
+
         return Translate::getAdminTranslation($string, $class, $addslashes, $htmlentities);
     }
     /**
@@ -1666,11 +1696,11 @@ class AdminController extends Controller
     /**
      * Get the current objects' list form the database
      *
-     * @param integer $id_lang Language used for display
-     * @param string $order_by ORDER BY clause
-     * @param string $_orderWay Order way (ASC, DESC)
-     * @param integer $start Offset in LIMIT clause
-     * @param integer $limit Row count in LIMIT clause
+     * @param integer $id_lang   Language used for display
+     * @param string  $order_by  ORDER BY clause
+     * @param string  $_orderWay Order way (ASC, DESC)
+     * @param integer $start     Offset in LIMIT clause
+     * @param integer $limit     Row count in LIMIT clause
      */
     public function getList($id_lang, $order_by = null, $order_way = null, $start = 0, $limit = null, $id_lang_shop = false)
     {
@@ -1737,7 +1767,7 @@ class AdminController extends Controller
         if ($this->shopLinkType) {
             $select_shop = ', shop.name as shop_name ';
             $join_shop = ' LEFT JOIN ' . _DB_PREFIX_ . $this->shopLinkType . ' shop
-							ON a.id_' . $this->shopLinkType . ' = shop.id_' . $this->shopLinkType;
+                            ON a.id_' . $this->shopLinkType . ' = shop.id_' . $this->shopLinkType;
             $where_shop = Shop::addSqlRestriction($this->shopShareDatas, 'a', $this->shopLinkType);
         }
         if ($this->multishop_context && Shop::isTableAssociated($this->table) && !empty($this->className)) {
@@ -1745,10 +1775,10 @@ class AdminController extends Controller
                 $test_join = !preg_match('#`?' . preg_quote(_DB_PREFIX_ . $this->table . '_shop') . '`? *sa#', $this->_join);
                 if (Shop::isFeatureActive() && $test_join && Shop::isTableAssociated($this->table)) {
                     $this->_where .= ' AND a.' . $this->identifier . ' IN (
-						SELECT sa.' . $this->identifier . '
-						FROM `' . _DB_PREFIX_ . $this->table . '_shop` sa
-						WHERE sa.id_shop IN (' . implode(', ', Shop::getContextListShopID()) . ')
-					)';
+                        SELECT sa.' . $this->identifier . '
+                        FROM `' . _DB_PREFIX_ . $this->table . '_shop` sa
+                        WHERE sa.id_shop IN (' . implode(', ', Shop::getContextListShopID()) . ')
+                    )';
                 }
             }
         }
@@ -1778,8 +1808,8 @@ class AdminController extends Controller
             }
         }
         $this->_listsql = '
-		SELECT SQL_CALC_FOUND_ROWS
-		' . ($this->_tmpTableFilter ? ' * FROM (SELECT ' : '');
+        SELECT SQL_CALC_FOUND_ROWS
+        ' . ($this->_tmpTableFilter ? ' * FROM (SELECT ' : '');
         if ($this->explicitSelect) {
             foreach ($this->fields_list as $key => $array_value) {
                 // Add it only if it is not already in $this->_select
@@ -1799,15 +1829,15 @@ class AdminController extends Controller
             $this->_listsql .= ($this->lang ? 'b.*,' : '') . ' a.*';
         }
         $this->_listsql .= '
-		' . (isset($this->_select) ? ', ' . rtrim($this->_select, ', ') : '') . $select_shop . '
-		FROM `' . _DB_PREFIX_ . $sql_table . '` a
-		' . $lang_join . '
-		' . (isset($this->_join) ? $this->_join . ' ' : '') . '
-		' . $join_shop . '
-		WHERE 1 ' . (isset($this->_where) ? $this->_where . ' ' : '') . ($this->deleted ? 'AND a.`deleted` = 0 ' : '') . (isset($this->_filter) ? $this->_filter : '') . $where_shop . '
-		' . (isset($this->_group) ? $this->_group . ' ' : '') . '
-		' . $having_clause . '
-		ORDER BY ' . ($order_by == $this->identifier ? 'a.' : '') . pSQL($order_by) . ' ' . pSQL($order_way) . ($this->_tmpTableFilter ? ') tmpTable WHERE 1' . $this->_tmpTableFilter : '') . ($use_limit === true ? ' LIMIT ' . (int) $start . ',' . (int) $limit : '');
+        ' . (isset($this->_select) ? ', ' . rtrim($this->_select, ', ') : '') . $select_shop . '
+        FROM `' . _DB_PREFIX_ . $sql_table . '` a
+        ' . $lang_join . '
+        ' . (isset($this->_join) ? $this->_join . ' ' : '') . '
+        ' . $join_shop . '
+        WHERE 1 ' . (isset($this->_where) ? $this->_where . ' ' : '') . ($this->deleted ? 'AND a.`deleted` = 0 ' : '') . (isset($this->_filter) ? $this->_filter : '') . $where_shop . '
+        ' . (isset($this->_group) ? $this->_group . ' ' : '') . '
+        ' . $having_clause . '
+        ORDER BY ' . ($order_by == $this->identifier ? 'a.' : '') . pSQL($order_by) . ' ' . pSQL($order_way) . ($this->_tmpTableFilter ? ') tmpTable WHERE 1' . $this->_tmpTableFilter : '') . ($use_limit === true ? ' LIMIT ' . (int) $start . ',' . (int) $limit : '');
         if (!($this->_list = Db::getInstance()->executeS($this->_listsql))) {
             $this->_list_error = Db::getInstance()->getMsgError();
         } else {
@@ -1845,6 +1875,7 @@ class AdminController extends Controller
         if (count($this->modules_list)) {
             return true;
         }
+
         return false;
     }
     public function getLanguages()
@@ -1871,12 +1902,13 @@ class AdminController extends Controller
         foreach ($this->_languages as $k => $language) {
             $this->_languages[$k]['is_default'] = (int) ($language['id_lang'] == $this->default_form_language);
         }
+
         return $this->_languages;
     }
     /**
      * Return the list of fields value
      *
-     * @param object $obj Object
+     * @param  object $obj Object
      * @return array
      */
     public function getFieldsValue($obj)
@@ -1915,6 +1947,7 @@ class AdminController extends Controller
                 }
             }
         }
+
         return $this->fields_value;
     }
     /**
@@ -1923,9 +1956,9 @@ class AdminController extends Controller
      * Case 1 : Return value if present in $_POST / $_GET
      * Case 2 : Return object value
      *
-     * @param object $obj Object
-     * @param string $key Field name
-     * @param integer $id_lang Language id (optional)
+     * @param  object  $obj     Object
+     * @param  string  $key     Field name
+     * @param  integer $id_lang Language id (optional)
      * @return string
      */
     public function getFieldValue($obj, $key, $id_lang = null)
@@ -1935,6 +1968,7 @@ class AdminController extends Controller
         } else {
             $default_value = isset($obj->{$key}) ? $obj->{$key} : false;
         }
+
         return Tools::getValue($key . ($id_lang ? '_' . $id_lang : ''), $default_value);
     }
     /**
@@ -2032,19 +2066,19 @@ class AdminController extends Controller
      */
     protected function _childValidation()
     {
-        
+
     }
     /**
      * Display object details
      */
     public function viewDetails()
     {
-        
+
     }
     /**
      * Called before deletion
      *
-     * @param object $object Object
+     * @param  object  $object Object
      * @return boolean
      */
     protected function beforeDelete($object)
@@ -2054,7 +2088,7 @@ class AdminController extends Controller
     /**
      * Called before deletion
      *
-     * @param object $object Object
+     * @param  object  $object Object
      * @return boolean
      */
     protected function afterDelete($object, $oldId)
@@ -2082,7 +2116,7 @@ class AdminController extends Controller
      * Copy datas from $_POST to object
      *
      * @param object &$object Object
-     * @param string $table Object table
+     * @param string $table   Object table
      */
     protected function copyFromPost(&$object, $table)
     {
@@ -2116,7 +2150,7 @@ class AdminController extends Controller
     /**
      * Returns an array with selected shops and type (group or boutique shop)
      *
-     * @param string $table
+     * @param  string $table
      * @return array
      */
     protected function getSelectedAssoShop($table)
@@ -2139,6 +2173,7 @@ class AdminController extends Controller
                 $assos[] = (int) Shop::getContextShopID();
             }
         }
+
         return $assos;
     }
     /**
@@ -2167,6 +2202,7 @@ class AdminController extends Controller
         foreach ($assos_data as $id_shop) {
             $insert[] = array($this->identifier => $id_object, 'id_shop' => (int) $id_shop);
         }
+
         return Db::getInstance()->insert($this->table . '_shop', $insert, false, true, Db::INSERT_IGNORE);
     }
     protected function validateField($value, $field)
@@ -2176,10 +2212,12 @@ class AdminController extends Controller
             if ((!isset($field['empty']) || !$field['empty'] || isset($field['empty']) && $field['empty'] && $value) && $valid_method_exists) {
                 if (!Validate::$field['validation']($value)) {
                     $this->errors[] = Tools::displayError($field['title'] . ' : Incorrect value');
+
                     return false;
                 }
             }
         }
+
         return true;
     }
     /**
@@ -2187,12 +2225,12 @@ class AdminController extends Controller
      */
     public function beforeUpdateOptions()
     {
-        
+
     }
     /**
      * Overload this method for custom checking
      *
-     * @param integer $id Object id used for deleting images
+     * @param  integer $id Object id used for deleting images
      * @return boolean
      */
     protected function postImage($id)
@@ -2206,6 +2244,7 @@ class AdminController extends Controller
                 }
             }
         }
+
         return !count($this->errors) ? true : false;
     }
     protected function uploadImage($id, $name, $dir, $ext = false, $width = null, $height = null)
@@ -2242,10 +2281,13 @@ class AdminController extends Controller
             }
             if ($this->afterImageUpload()) {
                 unlink($tmp_name);
+
                 return true;
             }
+
             return false;
         }
+
         return true;
     }
     /**
@@ -2333,6 +2375,7 @@ class AdminController extends Controller
                 $result &= $object->update();
             }
         }
+
         return $result;
     }
     protected function processBulkAffectZone()
@@ -2348,12 +2391,13 @@ class AdminController extends Controller
         } else {
             $this->errors[] = Tools::displayError('You must select at least one element to affect a new zone.');
         }
+
         return $result;
     }
     /**
      * Called before Add
      *
-     * @param object $object Object
+     * @param  object  $object Object
      * @return boolean
      */
     protected function beforeAdd($object)
@@ -2371,12 +2415,13 @@ class AdminController extends Controller
         $helper = new Helper();
         $helper->currentIndex = self::$currentIndex;
         $helper->token = $this->token;
+
         return $helper->renderRequiredFields($this->className, $this->identifier, $this->required_fields);
     }
     /**
      * Create a template from the override file, else from the base file.
      *
-     * @param string $tpl_name filename
+     * @param  string   $tpl_name filename
      * @return Template
      */
     public function createTemplate($tpl_name)
@@ -2392,6 +2437,7 @@ class AdminController extends Controller
                 }
             }
         }
+
         return $this->context->smarty->createTemplate($this->context->smarty->getTemplateDir(0) . $tpl_name, $this->context->smarty);
     }
     /**
@@ -2426,6 +2472,7 @@ class AdminController extends Controller
             if (filesize(_PS_ROOT_DIR_ . $file) < 1) {
                 return false;
             }
+
             return time() - filemtime(_PS_ROOT_DIR_ . $file) < $timeout;
         } else {
             return false;
@@ -2437,6 +2484,7 @@ class AdminController extends Controller
         if ($content) {
             return (bool) file_put_contents(_PS_ROOT_DIR_ . $file_to_refresh, $content);
         }
+
         return false;
     }
     public function fillModuleData(&$module, $output_type = 'link', $back = null)
@@ -2471,7 +2519,7 @@ class AdminController extends Controller
      *
      * @param $module
      * @param $output_type (link or select)
-     * @param $back 
+     * @param $back
      *
      * @return string
      */
@@ -2497,8 +2545,8 @@ class AdminController extends Controller
             if ($option['cond']) {
                 if ($output_type == 'link') {
                     $return .= '<span class="' . $option_name . '">
-						<a class="action_module" href="' . $option['href'] . (!is_null($back) ? '&back=' . urlencode($back) : '') . '" onclick="' . $option['onclick'] . '"  title="' . $option['title'] . '">' . $option['text'] . '</a>
-						</span>';
+                        <a class="action_module" href="' . $option['href'] . (!is_null($back) ? '&back=' . urlencode($back) : '') . '" onclick="' . $option['onclick'] . '"  title="' . $option['title'] . '">' . $option['text'] . '</a>
+                        </span>';
                 } elseif ($output_type == 'select') {
                     $return .= '<option id="' . $option_name . '" data-href="' . $option['href'] . (!is_null($back) ? '&back=' . urlencode($back) : '') . '" data-onclick="' . $option['onclick'] . '">' . $option['text'] . '</option>';
                 }
@@ -2512,6 +2560,7 @@ class AdminController extends Controller
             }
             $return = '<select id="select_' . $module->name . '">' . $return . '</select>';
         }
+
         return $return;
     }
 }

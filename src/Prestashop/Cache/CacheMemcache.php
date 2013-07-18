@@ -103,6 +103,7 @@ class CacheMemcache extends Cache
         if (!$this->is_connected) {
             return false;
         }
+
         return $this->memcache->set($key, $value, 0, $ttl);
     }
     /**
@@ -113,6 +114,7 @@ class CacheMemcache extends Cache
         if (!$this->is_connected) {
             return false;
         }
+
         return $this->memcache->get($key);
     }
     /**
@@ -123,6 +125,7 @@ class CacheMemcache extends Cache
         if (!$this->is_connected) {
             return false;
         }
+
         return isset($this->keys[$key]);
     }
     /**
@@ -133,6 +136,7 @@ class CacheMemcache extends Cache
         if (!$this->is_connected) {
             return false;
         }
+
         return $this->memcache->delete($key);
     }
     /**
@@ -140,7 +144,7 @@ class CacheMemcache extends Cache
      */
     protected function _writeKeys()
     {
-        
+
     }
     /**
      * @see Cache::flush()
@@ -150,6 +154,7 @@ class CacheMemcache extends Cache
         if (!$this->is_connected) {
             return false;
         }
+
         return $this->memcache->flush();
     }
     /**
@@ -162,14 +167,15 @@ class CacheMemcache extends Cache
         if (!$this->is_connected) {
             return false;
         }
+
         return $this->memcache->close();
     }
     /**
      * Add a memcache server
      *
      * @param string $ip
-     * @param int $port
-     * @param int $weight
+     * @param int    $port
+     * @param int    $weight
      */
     public static function addServer($ip, $port, $weight)
     {

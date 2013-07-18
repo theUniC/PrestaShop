@@ -52,8 +52,8 @@ class AdminPPreferencesController extends AdminController
         if (Configuration::get('PS_ADVANCED_STOCK_MANAGEMENT') == 1 && (int) Tools::getValue('PS_ADVANCED_STOCK_MANAGEMENT') == 0 && Context::getContext()->shop->getContext() == Shop::CONTEXT_ALL) {
             ObjectModel::updateMultishopTable('Product', array('advanced_stock_management' => 0), 'product_shop.`advanced_stock_management` = 1');
             Db::getInstance()->execute('UPDATE `' . _DB_PREFIX_ . 'stock_available`
-				 SET `depends_on_stock` = 0, `quantity` = 0
-				 WHERE `depends_on_stock` = 1');
+                 SET `depends_on_stock` = 0, `quantity` = 0
+                 WHERE `depends_on_stock` = 1');
         }
     }
 }

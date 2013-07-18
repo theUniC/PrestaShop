@@ -77,6 +77,7 @@ class LocalizationPack
                 $res &= Configuration::updateValue('PS_CURRENCY_DEFAULT', (int) Currency::getIdByIsoCode($this->iso_currency));
                 Currency::refreshCurrencies();
             }
+
             return $res;
         }
         foreach ($selection as $selected) {
@@ -84,6 +85,7 @@ class LocalizationPack
                 return false;
             }
         }
+
         return true;
     }
     protected function _installStates($xml)
@@ -103,6 +105,7 @@ class LocalizationPack
                         $zone->active = true;
                         if (!$zone->add()) {
                             $this->_errors[] = Tools::displayError('Invalid Zone name.');
+
                             return false;
                         }
                         $id_zone = $zone->id;
@@ -110,6 +113,7 @@ class LocalizationPack
                     $state->id_zone = $id_zone;
                     if (!$state->validateFields()) {
                         $this->_errors[] = Tools::displayError('Invalid state properties.');
+
                         return false;
                     }
                     $country = new Country($state->id_country);
@@ -121,17 +125,20 @@ class LocalizationPack
                     }
                     if (!$state->add()) {
                         $this->_errors[] = Tools::displayError('An error occurred while adding the state.');
+
                         return false;
                     }
                 } else {
                     $state = new State($id_state);
                     if (!Validate::isLoadedObject($state)) {
                         $this->_errors[] = Tools::displayError('An error occurred while fetching the state.');
+
                         return false;
                     }
                 }
             }
         }
+
         return true;
     }
     protected function _installTaxes($xml)
@@ -149,10 +156,12 @@ class LocalizationPack
                 $tax->active = 1;
                 if (($error = $tax->validateFields(false, true)) !== true || ($error = $tax->validateFieldsLang(false, true)) !== true) {
                     $this->_errors[] = Tools::displayError('Invalid tax properties.') . ' ' . $error;
+
                     return false;
                 }
                 if (!$tax->add()) {
                     $this->_errors[] = Tools::displayError('An error occurred while importing the tax: ') . (string) $attributes['name'];
+
                     return false;
                 }
                 $assoc_taxes[(int) $attributes['id']] = $tax->id;
@@ -170,6 +179,7 @@ class LocalizationPack
                 $trg->active = 1;
                 if (!$trg->save()) {
                     $this->_errors[] = Tools::displayError('This tax rule cannot be saved.');
+
                     return false;
                 }
                 foreach ($group->taxRule as $rule) {
@@ -212,6 +222,7 @@ class LocalizationPack
                 }
             }
         }
+
         return $this->updateDefaultGroupDisplayMethod($xml);
     }
     protected function _installCurrencies($xml, $install_mode = false)
@@ -235,11 +246,13 @@ class LocalizationPack
                 $currency->active = $install_mode;
                 if (!$currency->validateFields()) {
                     $this->_errors[] = Tools::displayError('Invalid currency properties.');
+
                     return false;
                 }
                 if (!Currency::exists($currency->iso_code, $currency->iso_code_num)) {
                     if (!$currency->add()) {
                         $this->_errors[] = Tools::displayError('An error occurred while importing the currency: ') . strval($attributes['name']);
+
                         return false;
                     }
                     PaymentModule::addCurrencyPermissions($currency->id);
@@ -254,6 +267,7 @@ class LocalizationPack
                 $this->iso_currency = $attributes['iso_code'];
             }
         }
+
         return true;
     }
     protected function _installLanguages($xml, $install_mode = false)
@@ -276,6 +290,7 @@ class LocalizationPack
         if (!count($this->_errors) && $install_mode && isset($attributes['iso_code']) && count($xml->languages->language) == 1) {
             $this->iso_code_lang = $attributes['iso_code'];
         }
+
         return !count($this->_errors);
     }
     protected function _installUnits($xml)
@@ -286,14 +301,17 @@ class LocalizationPack
                 $attributes = $data->attributes();
                 if (!isset($varNames[strval($attributes['type'])])) {
                     $this->_errors[] = Tools::displayError('Localization pack corrupted: wrong unit type.');
+
                     return false;
                 }
                 if (!Configuration::updateValue($varNames[strval($attributes['type'])], strval($attributes['value']))) {
                     $this->_errors[] = Tools::displayError('An error occurred while setting the units.');
+
                     return false;
                 }
             }
         }
+
         return true;
     }
     /**
@@ -328,6 +346,7 @@ class LocalizationPack
                 }
             }
         }
+
         return true;
     }
     /**
@@ -348,6 +367,7 @@ class LocalizationPack
                 }
             }
         }
+
         return true;
     }
     protected function updateDefaultGroupDisplayMethod($xml)
@@ -366,6 +386,7 @@ class LocalizationPack
                 $this->_errors[] = Tools::displayError('An error has occurred during the default group update');
             }
         }
+
         return true;
     }
     public function getErrors()
