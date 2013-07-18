@@ -2,6 +2,8 @@
 
 namespace Prestashop\Controller\Admin;
 
+use Prestashop\Controller\AdminController;
+use Prestashop\Tools;
 /*
 * 2007-2013 PrestaShop
 *
@@ -26,24 +28,21 @@ namespace Prestashop\Controller\Admin;
 *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 class AdminNotFoundController extends AdminController
 {
-	public function checkAccess()
-	{
-		return true;
-	}
-
-	public function viewAccess()
-	{
-		return true;
-	}
-
-	public function initContent()
-	{
-		$this->errors[] = Tools::displayError('Controller not found');
-		$tpl_vars['controller'] = Tools::getvalue('controllerUri', Tools::getvalue('controller'));
-		$this->context->smarty->assign($tpl_vars);
-		parent::initContent();
-	}
+    public function checkAccess()
+    {
+        return true;
+    }
+    public function viewAccess()
+    {
+        return true;
+    }
+    public function initContent()
+    {
+        $this->errors[] = Tools::displayError('Controller not found');
+        $tpl_vars['controller'] = Tools::getvalue('controllerUri', Tools::getvalue('controller'));
+        $this->context->smarty->assign($tpl_vars);
+        parent::initContent();
+    }
 }

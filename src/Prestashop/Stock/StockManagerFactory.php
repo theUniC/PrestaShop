@@ -2,6 +2,9 @@
 
 namespace Prestashop\Stock;
 
+use Prestashop\Stock\StockManager;
+use Prestashop\Hook;
+use Prestashop\Module\Module;
 /*
 * 2007-2013 PrestaShop
 *
@@ -26,56 +29,50 @@ namespace Prestashop\Stock;
 *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 /*
  * StockManagerFactory : factory of stock manager
  * @since 1.5.0
  */
 class StockManagerFactory
 {
-	/**
-	 * @var $stock_manager : instance of the current StockManager.
-	 */
-	protected static $stock_manager;
-
-	/**
-	 * Returns a StockManager
-	 *
-	 * @return StockManagerInterface
-	 */
-	public static function getManager()
-	{
-		if (!isset(StockManagerFactory::$stock_manager))
-		{
-			$stock_manager = StockManagerFactory::execHookStockManagerFactory();
-			if (!($stock_manager instanceof StockManagerInterface))
-				$stock_manager = new StockManager();
-			StockManagerFactory::$stock_manager = $stock_manager;
-		}
-		return StockManagerFactory::$stock_manager;
-	}
-
-	/**
-	 *  Looks for a StockManager in the modules list.
-	 *
-	 *  @return StockManagerInterface
-	 */
-	public static function execHookStockManagerFactory()
-	{
-		$modules_infos = Hook::getModulesFromHook(Hook::getIdByName('stockManager'));
-		$stock_manager = false;
-
-		foreach ($modules_infos as $module_infos)
-		{
-			$module_instance = Module::getInstanceByName($module_infos['name']);
-
-			if (is_callable(array($module_instance, 'hookStockManager')))
-				$stock_manager = $module_instance->hookStockManager();
-
-			if ($stock_manager)
-				break;
-		}
-
-		return $stock_manager;
-	}
+    /**
+     * @var $stock_manager : instance of the current StockManager.
+     */
+    protected static $stock_manager;
+    /**
+     * Returns a StockManager
+     *
+     * @return StockManagerInterface
+     */
+    public static function getManager()
+    {
+        if (!isset(StockManagerFactory::$stock_manager)) {
+            $stock_manager = StockManagerFactory::execHookStockManagerFactory();
+            if (!$stock_manager instanceof StockManagerInterface) {
+                $stock_manager = new StockManager();
+            }
+            StockManagerFactory::$stock_manager = $stock_manager;
+        }
+        return StockManagerFactory::$stock_manager;
+    }
+    /**
+     *  Looks for a StockManager in the modules list.
+     *
+     *  @return StockManagerInterface
+     */
+    public static function execHookStockManagerFactory()
+    {
+        $modules_infos = Hook::getModulesFromHook(Hook::getIdByName('stockManager'));
+        $stock_manager = false;
+        foreach ($modules_infos as $module_infos) {
+            $module_instance = Module::getInstanceByName($module_infos['name']);
+            if (is_callable(array($module_instance, 'hookStockManager'))) {
+                $stock_manager = $module_instance->hookStockManager();
+            }
+            if ($stock_manager) {
+                break;
+            }
+        }
+        return $stock_manager;
+    }
 }

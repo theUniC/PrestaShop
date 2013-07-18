@@ -2,6 +2,9 @@
 
 namespace Prestashop\Module;
 
+use Prestashop\Configuration;
+use Prestashop\Db\Db;
+use Prestashop\Module\Module;
 /*
 * 2007-2013 PrestaShop
 *
@@ -26,50 +29,42 @@ namespace Prestashop\Module;
 *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 abstract class ModuleGraphEngine extends Module
 {
-	protected $_type;
-
-	public function __construct($type)
-	{
-		$this->_type = $type;
-	}
-
-	public function install()
-	{
-		if (!parent::install())
-			return false;
-		return Configuration::updateValue('PS_STATS_RENDER', $this->name);
-	}
-
-	public static function getGraphEngines()
-	{
-		$result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
+    protected $_type;
+    public function __construct($type)
+    {
+        $this->_type = $type;
+    }
+    public function install()
+    {
+        if (!parent::install()) {
+            return false;
+        }
+        return Configuration::updateValue('PS_STATS_RENDER', $this->name);
+    }
+    public static function getGraphEngines()
+    {
+        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
 	    	SELECT m.`name`
-	    	FROM `'._DB_PREFIX_.'module` m
-	    	LEFT JOIN `'._DB_PREFIX_.'hook_module` hm ON hm.`id_module` = m.`id_module`
-	    	LEFT JOIN `'._DB_PREFIX_.'hook` h ON hm.`id_hook` = h.`id_hook`
+	    	FROM `' . _DB_PREFIX_ . 'module` m
+	    	LEFT JOIN `' . _DB_PREFIX_ . 'hook_module` hm ON hm.`id_module` = m.`id_module`
+	    	LEFT JOIN `' . _DB_PREFIX_ . 'hook` h ON hm.`id_hook` = h.`id_hook`
 	    	WHERE h.`name` = \'displayAdminStatsGraphEngine\'
 	    ');
-
-		$array_engines = array();
-		foreach ($result as $module)
-		{
-			$instance = Module::getInstanceByName($module['name']);
-			if (!$instance)
-				continue;
-			$array_engines[$module['name']] = array($instance->displayName, $instance->description);
-		}
-
-		return $array_engines;
-	}
-
-	abstract public function createValues($values);
-	abstract public function setSize($width, $height);
-	abstract public function setLegend($legend);
-	abstract public function setTitles($titles);
-	abstract public function draw();
+        $array_engines = array();
+        foreach ($result as $module) {
+            $instance = Module::getInstanceByName($module['name']);
+            if (!$instance) {
+                continue;
+            }
+            $array_engines[$module['name']] = array($instance->displayName, $instance->description);
+        }
+        return $array_engines;
+    }
+    public abstract function createValues($values);
+    public abstract function setSize($width, $height);
+    public abstract function setLegend($legend);
+    public abstract function setTitles($titles);
+    public abstract function draw();
 }
-
-

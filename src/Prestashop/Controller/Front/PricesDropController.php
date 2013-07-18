@@ -2,6 +2,11 @@
 
 namespace Prestashop\Controller\Front;
 
+use Prestashop\Controller\FrontController;
+use Prestashop\Configuration;
+use Prestashop\Product;
+use Prestashop\ImageType;
+use Prestashop\Image;
 /*
 * 2007-2013 PrestaShop
 *
@@ -26,41 +31,28 @@ namespace Prestashop\Controller\Front;
 *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 class PricesDropController extends FrontController
 {
-	public $php_self = 'prices-drop';
-
-	public function setMedia()
-	{
-		parent::setMedia();
-		$this->addCSS(_THEME_CSS_DIR_.'product_list.css');
-
-		if (Configuration::get('PS_COMPARATOR_MAX_ITEM'))
-			$this->addJS(_THEME_JS_DIR_.'products-comparison.js');
-	}
-
-	/**
-	 * Assign template vars related to page content
-	 * @see FrontController::initContent()
-	 */
-	public function initContent()
-	{
-		parent::initContent();
-
-		$this->productSort();
-		$nbProducts = Product::getPricesDrop($this->context->language->id, null, null, true);
-		$this->pagination($nbProducts);
-
-		$this->context->smarty->assign(array(
-			'products' => Product::getPricesDrop($this->context->language->id, (int)$this->p - 1, (int)$this->n, false, $this->orderBy, $this->orderWay),
-			'add_prod_display' => Configuration::get('PS_ATTRIBUTE_CATEGORY_DISPLAY'),
-			'nbProducts' => $nbProducts,
-			'homeSize' => Image::getSize(ImageType::getFormatedName('home')),
-			'comparator_max_item' => Configuration::get('PS_COMPARATOR_MAX_ITEM')
-		));
-
-		$this->setTemplate(_PS_THEME_DIR_.'prices-drop.tpl');
-	}
+    public $php_self = 'prices-drop';
+    public function setMedia()
+    {
+        parent::setMedia();
+        $this->addCSS(_THEME_CSS_DIR_ . 'product_list.css');
+        if (Configuration::get('PS_COMPARATOR_MAX_ITEM')) {
+            $this->addJS(_THEME_JS_DIR_ . 'products-comparison.js');
+        }
+    }
+    /**
+     * Assign template vars related to page content
+     * @see FrontController::initContent()
+     */
+    public function initContent()
+    {
+        parent::initContent();
+        $this->productSort();
+        $nbProducts = Product::getPricesDrop($this->context->language->id, null, null, true);
+        $this->pagination($nbProducts);
+        $this->context->smarty->assign(array('products' => Product::getPricesDrop($this->context->language->id, (int) $this->p - 1, (int) $this->n, false, $this->orderBy, $this->orderWay), 'add_prod_display' => Configuration::get('PS_ATTRIBUTE_CATEGORY_DISPLAY'), 'nbProducts' => $nbProducts, 'homeSize' => Image::getSize(ImageType::getFormatedName('home')), 'comparator_max_item' => Configuration::get('PS_COMPARATOR_MAX_ITEM')));
+        $this->setTemplate(_PS_THEME_DIR_ . 'prices-drop.tpl');
+    }
 }
-

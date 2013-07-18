@@ -2,6 +2,8 @@
 
 namespace Prestashop\Controller\Front;
 
+use Prestashop\Controller\FrontController;
+use Prestashop\Order\OrderSlip;
 /*
 * 2007-2013 PrestaShop
 *
@@ -26,32 +28,27 @@ namespace Prestashop\Controller\Front;
 *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 class OrderSlipController extends FrontController
 {
-	public $auth = true;
-	public $php_self = 'order-slip';
-	public $authRedirection = 'order-slip';
-	public $ssl = true;
-
-	public function setMedia()
-	{
-		parent::setMedia();
-		$this->addCSS(array(_THEME_CSS_DIR_.'history.css', _THEME_CSS_DIR_.'addresses.css'));
-		$this->addJqueryPlugin('scrollTo');
-		$this->addJS(array(_THEME_JS_DIR_.'history.js', _THEME_JS_DIR_.'tools.js'));
-	}
-
-	/**
-	 * Assign template vars related to page content
-	 * @see FrontController::initContent()
-	 */
-	public function initContent()
-	{
-		parent::initContent();
-
-		$this->context->smarty->assign('ordersSlip', OrderSlip::getOrdersSlip((int)$this->context->cookie->id_customer));
-		$this->setTemplate(_PS_THEME_DIR_.'order-slip.tpl');
-	}
+    public $auth = true;
+    public $php_self = 'order-slip';
+    public $authRedirection = 'order-slip';
+    public $ssl = true;
+    public function setMedia()
+    {
+        parent::setMedia();
+        $this->addCSS(array(_THEME_CSS_DIR_ . 'history.css', _THEME_CSS_DIR_ . 'addresses.css'));
+        $this->addJqueryPlugin('scrollTo');
+        $this->addJS(array(_THEME_JS_DIR_ . 'history.js', _THEME_JS_DIR_ . 'tools.js'));
+    }
+    /**
+     * Assign template vars related to page content
+     * @see FrontController::initContent()
+     */
+    public function initContent()
+    {
+        parent::initContent();
+        $this->context->smarty->assign('ordersSlip', OrderSlip::getOrdersSlip((int) $this->context->cookie->id_customer));
+        $this->setTemplate(_PS_THEME_DIR_ . 'order-slip.tpl');
+    }
 }
-

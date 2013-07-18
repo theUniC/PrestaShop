@@ -2,6 +2,11 @@
 
 namespace Prestashop\Controller\Front;
 
+use Prestashop\Controller\FrontController;
+use Prestashop\Order\Order;
+use Prestashop\Validate;
+use Prestashop\Configuration;
+use Prestashop\Tools;
 /*
 * 2007-2013 PrestaShop
 *
@@ -26,48 +31,36 @@ namespace Prestashop\Controller\Front;
 *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 class HistoryController extends FrontController
 {
-	public $auth = true;
-	public $php_self = 'history';
-	public $authRedirection = 'history';
-	public $ssl = true;
-
-	public function setMedia()
-	{
-		parent::setMedia();
-		$this->addCSS(_THEME_CSS_DIR_.'history.css');
-		$this->addCSS(_THEME_CSS_DIR_.'addresses.css');
-		$this->addJqueryPlugin('scrollTo');
-		$this->addJS(array(
-					_THEME_JS_DIR_.'history.js',
-					_THEME_JS_DIR_.'tools.js')
-					);
-	}
-
-	/**
-	 * Assign template vars related to page content
-	 * @see FrontController::initContent()
-	 */
-	public function initContent()
-	{
-		parent::initContent();
-
-		if ($orders = Order::getCustomerOrders($this->context->customer->id))
-			foreach ($orders as &$order)
-			{
-				$myOrder = new Order((int)$order['id_order']);
-				if (Validate::isLoadedObject($myOrder))
-					$order['virtual'] = $myOrder->isVirtual(false);
-			}
-		$this->context->smarty->assign(array(
-			'orders' => $orders,
-			'invoiceAllowed' => (int)(Configuration::get('PS_INVOICE')),
-			'slowValidation' => Tools::isSubmit('slowvalidation')
-		));
-
-		$this->setTemplate(_PS_THEME_DIR_.'history.tpl');
-	}
+    public $auth = true;
+    public $php_self = 'history';
+    public $authRedirection = 'history';
+    public $ssl = true;
+    public function setMedia()
+    {
+        parent::setMedia();
+        $this->addCSS(_THEME_CSS_DIR_ . 'history.css');
+        $this->addCSS(_THEME_CSS_DIR_ . 'addresses.css');
+        $this->addJqueryPlugin('scrollTo');
+        $this->addJS(array(_THEME_JS_DIR_ . 'history.js', _THEME_JS_DIR_ . 'tools.js'));
+    }
+    /**
+     * Assign template vars related to page content
+     * @see FrontController::initContent()
+     */
+    public function initContent()
+    {
+        parent::initContent();
+        if ($orders = Order::getCustomerOrders($this->context->customer->id)) {
+            foreach ($orders as &$order) {
+                $myOrder = new Order((int) $order['id_order']);
+                if (Validate::isLoadedObject($myOrder)) {
+                    $order['virtual'] = $myOrder->isVirtual(false);
+                }
+            }
+        }
+        $this->context->smarty->assign(array('orders' => $orders, 'invoiceAllowed' => (int) Configuration::get('PS_INVOICE'), 'slowValidation' => Tools::isSubmit('slowvalidation')));
+        $this->setTemplate(_PS_THEME_DIR_ . 'history.tpl');
+    }
 }
-

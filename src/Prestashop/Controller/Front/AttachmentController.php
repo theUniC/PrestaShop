@@ -2,6 +2,9 @@
 
 namespace Prestashop\Controller\Front;
 
+use Prestashop\Controller\FrontController;
+use Prestashop\Tools;
+use Prestashop\Attachment;
 /*
 * 2007-2013 PrestaShop
 *
@@ -26,23 +29,22 @@ namespace Prestashop\Controller\Front;
 *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 class AttachmentController extends FrontController
 {
-	public function postProcess()
-	{
-		$a = new Attachment(Tools::getValue('id_attachment'), $this->context->language->id);
-		if (!$a->id)
-			Tools::redirect('index.php');
-
-		if (ob_get_level()) 
-			ob_end_clean();
-
-		header('Content-Transfer-Encoding: binary');
-		header('Content-Type: '.$a->mime);
-		header('Content-Length: '.filesize(_PS_DOWNLOAD_DIR_.$a->file));
-		header('Content-Disposition: attachment; filename="'.utf8_decode($a->file_name).'"');
-		readfile(_PS_DOWNLOAD_DIR_.$a->file);
-		exit;
-	}
+    public function postProcess()
+    {
+        $a = new Attachment(Tools::getValue('id_attachment'), $this->context->language->id);
+        if (!$a->id) {
+            Tools::redirect('index.php');
+        }
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
+        header('Content-Transfer-Encoding: binary');
+        header('Content-Type: ' . $a->mime);
+        header('Content-Length: ' . filesize(_PS_DOWNLOAD_DIR_ . $a->file));
+        header('Content-Disposition: attachment; filename="' . utf8_decode($a->file_name) . '"');
+        readfile(_PS_DOWNLOAD_DIR_ . $a->file);
+        die;
+    }
 }

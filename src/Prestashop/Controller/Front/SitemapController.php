@@ -2,6 +2,12 @@
 
 namespace Prestashop\Controller\Front;
 
+use Prestashop\Controller\FrontController;
+use Prestashop\Category;
+use Prestashop\CMSCategory;
+use Prestashop\CartRule;
+use Prestashop\Module\Module;
+use Prestashop\Configuration;
 /*
 * 2007-2013 PrestaShop
 *
@@ -26,49 +32,39 @@ namespace Prestashop\Controller\Front;
 *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 class SitemapController extends FrontController
 {
-	public $php_self = 'sitemap';
-
-	public function setMedia()
-	{
-		parent::setMedia();
-		$this->addCSS(_THEME_CSS_DIR_.'sitemap.css');
-		$this->addJS(_THEME_JS_DIR_.'tools/treeManagement.js');
-	}
-
-	/**
-	 * Assign template vars related to page content
-	 * @see FrontController::initContent()
-	 */
-	public function initContent()
-	{
-		parent::initContent();
-
-		$this->context->smarty->assign('categoriesTree', Category::getRootCategory()->recurseLiteCategTree(0));
-		$this->context->smarty->assign('categoriescmsTree', CMSCategory::getRecurseCategory($this->context->language->id, 1, 1, 1));
-		$this->context->smarty->assign('voucherAllowed', (int)CartRule::isFeatureActive());
-
-		if(Module::isInstalled('blockmanufacturer'))
-		{
-			$blockmanufacturer = Module::getInstanceByName('blockmanufacturer');			
-			$this->context->smarty->assign('display_manufacturer_link', isset($blockmanufacturer->active) ? (bool)$blockmanufacturer->active : false);
-		}
-		else			
-			$this->context->smarty->assign('display_manufacturer_link', 0);
-		
-		if(Module::isInstalled('blocksupplier'))
-		{
-			$blocksupplier = Module::getInstanceByName('blocksupplier');			
-			$this->context->smarty->assign('display_supplier_link', isset($blocksupplier->active) ? (bool)$blocksupplier->active : false);
-		}
-		else			
-			$this->context->smarty->assign('display_supplier_link', 0);
-			
-		$this->context->smarty->assign('PS_DISPLAY_SUPPLIERS', Configuration::get('PS_DISPLAY_SUPPLIERS'));
-		$this->context->smarty->assign('display_store', Configuration::get('PS_STORES_DISPLAY_SITEMAP'));
-
-		$this->setTemplate(_PS_THEME_DIR_.'sitemap.tpl');
-	}
+    public $php_self = 'sitemap';
+    public function setMedia()
+    {
+        parent::setMedia();
+        $this->addCSS(_THEME_CSS_DIR_ . 'sitemap.css');
+        $this->addJS(_THEME_JS_DIR_ . 'tools/treeManagement.js');
+    }
+    /**
+     * Assign template vars related to page content
+     * @see FrontController::initContent()
+     */
+    public function initContent()
+    {
+        parent::initContent();
+        $this->context->smarty->assign('categoriesTree', Category::getRootCategory()->recurseLiteCategTree(0));
+        $this->context->smarty->assign('categoriescmsTree', CMSCategory::getRecurseCategory($this->context->language->id, 1, 1, 1));
+        $this->context->smarty->assign('voucherAllowed', (int) CartRule::isFeatureActive());
+        if (Module::isInstalled('blockmanufacturer')) {
+            $blockmanufacturer = Module::getInstanceByName('blockmanufacturer');
+            $this->context->smarty->assign('display_manufacturer_link', isset($blockmanufacturer->active) ? (bool) $blockmanufacturer->active : false);
+        } else {
+            $this->context->smarty->assign('display_manufacturer_link', 0);
+        }
+        if (Module::isInstalled('blocksupplier')) {
+            $blocksupplier = Module::getInstanceByName('blocksupplier');
+            $this->context->smarty->assign('display_supplier_link', isset($blocksupplier->active) ? (bool) $blocksupplier->active : false);
+        } else {
+            $this->context->smarty->assign('display_supplier_link', 0);
+        }
+        $this->context->smarty->assign('PS_DISPLAY_SUPPLIERS', Configuration::get('PS_DISPLAY_SUPPLIERS'));
+        $this->context->smarty->assign('display_store', Configuration::get('PS_STORES_DISPLAY_SITEMAP'));
+        $this->setTemplate(_PS_THEME_DIR_ . 'sitemap.tpl');
+    }
 }

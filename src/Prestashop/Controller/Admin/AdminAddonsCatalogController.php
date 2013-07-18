@@ -2,6 +2,8 @@
 
 namespace Prestashop\Controller\Admin;
 
+use Prestashop\Controller\AdminController;
+use Prestashop\Tools;
 /*
 * 2007-2013 PrestaShop
 *
@@ -26,14 +28,11 @@ namespace Prestashop\Controller\Admin;
 *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 class AdminAddonsCatalogController extends AdminController
 {
-	public function initContent()
-	{
-		$this->context->smarty->assign('parentDomain', Tools::getHttpHost(true).substr($_SERVER['REQUEST_URI'], 0, -1 * strlen(basename($_SERVER['REQUEST_URI']))));
-		parent::initContent();
-	}
+    public function initContent()
+    {
+        $this->context->smarty->assign('parentDomain', Tools::getHttpHost(true) . substr($_SERVER['REQUEST_URI'], 0, -1 * strlen(basename($_SERVER['REQUEST_URI']))));
+        parent::initContent();
+    }
 }
-
-

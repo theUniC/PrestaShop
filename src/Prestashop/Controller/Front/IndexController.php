@@ -2,6 +2,8 @@
 
 namespace Prestashop\Controller\Front;
 
+use Prestashop\Controller\FrontController;
+use Prestashop\Hook;
 /*
 * 2007-2013 PrestaShop
 *
@@ -26,20 +28,17 @@ namespace Prestashop\Controller\Front;
 *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 class IndexController extends FrontController
 {
-	public $php_self = 'index';
-
-	/**
-	 * Assign template vars related to page content
-	 * @see FrontController::initContent()
-	 */
-	public function initContent()
-	{
-		parent::initContent();
-
-		$this->context->smarty->assign('HOOK_HOME', Hook::exec('displayHome'));
-		$this->setTemplate(_PS_THEME_DIR_.'index.tpl');
-	}
+    public $php_self = 'index';
+    /**
+     * Assign template vars related to page content
+     * @see FrontController::initContent()
+     */
+    public function initContent()
+    {
+        parent::initContent();
+        $this->context->smarty->assign('HOOK_HOME', Hook::exec('displayHome'));
+        $this->setTemplate(_PS_THEME_DIR_ . 'index.tpl');
+    }
 }

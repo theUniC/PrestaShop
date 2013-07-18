@@ -2,6 +2,8 @@
 
 namespace Prestashop\Controller\Front;
 
+use Prestashop\Controller\FrontController;
+use Prestashop\Tools;
 /*
 * 2007-2013 PrestaShop
 *
@@ -26,38 +28,30 @@ namespace Prestashop\Controller\Front;
 *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 class PageNotFoundController extends FrontController
 {
-	public $php_self = '404';
-	public $page_name = 'pagenotfound';
-
-	/**
-	 * Assign template vars related to page content
-	 * @see FrontController::initContent()
-	 */
-	public function initContent()
-	{
-		header('HTTP/1.1 404 Not Found');
-		header('Status: 404 Not Found');
-
-		if (in_array(Tools::strtolower(substr($_SERVER['REQUEST_URI'], -3)), array('png', 'jpg', 'gif')))
-		{
-			header('Content-Type: image/gif');
-			readfile(_PS_IMG_DIR_.'404.gif');
-			exit;
-		}
-		elseif (in_array(Tools::strtolower(substr($_SERVER['REQUEST_URI'], -3)), array('.js', 'css')))
-			exit;
-
-		parent::initContent();
-
-		$this->setTemplate(_PS_THEME_DIR_.'404.tpl');
-	}
-	
-	public function canonicalRedirection($canonical_url = '')
-	{
-		// 404 - no need to redirect to the canonical url
-	}
+    public $php_self = '404';
+    public $page_name = 'pagenotfound';
+    /**
+     * Assign template vars related to page content
+     * @see FrontController::initContent()
+     */
+    public function initContent()
+    {
+        header('HTTP/1.1 404 Not Found');
+        header('Status: 404 Not Found');
+        if (in_array(Tools::strtolower(substr($_SERVER['REQUEST_URI'], -3)), array('png', 'jpg', 'gif'))) {
+            header('Content-Type: image/gif');
+            readfile(_PS_IMG_DIR_ . '404.gif');
+            die;
+        } elseif (in_array(Tools::strtolower(substr($_SERVER['REQUEST_URI'], -3)), array('.js', 'css'))) {
+            die;
+        }
+        parent::initContent();
+        $this->setTemplate(_PS_THEME_DIR_ . '404.tpl');
+    }
+    public function canonicalRedirection($canonical_url = '')
+    {
+        
+    }
 }
-

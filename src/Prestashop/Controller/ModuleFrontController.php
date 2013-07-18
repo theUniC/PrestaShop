@@ -2,6 +2,10 @@
 
 namespace Prestashop\Controller;
 
+use Prestashop\Tools;
+use Prestashop\Module\Module;
+use Prestashop\Dispatcher;
+use Prestashop\Exception\PrestaShopException;
 /*
 * 2007-2013 PrestaShop
 *
@@ -26,51 +30,47 @@ namespace Prestashop\Controller;
 *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 /**
  * @since 1.5.0
  */
 class ModuleFrontController extends FrontController
 {
-	/**
-	 * @var Module
-	 */
-	public $module;
-
-	public function __construct()
-	{
-		$this->controller_type = 'modulefront';
-		
-		$this->module = Module::getInstanceByName(Tools::getValue('module'));
-		if (!$this->module->active)
-			Tools::redirect('index');
-		$this->page_name = 'module-'.$this->module->name.'-'.Dispatcher::getInstance()->getController();
-
-		parent::__construct();
-	}
-
-	/**
-	 * Assign module template
-	 *
-	 * @param string $template
-	 */
-	public function setTemplate($template)
-	{
-		if (Tools::file_exists_cache(_PS_THEME_DIR_.'modules/'.$this->module->name.'/'.$template))
-			$this->template = _PS_THEME_DIR_.'modules/'.$this->module->name.'/'.$template;
-		elseif (Tools::file_exists_cache($this->getTemplatePath().$template))
-			$this->template = $this->getTemplatePath().$template;
-		else
-			throw new PrestaShopException("Template '$template'' not found");
-	}
-
-	/**
-	 * Get path to front office templates for the module
-	 *
-	 * @return string
-	 */
-	public function getTemplatePath()
-	{
-		return _PS_MODULE_DIR_.$this->module->name.'/views/templates/front/';
-	}
+    /**
+     * @var Module
+     */
+    public $module;
+    public function __construct()
+    {
+        $this->controller_type = 'modulefront';
+        $this->module = Module::getInstanceByName(Tools::getValue('module'));
+        if (!$this->module->active) {
+            Tools::redirect('index');
+        }
+        $this->page_name = 'module-' . $this->module->name . '-' . Dispatcher::getInstance()->getController();
+        parent::__construct();
+    }
+    /**
+     * Assign module template
+     *
+     * @param string $template
+     */
+    public function setTemplate($template)
+    {
+        if (Tools::file_exists_cache(_PS_THEME_DIR_ . 'modules/' . $this->module->name . '/' . $template)) {
+            $this->template = _PS_THEME_DIR_ . 'modules/' . $this->module->name . '/' . $template;
+        } elseif (Tools::file_exists_cache($this->getTemplatePath() . $template)) {
+            $this->template = $this->getTemplatePath() . $template;
+        } else {
+            throw new PrestaShopException("Template '{$template}'' not found");
+        }
+    }
+    /**
+     * Get path to front office templates for the module
+     *
+     * @return string
+     */
+    public function getTemplatePath()
+    {
+        return _PS_MODULE_DIR_ . $this->module->name . '/views/templates/front/';
+    }
 }

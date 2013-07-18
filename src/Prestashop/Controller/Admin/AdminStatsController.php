@@ -2,6 +2,7 @@
 
 namespace Prestashop\Controller\Admin;
 
+use Prestashop\Controller\AdminController;
 /*
 * 2007-2013 PrestaShop
 *
@@ -26,7 +27,7 @@ namespace Prestashop\Controller\Admin;
 *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 class AdminStatsController extends AdminStatsTabController
 {
+    
 }

@@ -2,6 +2,7 @@
 
 namespace Prestashop\Controller\Admin;
 
+use Prestashop\Controller\AdminController;
 /*
 * 2007-2013 PrestaShop
 *
@@ -26,32 +27,24 @@ namespace Prestashop\Controller\Admin;
 *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 class AdminMarketingController extends AdminController
 {
-
-	public function initContent()
-	{
-		$this->display = 'view';
-		return parent::initContent();
-	}
-	
-	public function initToolbarTitle()
-	{
-		$this->toolbar_title = array_unique($this->breadcrumbs);
-	}
-	
-	public function initToolbar()
-	{
-		return false;
-	}
-	
-	public function renderView()
-	{
-		$this->tpl_view_vars = array(
-			'modules_list' => $this->renderModulesList(),
-		);
-		return parent::renderView();
-	}
+    public function initContent()
+    {
+        $this->display = 'view';
+        return parent::initContent();
+    }
+    public function initToolbarTitle()
+    {
+        $this->toolbar_title = array_unique($this->breadcrumbs);
+    }
+    public function initToolbar()
+    {
+        return false;
+    }
+    public function renderView()
+    {
+        $this->tpl_view_vars = array('modules_list' => $this->renderModulesList());
+        return parent::renderView();
+    }
 }
-

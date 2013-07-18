@@ -2,6 +2,7 @@
 
 namespace Prestashop\Tax;
 
+use Prestashop\Tools;
 /*
 * 2007-2013 PrestaShop
 *
@@ -26,32 +27,27 @@ namespace Prestashop\Tax;
 *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 abstract class TaxManagerModule extends Module
 {
-	public $tax_manager_class;
-
-	public function install()
-	{
-		return (parent::install() && $this->registerHook('taxManager') );
-	}
-
-	public function hookTaxManager($args)
-	{
-		$class_file = _PS_MODULE_DIR_.'/'.$this->name.'/'.$this->tax_manager_class.'.php';
-
-		if (!isset($this->tax_manager_class) || !file_exists($class_file))
-			die(sprintf(Tools::displayError('Incorrect Tax Manager class [%s]'), $this->tax_manager_class));
-
-		require_once($class_file);
-
-		if (!class_exists($this->tax_manager_class))
-			die(sprintf(Tools::displayError('Tax Manager class not found [%s]'), $this->tax_manager_class));
-
-		$class = $this->tax_manager_class;
-		if (call_user_func(array($class, 'isAvailableForThisAddress'), $args['address']))
-			return new $class();
-
-		return false;
-	}
+    public $tax_manager_class;
+    public function install()
+    {
+        return parent::install() && $this->registerHook('taxManager');
+    }
+    public function hookTaxManager($args)
+    {
+        $class_file = _PS_MODULE_DIR_ . '/' . $this->name . '/' . $this->tax_manager_class . '.php';
+        if (!isset($this->tax_manager_class) || !file_exists($class_file)) {
+            die(sprintf(Tools::displayError('Incorrect Tax Manager class [%s]'), $this->tax_manager_class));
+        }
+        require_once $class_file;
+        if (!class_exists($this->tax_manager_class)) {
+            die(sprintf(Tools::displayError('Tax Manager class not found [%s]'), $this->tax_manager_class));
+        }
+        $class = $this->tax_manager_class;
+        if (call_user_func(array($class, 'isAvailableForThisAddress'), $args['address'])) {
+            return new $class();
+        }
+        return false;
+    }
 }
