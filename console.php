@@ -201,25 +201,6 @@ namespace ' . $namespace . ';
 
         $commands[] = $fixClassReferences;
 
-        $phpCsFixerCommand = new Command('refactor:php-cs-fixer');
-        $phpCsFixerCommand->setCode(function(InputInterface $input, OutputInterface $output) {
-            $finder = Finder::create();
-            $finder
-                ->files()
-                ->in(__DIR__ . DIRECTORY_SEPARATOR . 'src')
-                ->name('*.php')
-            ;
-
-            /** @var SplFileInfo $file */
-            foreach ($finder as $file) {
-                $output->writeln(sprintf('<info>Fixing PSR-2 issues for <comment>%s</comment></info>', $file->getRealPath()));
-                $processBuilder = new ProcessBuilder(array(PHP_BINARY, 'bin/php-cs-fixer', 'fix', $file->getRealPath()));
-                $processBuilder->getProcess()->run();
-            }
-        });
-
-        $commands[] = $phpCsFixerCommand;
-
         return $commands;
     }
 }

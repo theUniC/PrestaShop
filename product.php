@@ -31,6 +31,8 @@
  * @deprecated 1.5.0
  */
 
+use Prestashop\Tools;
+
 require(dirname(__FILE__).'/config/config.inc.php');
 Tools::displayFileAsDeprecated();
 

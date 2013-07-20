@@ -28,6 +28,10 @@
  * This file will be removed in 1.6
  */
 
+use Prestashop\Context;
+use Prestashop\Controller\FrontController;
+use Prestashop\Tools;
+
 if (isset(Context::getContext()->controller))
 	$controller = Context::getContext()->controller;
 else

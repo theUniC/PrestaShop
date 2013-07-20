@@ -22,10 +22,10 @@ use Prestashop\Hook;
 use Prestashop\Media;
 use Prestashop\Context;
 use Prestashop\Tab;
-use \tools;
 use Prestashop\Db\Db;
 use Prestashop\Category;
 use Prestashop\CMSCategory;
+
 /*
 * 2007-2013 PrestaShop
 *
@@ -657,7 +657,7 @@ class FrontController extends Controller
         if (!is_numeric(Tools::getValue('p', 1)) || Tools::getValue('p', 1) < 0) {
             Tools::redirect(self::$link->getPaginationLink(false, false, $this->n, false, 1, false));
         }
-        $current_url = tools::htmlentitiesUTF8($_SERVER['REQUEST_URI']);
+        $current_url = Tools::htmlentitiesUTF8($_SERVER['REQUEST_URI']);
         //delete parameter page
         $current_url = preg_replace('/(\\?)?(&amp;)?p=\\d+/', '$1', $current_url);
         $range = 2;

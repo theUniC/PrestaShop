@@ -27,6 +27,9 @@
 /**
  * This file will be removed in 1.6
  */
+use Prestashop\ImageManager;
+use Prestashop\ImageType;
+use Prestashop\Tools;
 
 /**
   * @deprecated 1.5.0

@@ -24,6 +24,10 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
+use Prestashop\Controller\Controller;
+use Prestashop\Tools;
+
 require_once(dirname(__FILE__).'/config/config.inc.php');
+
 Tools::displayFileAsDeprecated();
 Controller::getController('PageNotFoundController')->run();
