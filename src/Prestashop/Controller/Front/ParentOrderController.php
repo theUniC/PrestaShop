@@ -47,15 +47,6 @@ use Prestashop\Carrier;
 *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-/**
- * Class FreeOrder to use PaymentModule (abstract class, cannot be instancied)
- */
-class ParentOrderController extends PaymentModule
-{
-    public $active = 1;
-    public $name = 'free_order';
-    public $displayName = 'free_order';
-}
 class ParentOrderController extends FrontController
 {
     public $ssl = true;

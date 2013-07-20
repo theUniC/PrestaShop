@@ -1,7 +1,13 @@
 <?php
+
+namespace Prestashop;
+
 /**
- * Created by PhpStorm.
- * User: theUniC
- * Date: 20/07/13
- * Time: 08:04
+ * Class FreeOrder to use PaymentModule (abstract class, cannot be instancied)
  */
+class FreeOrder extends PaymentModule
+{
+    public $active = 1;
+    public $name = 'free_order';
+    public $displayName = 'free_order';
+}
