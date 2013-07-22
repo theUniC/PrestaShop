@@ -24,6 +24,10 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
+use Prestashop\Context;
+use Prestashop\Tools;
+use Prestashop\Translate;
+
 global $smarty;
 $smarty->debugging = false;
 $smarty->debugging_ctrl = 'NONE';

@@ -24,6 +24,21 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
+use Prestashop\Configuration;
+use Prestashop\Context;
+use Prestashop\Cookie;
+use Prestashop\Country;
+use Prestashop\Customer;
+use Prestashop\Employee;
+use Prestashop\Group;
+use Prestashop\Language;
+use Prestashop\Link;
+use Prestashop\Shop\Shop;
+use Prestashop\Tools;
+use Prestashop\Validate;
+
+require __DIR__ . '/../vendor/autoload.php';
+
 require_once(dirname(__FILE__).'/defines.inc.php');
 $start_time = microtime(true);
 
@@ -50,17 +65,6 @@ if (!file_exists(dirname(__FILE__).'/settings.inc.php'))
 }
 
 require_once(dirname(__FILE__).'/settings.inc.php');
-
-require_once(dirname(__FILE__).'/autoload.php');
-
-if (_PS_DEBUG_PROFILING_)
-{
-	include_once(_PS_TOOL_DIR_.'profiling/Controller.php');
-	include_once(_PS_TOOL_DIR_.'profiling/ObjectModel.php');
-	include_once(_PS_TOOL_DIR_.'profiling/Hook.php');
-	include_once(_PS_TOOL_DIR_.'profiling/Db.php');
-	include_once(_PS_TOOL_DIR_.'profiling/Tools.php');
-}
 
 if (Tools::isPHPCLI())
 	Tools::argvToGET($argc, $argv);

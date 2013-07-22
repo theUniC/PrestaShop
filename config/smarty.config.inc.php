@@ -24,6 +24,12 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
+use Prestashop\Configuration;
+use Prestashop\Context;
+use Prestashop\Media;
+use Prestashop\Module\Module;
+use Prestashop\Tools;
+
 define('_PS_SMARTY_DIR_', _PS_TOOL_DIR_.'smarty/');
 
 require_once(_PS_SMARTY_DIR_.'Smarty.class.php');
