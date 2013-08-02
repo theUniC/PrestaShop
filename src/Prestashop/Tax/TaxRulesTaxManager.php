@@ -2,6 +2,7 @@
 
 namespace Prestashop\Tax;
 
+use Prestashop\Address;
 use Prestashop\Configuration;
 use Prestashop\Tax\TaxCalculator;
 use Prestashop\Db\Db;

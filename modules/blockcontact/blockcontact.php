@@ -1,4 +1,8 @@
 <?php
+
+use Prestashop\Configuration;
+use Prestashop\Tools;
+use Prestashop\Module\Module;
 /*
 * 2007-2013 PrestaShop
 *
@@ -23,89 +27,70 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
-if (!defined('_CAN_LOAD_FILES_'))
-	exit;
-	
+if (!defined('_CAN_LOAD_FILES_')) {
+    die;
+}
 class Blockcontact extends Module
 {
-	public function __construct()
-	{
-		$this->name = 'blockcontact';
-		$this->tab = 'front_office_features';
-		$this->version = '1.0';
-
-		parent::__construct();
-
-		$this->displayName = $this->l('Contact Block');
-		$this->description = $this->l('Allows you to add additional information about your store\'s customer service.');
-	}
-	
-	public function install()
-	{
-		return parent::install()
-			&& Configuration::updateValue('blockcontact_telnumber', '')
-			&& Configuration::updateValue('blockcontact_email', '')
-			&& $this->registerHook('displayRightColumn')
-			&& $this->registerHook('displayHeader');
-	}
-	
-	public function uninstall()
-	{
-		// Delete configuration
-		return Configuration::deleteByName('blockcontact_telnumber') && Configuration::deleteByName('blockcontact_email') && parent::uninstall();
-	}
-	
-	public function getContent()
-	{
-		$html = '';
-		// If we try to update the settings
-		if (Tools::isSubmit('submitModule'))
-		{				
-			Configuration::updateValue('blockcontact_telnumber', Tools::getValue('telnumber'));
-			Configuration::updateValue('blockcontact_email', Tools::getValue('email'));
-			$this->_clearCache('blockcontact.tpl');
-			$html .= '<div class="conf confirm">'.$this->l('Configuration updated').'</div>';
-		}
-
-		$html .= '
-		<h2>'.$this->displayName.'</h2>
-		<form action="'.Tools::htmlentitiesutf8($_SERVER['REQUEST_URI']).'" method="post">
+    public function __construct()
+    {
+        $this->name = 'blockcontact';
+        $this->tab = 'front_office_features';
+        $this->version = '1.0';
+        parent::__construct();
+        $this->displayName = $this->l('Contact Block');
+        $this->description = $this->l('Allows you to add additional information about your store\'s customer service.');
+    }
+    public function install()
+    {
+        return parent::install() && Configuration::updateValue('blockcontact_telnumber', '') && Configuration::updateValue('blockcontact_email', '') && $this->registerHook('displayRightColumn') && $this->registerHook('displayHeader');
+    }
+    public function uninstall()
+    {
+        // Delete configuration
+        return Configuration::deleteByName('blockcontact_telnumber') && Configuration::deleteByName('blockcontact_email') && parent::uninstall();
+    }
+    public function getContent()
+    {
+        $html = '';
+        // If we try to update the settings
+        if (Tools::isSubmit('submitModule')) {
+            Configuration::updateValue('blockcontact_telnumber', Tools::getValue('telnumber'));
+            Configuration::updateValue('blockcontact_email', Tools::getValue('email'));
+            $this->_clearCache('blockcontact.tpl');
+            $html .= '<div class="conf confirm">' . $this->l('Configuration updated') . '</div>';
+        }
+        $html .= '
+		<h2>' . $this->displayName . '</h2>
+		<form action="' . Tools::htmlentitiesutf8($_SERVER['REQUEST_URI']) . '" method="post">
 			<fieldset>			
-				<label for="telnumber">'.$this->l('Telephone number:').'</label>
-				<input type="text" id="telnumber" name="telnumber" value="'.((Configuration::get('blockcontact_telnumber') != '') ? Tools::safeOutput(Configuration::get('blockcontact_telnumber')) : '').'" />
+				<label for="telnumber">' . $this->l('Telephone number:') . '</label>
+				<input type="text" id="telnumber" name="telnumber" value="' . (Configuration::get('blockcontact_telnumber') != '' ? Tools::safeOutput(Configuration::get('blockcontact_telnumber')) : '') . '" />
 				<div class="clear">&nbsp;</div>
-				<label for="email">'.$this->l('Email').'</label>
-				<input type="text" id="email" name="email" value="'.((Configuration::get('blockcontact_email') != '') ? Tools::safeOutput(Configuration::get('blockcontact_email')) : '').'" />
+				<label for="email">' . $this->l('Email') . '</label>
+				<input type="text" id="email" name="email" value="' . (Configuration::get('blockcontact_email') != '' ? Tools::safeOutput(Configuration::get('blockcontact_email')) : '') . '" />
 				<div class="clear">&nbsp;</div>
 				<div class="margin-form">
-					<input type="submit" name="submitModule" value="'.$this->l('Update settings').'" class="button" /></center>
+					<input type="submit" name="submitModule" value="' . $this->l('Update settings') . '" class="button" /></center>
 				</div>
 			</fieldset>
 		</form>';
-
-		return $html;
-	}
-
-	public function hookDisplayHeader()
-	{
-		$this->context->controller->addCSS(($this->_path).'blockcontact.css', 'all');
-	}
-	
-	public function hookDisplayRightColumn()
-	{
-		global $smarty;
-		if (!$this->isCached('blockcontact.tpl', $this->getCacheId()))
-			$smarty->assign(array(
-				'telnumber' => Configuration::get('blockcontact_telnumber'),
-				'email' => Configuration::get('blockcontact_email')
-			));
-		return $this->display(__FILE__, 'blockcontact.tpl', $this->getCacheId());
-	}
-	
-	public function hookDisplayLeftColumn()
-	{
-		return $this->hookDisplayRightColumn();
-	}
+        return $html;
+    }
+    public function hookDisplayHeader()
+    {
+        $this->context->controller->addCSS($this->_path . 'blockcontact.css', 'all');
+    }
+    public function hookDisplayRightColumn()
+    {
+        global $smarty;
+        if (!$this->isCached('blockcontact.tpl', $this->getCacheId())) {
+            $smarty->assign(array('telnumber' => Configuration::get('blockcontact_telnumber'), 'email' => Configuration::get('blockcontact_email')));
+        }
+        return $this->display(__FILE__, 'blockcontact.tpl', $this->getCacheId());
+    }
+    public function hookDisplayLeftColumn()
+    {
+        return $this->hookDisplayRightColumn();
+    }
 }
-?>

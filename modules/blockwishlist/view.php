@@ -1,4 +1,12 @@
 <?php
+
+use Prestashop\Context;
+use Prestashop\Tools;
+use \BlockWishList;
+use \WishList;
+use Prestashop\Product;
+use Prestashop\Validate;
+use Prestashop\Configuration;
 /*
 * 2007-2013 PrestaShop
 *
@@ -23,83 +31,65 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 /* SSL Management */
 $useSSL = true;
-
-require_once(dirname(__FILE__).'/../../config/config.inc.php');
-require_once(dirname(__FILE__).'/../../header.php');
-require_once(dirname(__FILE__).'/WishList.php');
-
+require_once dirname(__FILE__) . '/../../config/config.inc.php';
+require_once dirname(__FILE__) . '/../../header.php';
+require_once dirname(__FILE__) . '/WishList.php';
 error_reporting(0);
-
 $context = Context::getContext();
 $token = Tools::getValue('token');
-
 // Instance of module class for translations
 $module = new BlockWishList();
-
-if (empty($token) === false)
-{
-	$wishlist = WishList::getByToken($token);
-	if (empty($result) === true || $result === false)
-		$errors[] = $module->l('Invalid wishlist token', 'view');
-	WishList::refreshWishList($wishlist['id_wishlist']);
-	$products = WishList::getProductByIdCustomer((int)($wishlist['id_wishlist']), (int)($wishlist['id_customer']), $context->language->id, null, true);
-	
-	for ($i = 0; $i < sizeof($products); ++$i)
-	{
-		$obj = new Product((int)($products[$i]['id_product']), false, $context->language->id);
-		if (!Validate::isLoadedObject($obj))
-			continue;
-		else
-		{
-			$quantity = Product::getQuantity((int)$products[$i]['id_product'], $products[$i]['id_product_attribute']);
-			$products[$i]['attribute_quantity'] = $quantity;
-			$products[$i]['product_quantity'] = $quantity;
-			if ($products[$i]['id_product_attribute'] != 0)
-			{
-				$combination_imgs = $obj->getCombinationImages($context->language->id);
-				if (isset($combination_imgs[$products[$i]['id_product_attribute']][0]))
-					$products[$i]['cover'] = $obj->id.'-'.$combination_imgs[$products[$i]['id_product_attribute']][0]['id_image'];
-			}
-			else
-			{
-				$images = $obj->getImages($context->language->id);
-				foreach ($images AS $k => $image)
-					if ($image['cover'])
-					{
-						$products[$i]['cover'] = $obj->id.'-'.$image['id_image'];
-						break;
-					}
-			}
-			if (!isset($products[$i]['cover']))
-				$products[$i]['cover'] = $context->language->iso_code.'-default';
-		}
-		$products[$i]['bought'] = false;
-		for ($j = 0, $k = 0; $j < sizeof($bought); ++$j)
-		{
-			if ($bought[$j]['id_product'] == $products[$i]['id_product'] AND
-				$bought[$j]['id_product_attribute'] == $products[$i]['id_product_attribute'])
-				$products[$i]['bought'][$k++] = $bought[$j];
-		}
-	}
-	
-	WishList::incCounter((int)($wishlist['id_wishlist']));
-	$ajax = Configuration::get('PS_BLOCK_CART_AJAX');
-	$context->smarty->assign(array (
-		'current_wishlist' => $wishlist,
-		'token' => $token,
-		'ajax' => ((isset($ajax) AND (int)($ajax) == 1) ? '1' : '0'),
-		'wishlists' => WishList::getByIdCustomer((int)($wishlist['id_customer'])),
-		'products' => $products));
+if (empty($token) === false) {
+    $wishlist = WishList::getByToken($token);
+    if (empty($result) === true || $result === false) {
+        $errors[] = $module->l('Invalid wishlist token', 'view');
+    }
+    WishList::refreshWishList($wishlist['id_wishlist']);
+    $products = WishList::getProductByIdCustomer((int) $wishlist['id_wishlist'], (int) $wishlist['id_customer'], $context->language->id, null, true);
+    for ($i = 0; $i < sizeof($products); ++$i) {
+        $obj = new Product((int) $products[$i]['id_product'], false, $context->language->id);
+        if (!Validate::isLoadedObject($obj)) {
+            continue;
+        } else {
+            $quantity = Product::getQuantity((int) $products[$i]['id_product'], $products[$i]['id_product_attribute']);
+            $products[$i]['attribute_quantity'] = $quantity;
+            $products[$i]['product_quantity'] = $quantity;
+            if ($products[$i]['id_product_attribute'] != 0) {
+                $combination_imgs = $obj->getCombinationImages($context->language->id);
+                if (isset($combination_imgs[$products[$i]['id_product_attribute']][0])) {
+                    $products[$i]['cover'] = $obj->id . '-' . $combination_imgs[$products[$i]['id_product_attribute']][0]['id_image'];
+                }
+            } else {
+                $images = $obj->getImages($context->language->id);
+                foreach ($images as $k => $image) {
+                    if ($image['cover']) {
+                        $products[$i]['cover'] = $obj->id . '-' . $image['id_image'];
+                        break;
+                    }
+                }
+            }
+            if (!isset($products[$i]['cover'])) {
+                $products[$i]['cover'] = $context->language->iso_code . '-default';
+            }
+        }
+        $products[$i]['bought'] = false;
+        for ($j = 0, $k = 0; $j < sizeof($bought); ++$j) {
+            if ($bought[$j]['id_product'] == $products[$i]['id_product'] and $bought[$j]['id_product_attribute'] == $products[$i]['id_product_attribute']) {
+                $products[$i]['bought'][$k++] = $bought[$j];
+            }
+        }
+    }
+    WishList::incCounter((int) $wishlist['id_wishlist']);
+    $ajax = Configuration::get('PS_BLOCK_CART_AJAX');
+    $context->smarty->assign(array('current_wishlist' => $wishlist, 'token' => $token, 'ajax' => (isset($ajax) and (int) $ajax == 1) ? '1' : '0', 'wishlists' => WishList::getByIdCustomer((int) $wishlist['id_customer']), 'products' => $products));
 }
-
-if (Tools::file_exists_cache(_PS_THEME_DIR_.'modules/blockwishlist/view.tpl'))
-	$context->smarty->display(_PS_THEME_DIR_.'modules/blockwishlist/view.tpl');
-elseif (Tools::file_exists_cache(dirname(__FILE__).'/view.tpl'))
-	$context->smarty->display(dirname(__FILE__).'/view.tpl');
-else
-	echo $module->l('No template found', 'view');
-
-require(dirname(__FILE__).'/../../footer.php');
+if (Tools::file_exists_cache(_PS_THEME_DIR_ . 'modules/blockwishlist/view.tpl')) {
+    $context->smarty->display(_PS_THEME_DIR_ . 'modules/blockwishlist/view.tpl');
+} elseif (Tools::file_exists_cache(dirname(__FILE__) . '/view.tpl')) {
+    $context->smarty->display(dirname(__FILE__) . '/view.tpl');
+} else {
+    echo $module->l('No template found', 'view');
+}
+require dirname(__FILE__) . '/../../footer.php';

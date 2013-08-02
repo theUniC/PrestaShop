@@ -15,11 +15,11 @@ use Prestashop\Range\RangeWeight;
 use Prestashop\Exception\PrestaShopException;
 use Prestashop\Cache\Cache;
 use Prestashop\Tax\TaxManagerFactory;
-use \DB;
 use Prestashop\Address;
 use Prestashop\Db\DbQuery;
 use Prestashop\Stock\Warehouse;
 use Prestashop\Customer;
+
 /*
 * 2007-2013 PrestaShop
 *

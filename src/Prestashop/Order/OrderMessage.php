@@ -3,6 +3,8 @@
 namespace Prestashop\Order;
 
 use Prestashop\Db\Db;
+use Prestashop\ObjectModel;
+
 /*
 * 2007-2013 PrestaShop
 *

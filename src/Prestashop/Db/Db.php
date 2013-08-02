@@ -191,7 +191,7 @@ abstract class Db
             }
         }
 
-        return $class;
+        return '\Prestashop\Db\\' . $class;
     }
     /**
      * Instantiate database connection

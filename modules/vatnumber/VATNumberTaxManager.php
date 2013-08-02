@@ -1,4 +1,8 @@
 <?php
+
+use Prestashop\Configuration;
+use Prestashop\Tax\Tax;
+use Prestashop\Tax\TaxCalculator;
 /*
 * 2007-2013 PrestaShop
 *
@@ -23,23 +27,17 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 class VATNumberTaxManager implements TaxManagerInterface
 {
-	public static function isAvailableForThisAddress(Address $address)
-	{
-		return (!empty($address->vat_number)
-					AND $address->id_country != Configuration::get('VATNUMBER_COUNTRY')
-					AND Configuration::get('VATNUMBER_MANAGEMENT'));
-	}
-
-	public function getTaxCalculator()
-	{
-		// If the address matches the european vat number criterias no taxes are applied
-		$tax = new Tax();
-		$tax->rate = 0;
-
-		return new TaxCalculator(array($tax));
-	}
+    public static function isAvailableForThisAddress(Address $address)
+    {
+        return !empty($address->vat_number) and $address->id_country != Configuration::get('VATNUMBER_COUNTRY') and Configuration::get('VATNUMBER_MANAGEMENT');
+    }
+    public function getTaxCalculator()
+    {
+        // If the address matches the european vat number criterias no taxes are applied
+        $tax = new Tax();
+        $tax->rate = 0;
+        return new TaxCalculator(array($tax));
+    }
 }
-

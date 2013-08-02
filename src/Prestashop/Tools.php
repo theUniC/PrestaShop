@@ -21,9 +21,8 @@ use \parserSql;
 use Prestashop\Hook;
 use \Services_JSON;
 use Prestashop\Logger;
-use \ZipArchive;
-use \ZIPARCHIVE;
-use \PclZip;
+use ZipArchive;
+use PclZip;
 use Prestashop\Country;
 /*
 * 2007-2013 PrestaShop
@@ -691,7 +690,7 @@ class Tools
         if (!is_array($_POST)) {
             return array();
         }
-        $_POST = array_map(array('Tools', 'htmlentitiesUTF8'), $_POST);
+        $_POST = array_map(array('Prestashop\Tools', 'htmlentitiesUTF8'), $_POST);
     }
     /**
      * Delete directory and subdirectories
@@ -2148,7 +2147,8 @@ exit;
     public static function nl2br($str)
     {
         return str_replace(array('
-', '', '
+', '
+', '
 '), '<br />', $str);
     }
     /**

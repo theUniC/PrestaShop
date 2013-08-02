@@ -1,4 +1,7 @@
 <?php
+
+use Prestashop\Tools;
+use Prestashop\Controller\ModuleFrontController;
 /*
 * 2007-2013 PrestaShop
 *
@@ -23,30 +26,26 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 /**
  * @since 1.5.0
  */
 class BlocknewsletterVerificationModuleFrontController extends ModuleFrontController
 {
-	private $message = '';
-
-	/**
-	 * @see FrontController::postProcess()
-	 */
-	public function postProcess()
-	{
-		$this->message = $this->module->confirmEmail(Tools::getValue('token'));
-	}
-
-	/**
-	 * @see FrontController::initContent()
-	 */
-	public function initContent()
-	{
-		parent::initContent();
-
-		$this->context->smarty->assign('message', $this->message);
-		$this->setTemplate('verification_execution.tpl');
-	}
+    private $message = '';
+    /**
+     * @see FrontController::postProcess()
+     */
+    public function postProcess()
+    {
+        $this->message = $this->module->confirmEmail(Tools::getValue('token'));
+    }
+    /**
+     * @see FrontController::initContent()
+     */
+    public function initContent()
+    {
+        parent::initContent();
+        $this->context->smarty->assign('message', $this->message);
+        $this->setTemplate('verification_execution.tpl');
+    }
 }

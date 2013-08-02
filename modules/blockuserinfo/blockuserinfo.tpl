@@ -35,10 +35,10 @@
 			<span class="ajax_cart_total{if $cart_qties == 0} hidden{/if}">
 				{if $cart_qties > 0}
 					{if $priceDisplay == 1}
-						{assign var='blockuser_cart_flag' value='Cart::BOTH_WITHOUT_SHIPPING'|constant}
+						{assign var='blockuser_cart_flag' value='Prestashop\Cart::BOTH_WITHOUT_SHIPPING'|constant}
 						{convertPrice price=$cart->getOrderTotal(false, $blockuser_cart_flag)}
 					{else}
-						{assign var='blockuser_cart_flag' value='Cart::BOTH_WITHOUT_SHIPPING'|constant}
+						{assign var='blockuser_cart_flag' value='Prestashop\Cart::BOTH_WITHOUT_SHIPPING'|constant}
 						{convertPrice price=$cart->getOrderTotal(true, $blockuser_cart_flag)}
 					{/if}
 				{/if}

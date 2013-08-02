@@ -325,39 +325,53 @@ class Hook extends ObjectModel
             return $list;
         }
     }
+
     /**
      * Execute modules for specified hook
      *
      * @param  string $hook_name Hook Name
-     * @param  array  $hook_args Parameters for the functions
-     * @param  int    $id_module Execute hook for this module only
+     * @param  array $hook_args Parameters for the functions
+     * @param  int $id_module Execute hook for this module only
+     * @param  bool $array_return
+     * @param  bool $check_exceptions
+     *
+     * @throws Exception\PrestaShopException
+     *
      * @return string modules output
      */
     public static function exec($hook_name, $hook_args = array(), $id_module = null, $array_return = false, $check_exceptions = true)
     {
         // Check arguments validity
-        if ($id_module && !is_numeric($id_module) || !Validate::isHookName($hook_name)) {
+        if ($id_module && !is_numeric($id_module)) {
             throw new PrestaShopException('Invalid id_module or hook_name');
         }
+
         // If no modules associated to hook_name or recompatible hook name, we stop the function
         if (!($module_list = Hook::getHookModuleExecList($hook_name))) {
             return '';
         }
+
         // Check if hook exists
         if (!($id_hook = Hook::getIdByName($hook_name))) {
             return false;
         }
+
         // Store list of executed hooks on this page
         Hook::$executed_hooks[$id_hook] = $hook_name;
+
         $live_edit = false;
         $context = Context::getContext();
+
         if (!isset($hook_args['cookie']) || !$hook_args['cookie']) {
             $hook_args['cookie'] = $context->cookie;
         }
+
         if (!isset($hook_args['cart']) || !$hook_args['cart']) {
             $hook_args['cart'] = $context->cart;
         }
+
         $retro_hook_name = Hook::getRetroHookName($hook_name);
+
         // Look on modules list
         $altern = 0;
         $output = '';
@@ -411,6 +425,7 @@ class Hook extends ObjectModel
                 }
             }
         }
+
         if ($array_return) {
             return $output;
         } else {
@@ -418,6 +433,7 @@ class Hook extends ObjectModel
                 <div id="' . $hook_name . '" class="dndHook" style="min-height:50px">' : '') . $output . ($live_edit ? '</div>' : '');
         }
     }
+
     public static function wrapLiveEdit($display, $moduleInstance, $id_hook)
     {
         return '<script type="text/javascript"> modules_list.push(\'' . Tools::safeOutput($moduleInstance->name) . '\');</script>

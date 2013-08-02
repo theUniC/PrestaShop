@@ -858,10 +858,10 @@ abstract class ObjectModel
         }
         // Check field validator
         if (!empty($data['validate'])) {
-            if (!method_exists('Validate', $data['validate'])) {
+            if (!method_exists('\Prestashop\Validate', $data['validate'])) {
                 throw new PrestaShopException('Validation function not found. ' . $data['validate']);
             }
-            if (!empty($value) && !call_user_func(array('Validate', $data['validate']), $value)) {
+            if (!empty($value) && !call_user_func(array('\Prestashop\Validate', $data['validate']), $value)) {
                 return 'Property ' . get_class($this) . '->' . $field . ' is not valid';
             }
         }

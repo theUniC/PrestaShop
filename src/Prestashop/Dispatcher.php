@@ -162,14 +162,14 @@ class Dispatcher
                 if (!isset($controllers[strtolower($this->controller)])) {
                     $this->controller = $this->controller_not_found;
                 }
-                $controller_class = $controllers[strtolower($this->controller)];
+                $controller_class = 'Prestashop\Controller\Front\\' . $controllers[strtolower($this->controller)];
                 $params_hook_action_dispatcher = array('controller_type' => self::FC_FRONT, 'controller_class' => $controller_class, 'is_module' => 0);
                 break;
             // Dispatch module controller for front office
             case self::FC_MODULE:
                 $module_name = Validate::isModuleName(Tools::getValue('module')) ? Tools::getValue('module') : '';
                 $module = Module::getInstanceByName($module_name);
-                $controller_class = 'PageNotFoundController';
+                $controller_class = 'Prestashop\Controller\Front\PageNotFoundController';
                 if (Validate::isLoadedObject($module) && $module->active) {
                     $controllers = Dispatcher::getControllers(_PS_MODULE_DIR_ . $module_name . '/controllers/front/');
                     if (isset($controllers[strtolower($this->controller)])) {
@@ -190,7 +190,7 @@ class Dispatcher
                         $controllers = Dispatcher::getControllers(_PS_MODULE_DIR_ . $tab->module . '/controllers/admin/');
                         if (!isset($controllers[strtolower($this->controller)])) {
                             $this->controller = $this->controller_not_found;
-                            $controller_class = 'AdminNotFoundController';
+                            $controller_class = 'Prestashop\Controller\Admin\AdminNotFoundController';
                         } else {
                             // Controllers in modules can be named AdminXXX.php or AdminXXXController.php
                             include_once _PS_MODULE_DIR_ . $tab->module . '/controllers/admin/' . $controllers[strtolower($this->controller)] . '.php';

@@ -4,6 +4,7 @@ namespace Prestashop\Shop;
 
 use Prestashop\Collection;
 use Prestashop\Db\Db;
+use Prestashop\ObjectModel;
 use Prestashop\Shop\Shop;
 /*
 * 2007-2013 PrestaShop

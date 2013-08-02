@@ -1,4 +1,8 @@
 <?php
+
+use Prestashop\Module\Module;
+use Prestashop\Tools;
+use Prestashop\Module\ModuleGridEngine;
 /*
 * 2007-2013 PrestaShop
 *
@@ -23,66 +27,60 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
-if (!defined('_PS_VERSION_'))
-	exit;
-
+if (!defined('_PS_VERSION_')) {
+    die;
+}
 class GridHtml extends ModuleGridEngine
 {
-	private $_values;
-	private static $_columns;
-
-	function __construct($type = null)
-	{
-		if ($type != null)
-			parent::__construct($type);
-		else
-		{
-			$this->name = 'gridhtml';
-			$this->tab = 'administration';
-			$this->version = 1.0;
-			$this->author = 'PrestaShop';
-			$this->need_instance = 0;
-			
-			Module::__construct();
-			
-			$this->displayName = $this->l('Simple HTML table display.');
-			$this->description = '';
-		}
-	}
-	
-	function install()
-	{
-		return (parent::install() AND $this->registerHook('GridEngine'));
-	}
-	
-	public static function hookGridEngine($params, $grider)
-	{
-		self::$_columns = $params['columns'];
-		if (!isset($params['emptyMsg']))
-			$params['emptyMsg'] = 'Empty';
-
-		$html = '<div style="width:'.$params['width'].'px;height:'.$params['height'].'px;overflow:scroll">
+    private $_values;
+    private static $_columns;
+    public function __construct($type = null)
+    {
+        if ($type != null) {
+            parent::__construct($type);
+        } else {
+            $this->name = 'gridhtml';
+            $this->tab = 'administration';
+            $this->version = 1.0;
+            $this->author = 'PrestaShop';
+            $this->need_instance = 0;
+            Module::__construct();
+            $this->displayName = $this->l('Simple HTML table display.');
+            $this->description = '';
+        }
+    }
+    public function install()
+    {
+        return parent::install() and $this->registerHook('GridEngine');
+    }
+    public static function hookGridEngine($params, $grider)
+    {
+        self::$_columns = $params['columns'];
+        if (!isset($params['emptyMsg'])) {
+            $params['emptyMsg'] = 'Empty';
+        }
+        $html = '<div style="width:' . $params['width'] . 'px;height:' . $params['height'] . 'px;overflow:scroll">
 			<table class="table" cellpadding="0" cellspacing="0" id="grid_1"><thead><tr>';
-		foreach ($params['columns'] as $column)
-			$html .= '<th style="width:'.$column['width'].'px;cursor:pointer">
-						'.$column['header'].'<br />
-						<a href="javascript:getGridData(\''.$grider.'&sort='.$column['dataIndex'].'&dir=ASC\');"><img src="../img/admin/up.gif" /></a>
-						<a href="javascript:getGridData(\''.$grider.'&sort='.$column['dataIndex'].'&dir=DESC\');"><img src="../img/admin/down.gif" /></a>
+        foreach ($params['columns'] as $column) {
+            $html .= '<th style="width:' . $column['width'] . 'px;cursor:pointer">
+						' . $column['header'] . '<br />
+						<a href="javascript:getGridData(\'' . $grider . '&sort=' . $column['dataIndex'] . '&dir=ASC\');"><img src="../img/admin/up.gif" /></a>
+						<a href="javascript:getGridData(\'' . $grider . '&sort=' . $column['dataIndex'] . '&dir=DESC\');"><img src="../img/admin/down.gif" /></a>
 					</th>';
-		$html .= '</tr></thead>
+        }
+        $html .= '</tr></thead>
 				<tbody></tbody>
-				<tfoot><tr><th colspan="'.count($params['columns']).'"></th></tr></tfoot>
+				<tfoot><tr><th colspan="' . count($params['columns']) . '"></th></tr></tfoot>
 			</table>
 		</div>
 		<script type="text/javascript">
 			function getGridData(url)
 			{
-				$("#grid_1 tbody").html("<tr><td style=\"text-align:center\" colspan=\"" + '.count($params['columns']).' + "\"><img src=\"../img/loadingAnimation.gif\" /></td></tr>");
+				$("#grid_1 tbody").html("<tr><td style=\\"text-align:center\\" colspan=\\"" + ' . count($params['columns']) . ' + "\\"><img src=\\"../img/loadingAnimation.gif\\" /></td></tr>");
 				$.get(url, "", function(json) {
 					$("#grid_1 tbody").html("");
 					var array = $.parseJSON(json);
-					$("#grid_1 tfoot tr th").html("'.addslashes($params['pagingMessage']).'");
+					$("#grid_1 tfoot tr th").html("' . addslashes($params['pagingMessage']) . '");
 					$("#grid_1 tfoot tr th").html($("#grid_1 tfoot tr th").html().replace("{0}", array["from"]));
 					$("#grid_1 tfoot tr th").html($("#grid_1 tfoot tr th").html().replace("{1}", array["to"]));
 					$("#grid_1 tfoot tr th").html($("#grid_1 tfoot tr th").html().replace("{2}", array["total"]));
@@ -95,16 +93,19 @@ class GridHtml extends ModuleGridEngine
 					if (values.length > 0)
 						$.each(values, function(index, row){
 							var newLine = "<tr>";';
-			foreach ($params['columns'] as $column)
-				$html .= '	newLine += "<td'.(isset($column['align']) ? ' style=\"text-align:'.$column['align'].'\"' : '').'>" + row["'.$column['dataIndex'].'"] + "</td>";';
-			if (!isset($params['defaultSortColumn']))
-				$params['defaultSortColumn'] = false;
-			if (!isset($params['defaultSortDirection']))
-				$params['defaultSortDirection'] = false;
-			$html .= '		$("#grid_1 tbody").append(newLine);
+        foreach ($params['columns'] as $column) {
+            $html .= '	newLine += "<td' . (isset($column['align']) ? ' style=\\"text-align:' . $column['align'] . '\\"' : '') . '>" + row["' . $column['dataIndex'] . '"] + "</td>";';
+        }
+        if (!isset($params['defaultSortColumn'])) {
+            $params['defaultSortColumn'] = false;
+        }
+        if (!isset($params['defaultSortDirection'])) {
+            $params['defaultSortDirection'] = false;
+        }
+        $html .= '		$("#grid_1 tbody").append(newLine);
 						});
 					else
-						$("#grid_1 tbody").append("<tr><td style=\"text-align:center\" colspan=\"" + '.count($params['columns']).' + "\">'.$params['emptyMsg'].'</td></tr>");
+						$("#grid_1 tbody").append("<tr><td style=\\"text-align:center\\" colspan=\\"" + ' . count($params['columns']) . ' + "\\">' . $params['emptyMsg'] . '</td></tr>");
 				});
 			}
 			
@@ -136,50 +137,38 @@ class GridHtml extends ModuleGridEngine
 				getGridData(url);
 			}
 			
-			$(document).ready(function(){getGridData("'.$grider.'&sort='.urlencode($params['defaultSortColumn']).'&dir='.urlencode($params['defaultSortDirection']).'");});
+			$(document).ready(function(){getGridData("' . $grider . '&sort=' . urlencode($params['defaultSortColumn']) . '&dir=' . urlencode($params['defaultSortDirection']) . '");});
 		</script>';
-		return $html;
-	}
-	
-	public function setColumnsInfos(&$infos)
-	{
-	}
-	
-	public function setValues($values)
-	{
-		$this->_values = $values;
-	}
-	
-	public function setTitle($title)
-	{
-		$this->_title = $title;
-	}
-	
-	public function setSize($width, $height)
-	{
-		$this->_width = $width;
-		$this->_height = $height;
-	}
-	
-	public function setTotalCount($totalCount)
-	{
-		$this->_totalCount = $totalCount;
-	}
-	
-	public function setLimit($start, $limit)
-	{
-		$this->_start = (int)$start;
-		$this->_limit = (int)$limit;
-	}
-	
-	public function render()
-	{
-		echo Tools::jsonEncode(array(
-			'total' => $this->_totalCount,
-			'from' => min($this->_start + 1, $this->_totalCount),
-			'to' => min($this->_start + $this->_limit, $this->_totalCount),
-			'values' => $this->_values
-		));
-	}	
+        return $html;
+    }
+    public function setColumnsInfos(&$infos)
+    {
+        
+    }
+    public function setValues($values)
+    {
+        $this->_values = $values;
+    }
+    public function setTitle($title)
+    {
+        $this->_title = $title;
+    }
+    public function setSize($width, $height)
+    {
+        $this->_width = $width;
+        $this->_height = $height;
+    }
+    public function setTotalCount($totalCount)
+    {
+        $this->_totalCount = $totalCount;
+    }
+    public function setLimit($start, $limit)
+    {
+        $this->_start = (int) $start;
+        $this->_limit = (int) $limit;
+    }
+    public function render()
+    {
+        echo Tools::jsonEncode(array('total' => $this->_totalCount, 'from' => min($this->_start + 1, $this->_totalCount), 'to' => min($this->_start + $this->_limit, $this->_totalCount), 'values' => $this->_values));
+    }
 }
-

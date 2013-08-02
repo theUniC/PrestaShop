@@ -2,6 +2,7 @@
 
 namespace Prestashop\Order;
 
+use Prestashop\ObjectModel;
 use Prestashop\Order\Order;
 use Prestashop\Shop\ShopUrl;
 use Prestashop\Order\OrderState;

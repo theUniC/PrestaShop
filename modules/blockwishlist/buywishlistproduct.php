@@ -1,4 +1,9 @@
 <?php
+
+use \BlockWishList;
+use Prestashop\Tools;
+use Prestashop\Configuration;
+use \WishList;
 /*
 * 2007-2013 PrestaShop
 *
@@ -23,34 +28,26 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
-require_once(dirname(__FILE__).'/../../config/config.inc.php');
-require_once(dirname(__FILE__).'/../../init.php');
-require_once(dirname(__FILE__).'/WishList.php');
-
-
+require_once dirname(__FILE__) . '/../../config/config.inc.php';
+require_once dirname(__FILE__) . '/../../init.php';
+require_once dirname(__FILE__) . '/WishList.php';
 $error = '';
-
 // Instance of module class for translations
 $module = new BlockWishList();
-
 $token = Tools::getValue('token');
-$id_product = (int)Tools::getValue('id_product');
-$id_product_attribute = (int)Tools::getValue('id_product_attribute');
-if (Configuration::get('PS_TOKEN_ENABLE') == 1 && strcmp(Tools::getToken(false), Tools::getValue('static_token')))
-	$error = $module->l('Invalid token', 'buywishlistproduct');
-
-if (!strlen($error) &&
-	empty($token) === false &&
-	empty($id_product) === false)
-{
-	$wishlist = WishList::getByToken($token);
-	if ($wishlist !== false)
-		WishList::addBoughtProduct($wishlist['id_wishlist'], $id_product, $id_product_attribute, $cart->id, 1);
+$id_product = (int) Tools::getValue('id_product');
+$id_product_attribute = (int) Tools::getValue('id_product_attribute');
+if (Configuration::get('PS_TOKEN_ENABLE') == 1 && strcmp(Tools::getToken(false), Tools::getValue('static_token'))) {
+    $error = $module->l('Invalid token', 'buywishlistproduct');
 }
-else
-	$error = $module->l('You must log in', 'buywishlistproduct');
-
-if (empty($error) === false)
-	echo $error;
-
+if (!strlen($error) && empty($token) === false && empty($id_product) === false) {
+    $wishlist = WishList::getByToken($token);
+    if ($wishlist !== false) {
+        WishList::addBoughtProduct($wishlist['id_wishlist'], $id_product, $id_product_attribute, $cart->id, 1);
+    }
+} else {
+    $error = $module->l('You must log in', 'buywishlistproduct');
+}
+if (empty($error) === false) {
+    echo $error;
+}

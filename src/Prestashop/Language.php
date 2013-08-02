@@ -636,7 +636,7 @@ namespace Prestashop;
         }
         $flag = Tools::file_get_contents('http://www.prestashop.com/download/lang_packs/flags/jpeg/' . $iso_code . '.jpg');
         if ($flag != null && !preg_match('/<body>/', $flag)) {
-            $file = fopen(dirname(__FILE__) . '/../img/l/' . (int) $lang->id . '.jpg', 'w');
+            $file = fopen(_PS_ROOT_DIR_ . '/img/l/' . (int) $lang->id . '.jpg', 'w');
             if ($file) {
                 fwrite($file, $flag);
                 fclose($file);

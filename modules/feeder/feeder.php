@@ -1,4 +1,8 @@
 <?php
+
+use Prestashop\Tools;
+use Prestashop\Product;
+use Prestashop\Module\Module;
 /*
 * 2007-2013 PrestaShop
 *
@@ -23,57 +27,45 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
-if (!defined('_PS_VERSION_'))
-	exit;
-
+if (!defined('_PS_VERSION_')) {
+    die;
+}
 class Feeder extends Module
 {
-	private $_postErrors = array();
-	
-	public function __construct()
-	{
-		$this->name = 'feeder';
-		$this->tab = 'front_office_features';
-		$this->version = 0.3;
-		$this->author = 'PrestaShop';
-		$this->need_instance = 0;
-		
-		$this->_directory = dirname(__FILE__).'/../../';
-		parent::__construct();
-		
-		$this->displayName = $this->l('RSS products feed.');
-		$this->description = $this->l('Generate an RSS products feed.');
-	}
-	
-	function install()
-	{
-		return (parent::install() && $this->registerHook('header'));
-	}
-	
-	function hookHeader($params)
-	{
-		if (!($id_category = (int)Tools::getValue('id_category')))
-		{
-			if (isset($_SERVER['HTTP_REFERER']) && strstr($_SERVER['HTTP_REFERER'], Tools::getHttpHost()) && preg_match('!^(.*)\/([0-9]+)\-(.*[^\.])|(.*)id_category=([0-9]+)(.*)$!', $_SERVER['HTTP_REFERER'], $regs))
-			{
-				if (isset($regs[2]) && is_numeric($regs[2]))
-					$id_category = (int)($regs[2]);
-				elseif (isset($regs[5]) && is_numeric($regs[5]))
-					$id_category = (int)$regs[5];
-			}
-			elseif ($id_product = (int)Tools::getValue('id_product'))
-			{
-				$product = new Product($id_product);
-				$id_category = $product->id_category_default;
-			}
-		}
-
-		$orderBy = Tools::getProductsOrder('by', Tools::getValue('orderby'));
-		$orderWay = Tools::getProductsOrder('way', Tools::getValue('orderway'));
-		$this->smarty->assign(array(
-			'feedUrl' => Tools::getShopDomain(true, true).__PS_BASE_URI__.'modules/'.$this->name.'/rss.php?id_category='.$id_category.'&amp;orderby='.$orderBy.'&amp;orderway='.$orderWay,
-		));
-		return $this->display(__FILE__, 'feederHeader.tpl');
-	}
+    private $_postErrors = array();
+    public function __construct()
+    {
+        $this->name = 'feeder';
+        $this->tab = 'front_office_features';
+        $this->version = 0.3;
+        $this->author = 'PrestaShop';
+        $this->need_instance = 0;
+        $this->_directory = dirname(__FILE__) . '/../../';
+        parent::__construct();
+        $this->displayName = $this->l('RSS products feed.');
+        $this->description = $this->l('Generate an RSS products feed.');
+    }
+    public function install()
+    {
+        return parent::install() && $this->registerHook('header');
+    }
+    public function hookHeader($params)
+    {
+        if (!($id_category = (int) Tools::getValue('id_category'))) {
+            if (isset($_SERVER['HTTP_REFERER']) && strstr($_SERVER['HTTP_REFERER'], Tools::getHttpHost()) && preg_match('!^(.*)\\/([0-9]+)\\-(.*[^\\.])|(.*)id_category=([0-9]+)(.*)$!', $_SERVER['HTTP_REFERER'], $regs)) {
+                if (isset($regs[2]) && is_numeric($regs[2])) {
+                    $id_category = (int) $regs[2];
+                } elseif (isset($regs[5]) && is_numeric($regs[5])) {
+                    $id_category = (int) $regs[5];
+                }
+            } elseif ($id_product = (int) Tools::getValue('id_product')) {
+                $product = new Product($id_product);
+                $id_category = $product->id_category_default;
+            }
+        }
+        $orderBy = Tools::getProductsOrder('by', Tools::getValue('orderby'));
+        $orderWay = Tools::getProductsOrder('way', Tools::getValue('orderway'));
+        $this->smarty->assign(array('feedUrl' => Tools::getShopDomain(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/rss.php?id_category=' . $id_category . '&amp;orderby=' . $orderBy . '&amp;orderway=' . $orderWay));
+        return $this->display(__FILE__, 'feederHeader.tpl');
+    }
 }

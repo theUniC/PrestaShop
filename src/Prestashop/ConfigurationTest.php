@@ -66,7 +66,7 @@ class ConfigurationTest
     }
     public static function run($ptr, $arg = 0)
     {
-        if (call_user_func(array('ConfigurationTest', 'test_' . $ptr), $arg)) {
+        if (call_user_func(array(get_called_class(), 'test_' . $ptr), $arg)) {
             return 'ok';
         }
 

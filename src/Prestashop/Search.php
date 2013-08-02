@@ -351,7 +351,7 @@ class Search
         if ($full) {
             $db->execute('TRUNCATE ' . _DB_PREFIX_ . 'search_index');
             $db->execute('TRUNCATE ' . _DB_PREFIX_ . 'search_word');
-            ObjectModel::updateMultishopTable('Product', array('indexed' => 0), '1');
+            ObjectModel::updateMultishopTable('\Prestashop\Product', array('indexed' => 0), '1');
         } else {
             // Do it even if you already know the product id in order to be sure that it exists and it needs to be indexed
             $products = $db->executeS('
@@ -486,7 +486,7 @@ class Search
     protected static function setProductsAsIndexed(&$products)
     {
         if (count($products)) {
-            ObjectModel::updateMultishopTable('Product', array('indexed' => 1), 'a.id_product IN (' . implode(',', $products) . ')');
+            ObjectModel::updateMultishopTable('Prestashop\Product', array('indexed' => 1), 'a.id_product IN (' . implode(',', $products) . ')');
         }
     }
     /** $queryArray3 is automatically emptied in order to be reused immediatly */

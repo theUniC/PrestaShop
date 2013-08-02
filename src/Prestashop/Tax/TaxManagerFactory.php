@@ -2,6 +2,7 @@
 
 namespace Prestashop\Tax;
 
+use Prestashop\Address;
 use Prestashop\Tax\TaxRulesTaxManager;
 use Prestashop\Hook;
 use Prestashop\Module\Module;

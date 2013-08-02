@@ -2,10 +2,11 @@
 
 namespace Prestashop;
 
-use \Mobile_Detect;
+use Mobile_Detect;
 use Prestashop\Configuration;
 use Prestashop\Guest;
 use Prestashop\Tools;
+
 /*
 * 2007-2013 PrestaShop
 *

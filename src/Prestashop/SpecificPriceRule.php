@@ -107,7 +107,7 @@ class SpecificPriceRule extends ObjectModel
     }
     public static function applyAllRules($products = false)
     {
-        $rules = new Collection('SpecificPriceRule');
+        $rules = new Collection(get_called_class());
         foreach ($rules as $rule) {
             $rule->apply($products);
         }

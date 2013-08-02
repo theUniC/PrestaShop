@@ -1,4 +1,7 @@
 <?php
+
+use \TrackingFront;
+use Prestashop\Tools;
 /*
 * 2007-2013 PrestaShop
 *
@@ -23,14 +26,12 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
-include(dirname(__FILE__).'/../../config/config.inc.php');
-include(dirname(__FILE__).'/../../init.php');
-include(dirname(__FILE__).'/trackingfront.php');
-
+include dirname(__FILE__) . '/../../config/config.inc.php';
+include dirname(__FILE__) . '/../../init.php';
+include dirname(__FILE__) . '/trackingfront.php';
 $tf = new TrackingFront();
-if (!$tf->active)
-	Tools::redirect('index.php?controller=404');
+if (!$tf->active) {
+    Tools::redirect('index.php?controller=404');
+}
 $tf->postProcess();
 echo $tf->isLogged() ? $tf->displayAccount() : $tf->displayLogin();
-

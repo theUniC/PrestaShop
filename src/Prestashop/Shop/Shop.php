@@ -3,17 +3,17 @@
 namespace Prestashop\Shop;
 
 use Prestashop\Db\Db;
+use Prestashop\ObjectModel;
 use Prestashop\Tools;
 use Prestashop\Configuration;
 use Prestashop\Validate;
 use Prestashop\Exception\PrestaShopException;
 use Prestashop\Address;
-use Prestashop\Shop\ShopGroup;
 use Prestashop\Context;
 use Prestashop\Db\DbQuery;
 use Prestashop\Collection;
-use \SHOP;
 use Prestashop\Hook;
+
 /*
 * 2007-2013 PrestaShop
 *
@@ -589,7 +589,7 @@ class Shop extends ObjectModel
      */
     public static function getShopsCollection($active = true, $id_shop_group = null)
     {
-        $shops = new Collection('Shop');
+        $shops = new Collection('\Prestashop\Shop\Shop');
         if ($active) {
             $shops->where('active', '=', 1);
         }

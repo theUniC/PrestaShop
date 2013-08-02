@@ -1,4 +1,10 @@
 <?php
+
+use Prestashop\Context;
+use Prestashop\Hook;
+use Prestashop\Tools;
+use Prestashop\Product;
+use Prestashop\Module\Module;
 /*
 * 2007-2013 PrestaShop
 *
@@ -19,60 +25,49 @@
 * needs please refer to http://www.prestashop.com for more information.
 *
 *  @author PrestaShop SA <contact@prestashop.com>
-*  @copyright  2007-2013 PrestaShop SA
+*  @copyright  2007-2013 PrestaShop SA
+
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
-if (!defined('_CAN_LOAD_FILES_'))
-	exit;
-	
+if (!defined('_CAN_LOAD_FILES_')) {
+    die;
+}
 class blocksharefb extends Module
 {
-	public function __construct()
-	{
-		$this->name = 'blocksharefb';
-		if(version_compare(_PS_VERSION_, '1.4.0.0') >= 0)
-			$this->tab = 'front_office_features';
-		else
-			$this->tab = 'Blocks';
-		$this->version = '1.0';
-
-		parent::__construct();
-
-		$this->displayName = $this->l('Facebook sharing block.');
-		$this->description = $this->l('Allows customers to share your products -- or website content -- on Facebook. ');
-	}
-	
-	public function install()
-	{
-		return (parent::install() AND $this->registerHook('extraLeft'));
-	}
-	
-	public function uninstall()
-	{
-		//Delete configuration			
-		return (parent::uninstall() AND $this->unregisterHook(Hook::getIdByName('extraLeft')));
-	}
-	
-	public function hookExtraLeft($params)
-	{
-		global $smarty, $cookie, $link;		
-		
-		$id_product = Tools::getValue('id_product');
-
-		if (isset($id_product) && $id_product != '')
-		{		
-			$product_infos = new Product((int)$id_product, true, $cookie->id_lang);
-			$smarty->assign(array(
-				'product_link' => urlencode($link->getProductLink($product_infos)),
-				'product_title' => urlencode($product_infos->name),
-			));
-			
-			return $this->display(__FILE__, 'blocksharefb.tpl');
-		} else {
-			return '';
-		}
-	}
+    public function __construct()
+    {
+        $this->name = 'blocksharefb';
+        if (version_compare(_PS_VERSION_, '1.4.0.0') >= 0) {
+            $this->tab = 'front_office_features';
+        } else {
+            $this->tab = 'Blocks';
+        }
+        $this->version = '1.0';
+        parent::__construct();
+        $this->displayName = $this->l('Facebook sharing block.');
+        $this->description = $this->l('Allows customers to share your products -- or website content -- on Facebook. ');
+    }
+    public function install()
+    {
+        return parent::install() and $this->registerHook('extraLeft');
+    }
+    public function uninstall()
+    {
+        //Delete configuration
+        return parent::uninstall() and $this->unregisterHook(Hook::getIdByName('extraLeft'));
+    }
+    public function hookExtraLeft($params)
+    {
+        global $smarty, $link;
+        $cookie = Context::getContext()->cookie;
+        $id_product = Tools::getValue('id_product');
+        if (isset($id_product) && $id_product != '') {
+            $product_infos = new Product((int) $id_product, true, $cookie->id_lang);
+            $smarty->assign(array('product_link' => urlencode($link->getProductLink($product_infos)), 'product_title' => urlencode($product_infos->name)));
+            return $this->display(__FILE__, 'blocksharefb.tpl');
+        } else {
+            return '';
+        }
+    }
 }
-?>

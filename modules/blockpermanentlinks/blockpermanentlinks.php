@@ -1,4 +1,6 @@
 <?php
+
+use Prestashop\Module\Module;
 /*
 * 2007-2013 PrestaShop
 *
@@ -23,67 +25,56 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
-if (!defined('_PS_VERSION_'))
-	exit;
-
+if (!defined('_PS_VERSION_')) {
+    die;
+}
 class BlockPermanentLinks extends Module
 {
-	public function __construct()
-	{
-		$this->name = 'blockpermanentlinks';
-		$this->tab = 'front_office_features';
-		$this->version = 0.1;
-		$this->author = 'PrestaShop';
-		$this->need_instance = 0;
-
-		parent::__construct();
-		
-		$this->displayName = $this->l('Permanent links block');
-		$this->description = $this->l('Adds a block that displays permanent links such as sitemap, contact, etc...');
-	}
-
-	public function install()
-	{
-			return (parent::install() && $this->registerHook('top') && $this->registerHook('header'));
-	}
-
-	/**
-	* Returns module content for header
-	*
-	* @param array $params Parameters
-	* @return string Content
-	*/
-	public function hookTop($params)
-	{
-		return $this->display(__FILE__, 'blockpermanentlinks-header.tpl', $this->getCacheId('blockpermanentlinks-header'));
-	}
-
-	/**
-	* Returns module content for left column
-	*
-	* @param array $params Parameters
-	* @return string Content
-	*/
-	public function hookLeftColumn($params)
-	{
-		return $this->display(__FILE__, 'blockpermanentlinks.tpl', $this->getCacheId());
-	}
-
-	public function hookRightColumn($params)
-	{
-		return $this->hookLeftColumn($params);
-	}
-
-	public function hookFooter($params)
-	{
-		return $this->display(__FILE__, 'blockpermanentlinks-footer.tpl', $this->getCacheId('blockpermanentlinks-footer'));
-	}
-
-	public function hookHeader($params)
-	{
-		$this->context->controller->addCSS(($this->_path).'blockpermanentlinks.css', 'all');
-	}
+    public function __construct()
+    {
+        $this->name = 'blockpermanentlinks';
+        $this->tab = 'front_office_features';
+        $this->version = 0.1;
+        $this->author = 'PrestaShop';
+        $this->need_instance = 0;
+        parent::__construct();
+        $this->displayName = $this->l('Permanent links block');
+        $this->description = $this->l('Adds a block that displays permanent links such as sitemap, contact, etc...');
+    }
+    public function install()
+    {
+        return parent::install() && $this->registerHook('top') && $this->registerHook('header');
+    }
+    /**
+     * Returns module content for header
+     *
+     * @param array $params Parameters
+     * @return string Content
+     */
+    public function hookTop($params)
+    {
+        return $this->display(__FILE__, 'blockpermanentlinks-header.tpl', $this->getCacheId('blockpermanentlinks-header'));
+    }
+    /**
+     * Returns module content for left column
+     *
+     * @param array $params Parameters
+     * @return string Content
+     */
+    public function hookLeftColumn($params)
+    {
+        return $this->display(__FILE__, 'blockpermanentlinks.tpl', $this->getCacheId());
+    }
+    public function hookRightColumn($params)
+    {
+        return $this->hookLeftColumn($params);
+    }
+    public function hookFooter($params)
+    {
+        return $this->display(__FILE__, 'blockpermanentlinks-footer.tpl', $this->getCacheId('blockpermanentlinks-footer'));
+    }
+    public function hookHeader($params)
+    {
+        $this->context->controller->addCSS($this->_path . 'blockpermanentlinks.css', 'all');
+    }
 }
-
-

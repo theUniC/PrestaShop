@@ -1,4 +1,14 @@
 <?php
+
+use Prestashop\Tools;
+use Prestashop\Configuration;
+use Prestashop\Guest;
+use Prestashop\Context;
+use Prestashop\Connection;
+use Prestashop\ConnectionsSource;
+use Prestashop\Page;
+use Prestashop\Db\Db;
+use Prestashop\Module\Module;
 /*
 * 2007-2013 PrestaShop
 *
@@ -23,10 +33,9 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
-if (!defined('_PS_VERSION_'))
-	exit;
-
+if (!defined('_PS_VERSION_')) {
+    die;
+}
 class StatsData extends Module
 {
     public function __construct()
@@ -34,79 +43,68 @@ class StatsData extends Module
         $this->name = 'statsdata';
         $this->tab = 'analytics_stats';
         $this->version = 1.0;
-		$this->author = 'PrestaShop';
-		$this->need_instance = 0;
-
+        $this->author = 'PrestaShop';
+        $this->need_instance = 0;
         parent::__construct();
-		
         $this->displayName = $this->l('Data mining for statistics');
         $this->description = $this->l('This module must be enabled if you want to use statistics.');
     }
-
-	public function install()
-	{
-		return (parent::install() AND $this->registerHook('footer') AND $this->registerHook('authentication') AND $this->registerHook('createAccount'));
-	}
-	
-	public function getContent()
-	{
-		$html = '';
-		if (Tools::isSubmit('submitStatsData'))
-		{
-			Configuration::updateValue('PS_STATSDATA_CUSTOMER_PAGESVIEWS', (int)Tools::getValue('PS_STATSDATA_CUSTOMER_PAGESVIEWS'));
-			Configuration::updateValue('PS_STATSDATA_PAGESVIEWS', (int)Tools::getValue('PS_STATSDATA_PAGESVIEWS'));
-			Configuration::updateValue('PS_STATSDATA_PLUGINS', (int)Tools::getValue('PS_STATSDATA_PLUGINS'));
-			$html .= '<div class="conf">'.$this->l('Configuration updated').'</div>';
-		}
-	
-		$html .=  '<form action="'.Tools::htmlentitiesUTF8($_SERVER['REQUEST_URI']).'" method="post">
-		<fieldset><legend><img src="../modules/'.$this->name.'/logo.gif" /> '.$this->l('Settings').'</legend>
-			<label>'.$this->l('Save page views for each customer').'</label>
+    public function install()
+    {
+        return parent::install() and $this->registerHook('footer') and $this->registerHook('authentication') and $this->registerHook('createAccount');
+    }
+    public function getContent()
+    {
+        $html = '';
+        if (Tools::isSubmit('submitStatsData')) {
+            Configuration::updateValue('PS_STATSDATA_CUSTOMER_PAGESVIEWS', (int) Tools::getValue('PS_STATSDATA_CUSTOMER_PAGESVIEWS'));
+            Configuration::updateValue('PS_STATSDATA_PAGESVIEWS', (int) Tools::getValue('PS_STATSDATA_PAGESVIEWS'));
+            Configuration::updateValue('PS_STATSDATA_PLUGINS', (int) Tools::getValue('PS_STATSDATA_PLUGINS'));
+            $html .= '<div class="conf">' . $this->l('Configuration updated') . '</div>';
+        }
+        $html .= '<form action="' . Tools::htmlentitiesUTF8($_SERVER['REQUEST_URI']) . '" method="post">
+		<fieldset><legend><img src="../modules/' . $this->name . '/logo.gif" /> ' . $this->l('Settings') . '</legend>
+			<label>' . $this->l('Save page views for each customer') . '</label>
 			<div class="margin-form">
-				<input type="radio" name="PS_STATSDATA_CUSTOMER_PAGESVIEWS" id="PS_STATSDATA_CUSTOMER_PAGESVIEWS_on" value="1" '.(Tools::getValue('PS_STATSDATA_CUSTOMER_PAGESVIEWS', Configuration::get('PS_STATSDATA_CUSTOMER_PAGESVIEWS')) ? 'checked="checked"' : '').' />
-				<label class="t" for="PS_STATSDATA_CUSTOMER_PAGESVIEWS_on"> <img src="../img/admin/enabled.gif" alt="'.$this->l('Yes').'" title="'.$this->l('Yes').'" /></label>
-				<input type="radio" name="PS_STATSDATA_CUSTOMER_PAGESVIEWS" id="PS_STATSDATA_CUSTOMER_PAGESVIEWS_off" value="0" '.(Tools::getValue('PS_STATSDATA_CUSTOMER_PAGESVIEWS', Configuration::get('PS_STATSDATA_CUSTOMER_PAGESVIEWS')) ? '' : 'checked="checked"').' />
-				<label class="t" for="PS_STATSDATA_CUSTOMER_PAGESVIEWS_off"> <img src="../img/admin/disabled.gif" alt="'.$this->l('No').'" title="'.$this->l('No').'" /></label>
-				<p>'.$this->l('Stored customer page views uses a lot of CPU resources and database space.').'</p>
+				<input type="radio" name="PS_STATSDATA_CUSTOMER_PAGESVIEWS" id="PS_STATSDATA_CUSTOMER_PAGESVIEWS_on" value="1" ' . (Tools::getValue('PS_STATSDATA_CUSTOMER_PAGESVIEWS', Configuration::get('PS_STATSDATA_CUSTOMER_PAGESVIEWS')) ? 'checked="checked"' : '') . ' />
+				<label class="t" for="PS_STATSDATA_CUSTOMER_PAGESVIEWS_on"> <img src="../img/admin/enabled.gif" alt="' . $this->l('Yes') . '" title="' . $this->l('Yes') . '" /></label>
+				<input type="radio" name="PS_STATSDATA_CUSTOMER_PAGESVIEWS" id="PS_STATSDATA_CUSTOMER_PAGESVIEWS_off" value="0" ' . (Tools::getValue('PS_STATSDATA_CUSTOMER_PAGESVIEWS', Configuration::get('PS_STATSDATA_CUSTOMER_PAGESVIEWS')) ? '' : 'checked="checked"') . ' />
+				<label class="t" for="PS_STATSDATA_CUSTOMER_PAGESVIEWS_off"> <img src="../img/admin/disabled.gif" alt="' . $this->l('No') . '" title="' . $this->l('No') . '" /></label>
+				<p>' . $this->l('Stored customer page views uses a lot of CPU resources and database space.') . '</p>
 			</div>
 			<div class="clear">&nbsp;</div>
-			<label>'.$this->l('Save global page views.').'</label>
+			<label>' . $this->l('Save global page views.') . '</label>
 			<div class="margin-form">
-				<input type="radio" name="PS_STATSDATA_PAGESVIEWS" id="PS_STATSDATA_PAGESVIEWS_on" value="1" '.(Tools::getValue('PS_STATSDATA_PAGESVIEWS', Configuration::get('PS_STATSDATA_PAGESVIEWS')) ? 'checked="checked"' : '').' />
-				<label class="t" for="PS_STATSDATA_PAGESVIEWS_on"> <img src="../img/admin/enabled.gif" alt="'.$this->l('Yes').'" title="'.$this->l('Yes').'" /></label>
-				<input type="radio" name="PS_STATSDATA_PAGESVIEWS" id="PS_STATSDATA_PAGESVIEWS_off" value="0" '.(Tools::getValue('PS_STATSDATA_PAGESVIEWS', Configuration::get('PS_STATSDATA_PAGESVIEWS')) ? '' : 'checked="checked"').' />
-				<label class="t" for="PS_STATSDATA_PAGESVIEWS_off"> <img src="../img/admin/disabled.gif" alt="'.$this->l('No').'" title="'.$this->l('No').'" /></label>
-				<p>'.$this->l('Global page views uses fewer resources than customer\'s, but it uses resources nonetheless.').'</p>
+				<input type="radio" name="PS_STATSDATA_PAGESVIEWS" id="PS_STATSDATA_PAGESVIEWS_on" value="1" ' . (Tools::getValue('PS_STATSDATA_PAGESVIEWS', Configuration::get('PS_STATSDATA_PAGESVIEWS')) ? 'checked="checked"' : '') . ' />
+				<label class="t" for="PS_STATSDATA_PAGESVIEWS_on"> <img src="../img/admin/enabled.gif" alt="' . $this->l('Yes') . '" title="' . $this->l('Yes') . '" /></label>
+				<input type="radio" name="PS_STATSDATA_PAGESVIEWS" id="PS_STATSDATA_PAGESVIEWS_off" value="0" ' . (Tools::getValue('PS_STATSDATA_PAGESVIEWS', Configuration::get('PS_STATSDATA_PAGESVIEWS')) ? '' : 'checked="checked"') . ' />
+				<label class="t" for="PS_STATSDATA_PAGESVIEWS_off"> <img src="../img/admin/disabled.gif" alt="' . $this->l('No') . '" title="' . $this->l('No') . '" /></label>
+				<p>' . $this->l('Global page views uses fewer resources than customer\'s, but it uses resources nonetheless.') . '</p>
 			</div>
 			<div class="clear">&nbsp;</div>
-			<label>'.$this->l('Plugins detection').'</label>
+			<label>' . $this->l('Plugins detection') . '</label>
 			<div class="margin-form">
-				<input type="radio" name="PS_STATSDATA_PLUGINS" id="PS_STATSDATA_PLUGINS_on" value="1" '.(Tools::getValue('PS_STATSDATA_PLUGINS', Configuration::get('PS_STATSDATA_PLUGINS')) ? 'checked="checked"' : '').' />
-				<label class="t" for="PS_STATSDATA_PLUGINS_on"> <img src="../img/admin/enabled.gif" alt="'.$this->l('Yes').'" title="'.$this->l('Yes').'" /></label>
-				<input type="radio" name="PS_STATSDATA_PLUGINS" id="PS_STATSDATA_PLUGINS_off" value="0" '.(Tools::getValue('PS_STATSDATA_PLUGINS', Configuration::get('PS_STATSDATA_PLUGINS')) ? '' : 'checked="checked"').' />
-				<label class="t" for="PS_STATSDATA_PLUGINS_off"> <img src="../img/admin/disabled.gif" alt="'.$this->l('No').'" title="'.$this->l('No').'" /></label>
-				<p>'.$this->l('Plugins detection loads an extra 20kb javascript file for new visitors.').'</p>
+				<input type="radio" name="PS_STATSDATA_PLUGINS" id="PS_STATSDATA_PLUGINS_on" value="1" ' . (Tools::getValue('PS_STATSDATA_PLUGINS', Configuration::get('PS_STATSDATA_PLUGINS')) ? 'checked="checked"' : '') . ' />
+				<label class="t" for="PS_STATSDATA_PLUGINS_on"> <img src="../img/admin/enabled.gif" alt="' . $this->l('Yes') . '" title="' . $this->l('Yes') . '" /></label>
+				<input type="radio" name="PS_STATSDATA_PLUGINS" id="PS_STATSDATA_PLUGINS_off" value="0" ' . (Tools::getValue('PS_STATSDATA_PLUGINS', Configuration::get('PS_STATSDATA_PLUGINS')) ? '' : 'checked="checked"') . ' />
+				<label class="t" for="PS_STATSDATA_PLUGINS_off"> <img src="../img/admin/disabled.gif" alt="' . $this->l('No') . '" title="' . $this->l('No') . '" /></label>
+				<p>' . $this->l('Plugins detection loads an extra 20kb javascript file for new visitors.') . '</p>
 			</div>
 			<div class="clear">&nbsp;</div>
-			<input type="submit" class="button" name="submitStatsData" value="'.$this->l('Update').'" />
+			<input type="submit" class="button" name="submitStatsData" value="' . $this->l('Update') . '" />
 		</fieldset>';
-
-		return $html;
-	}
-
-	public function hookFooter($params)
-	{
-		$html = '';
-		if (!isset($params['cookie']->id_guest))
-		{
-			Guest::setNewGuest($params['cookie']);
-			
-			if (Configuration::get('PS_STATSDATA_PLUGINS'))
-			{
-				// Ajax request sending browser information
-				$token = sha1($params['cookie']->id_guest._COOKIE_KEY_);
-				$html .= '
-				<script type="text/javascript" src="'._PS_JS_DIR_.'pluginDetect.js"></script>
+        return $html;
+    }
+    public function hookFooter($params)
+    {
+        $html = '';
+        if (!isset($params['cookie']->id_guest)) {
+            Guest::setNewGuest($params['cookie']);
+            if (Configuration::get('PS_STATSDATA_PLUGINS')) {
+                // Ajax request sending browser information
+                $token = sha1($params['cookie']->id_guest . _COOKIE_KEY_);
+                $html .= '
+				<script type="text/javascript" src="' . _PS_JS_DIR_ . 'pluginDetect.js"></script>
 				<script type="text/javascript">
 					plugins = new Object;
 					
@@ -124,26 +122,24 @@ class StatsData extends Module
 							for (var i in plugins)
 								navinfo[i] = plugins[i];
 							navinfo.type = "navinfo";
-							navinfo.id_guest = "'.(int)$params['cookie']->id_guest.'";
-							navinfo.token = "'.$token.'";
-							$.post("'.Context::getContext()->link->getPageLink('statistics', (bool)(Tools::getShopProtocol() == 'https://')).'", navinfo);
+							navinfo.id_guest = "' . (int) $params['cookie']->id_guest . '";
+							navinfo.token = "' . $token . '";
+							$.post("' . Context::getContext()->link->getPageLink('statistics', (bool) (Tools::getShopProtocol() == 'https://')) . '", navinfo);
 						}
 					);
 				</script>';
-			}
-		}
-		
-		// Record the guest path then increment the visit counter of the page
-		$tokenArray = Connection::setPageConnection($params['cookie']);
-		ConnectionsSource::logHttpReferer();
-		if (Configuration::get('PS_STATSDATA_PAGESVIEWS'))
-			Page::setPageViewed($tokenArray['id_page']);
-		
-		if (Configuration::get('PS_STATSDATA_CUSTOMER_PAGESVIEWS'))
-		{
-			// Ajax request sending the time spend on the page
-			$token = sha1($tokenArray['id_connections'].$tokenArray['id_page'].$tokenArray['time_start']._COOKIE_KEY_);
-			$html .= '
+            }
+        }
+        // Record the guest path then increment the visit counter of the page
+        $tokenArray = Connection::setPageConnection($params['cookie']);
+        ConnectionsSource::logHttpReferer();
+        if (Configuration::get('PS_STATSDATA_PAGESVIEWS')) {
+            Page::setPageViewed($tokenArray['id_page']);
+        }
+        if (Configuration::get('PS_STATSDATA_CUSTOMER_PAGESVIEWS')) {
+            // Ajax request sending the time spend on the page
+            $token = sha1($tokenArray['id_connections'] . $tokenArray['id_page'] . $tokenArray['time_start'] . _COOKIE_KEY_);
+            $html .= '
 			<script type="text/javascript">
 				var time_start;
 				$(window).load(
@@ -156,48 +152,39 @@ class StatsData extends Module
 						var time_end = new Date();
 						var pagetime = new Object;
 						pagetime.type = "pagetime";
-						pagetime.id_connections = "'.(int)$tokenArray['id_connections'].'";
-						pagetime.id_page = "'.(int)$tokenArray['id_page'].'";
-						pagetime.time_start = "'.$tokenArray['time_start'].'";
-						pagetime.token = "'.$token.'";
+						pagetime.id_connections = "' . (int) $tokenArray['id_connections'] . '";
+						pagetime.id_page = "' . (int) $tokenArray['id_page'] . '";
+						pagetime.time_start = "' . $tokenArray['time_start'] . '";
+						pagetime.token = "' . $token . '";
 						pagetime.time = time_end-time_start;
-						$.post("'.Context::getContext()->link->getPageLink('statistics', (bool)(Tools::getShopProtocol() == 'https://')).'", pagetime);
+						$.post("' . Context::getContext()->link->getPageLink('statistics', (bool) (Tools::getShopProtocol() == 'https://')) . '", pagetime);
 					}
 				);
 			</script>';
-		}
-
-		return $html;
-	}
-	
-	public function hookCreateAccount($params)
-	{
-		return $this->hookAuthentication($params);
-	}
-	
-	public function hookAuthentication($params)
-	{
-		// Update or merge the guest with the customer id (login and account creation)
-		$guest = new Guest($params['cookie']->id_guest);
-		$result = Db::getInstance()->getRow('
+        }
+        return $html;
+    }
+    public function hookCreateAccount($params)
+    {
+        return $this->hookAuthentication($params);
+    }
+    public function hookAuthentication($params)
+    {
+        // Update or merge the guest with the customer id (login and account creation)
+        $guest = new Guest($params['cookie']->id_guest);
+        $result = Db::getInstance()->getRow('
 		SELECT `id_guest`
-		FROM `'._DB_PREFIX_.'guest`
-		WHERE `id_customer` = '.(int)($params['cookie']->id_customer));
-
-		if ((int)($result['id_guest']))
-		{
-			// The new guest is merged with the old one when it's connecting to an account
-			$guest->mergeWithCustomer($result['id_guest'], $params['cookie']->id_customer);
-			$params['cookie']->id_guest = $guest->id;
-		}
-		else
-		{
-			// The guest is duplicated if it has multiple customer accounts
-			$method = ($guest->id_customer) ? 'add' : 'update';
-			$guest->id_customer = $params['cookie']->id_customer;
-			$guest->{$method}();
-		}
-	}
+		FROM `' . _DB_PREFIX_ . 'guest`
+		WHERE `id_customer` = ' . (int) $params['cookie']->id_customer);
+        if ((int) $result['id_guest']) {
+            // The new guest is merged with the old one when it's connecting to an account
+            $guest->mergeWithCustomer($result['id_guest'], $params['cookie']->id_customer);
+            $params['cookie']->id_guest = $guest->id;
+        } else {
+            // The guest is duplicated if it has multiple customer accounts
+            $method = $guest->id_customer ? 'add' : 'update';
+            $guest->id_customer = $params['cookie']->id_customer;
+            $guest->{$method}();
+        }
+    }
 }
-
-

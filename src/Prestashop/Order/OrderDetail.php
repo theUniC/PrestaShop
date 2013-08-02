@@ -4,6 +4,7 @@ namespace Prestashop\Order;
 
 use Prestashop\Context;
 use Prestashop\Db\Db;
+use Prestashop\ObjectModel;
 use Prestashop\Shop\Shop;
 use Prestashop\Tax\Tax;
 use Prestashop\Tax\TaxCalculator;

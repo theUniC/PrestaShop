@@ -35,7 +35,6 @@ use Prestashop\Pdf\PDF;
 use Prestashop\Stock\StockAvailable;
 use Prestashop\Logger;
 use Prestashop\AddressFormat;
-use \PaymentModuleCore;
 use Prestashop\Module\Module;
 /*
 * 2007-2013 PrestaShop
@@ -632,7 +631,7 @@ abstract class PaymentModule extends Module
         $values = '';
         if (count($id_module_list) == 0) {
             // fetch all installed module ids
-            $modules = PaymentModuleCore::getInstalledPaymentModules();
+            $modules = PaymentModule::getInstalledPaymentModules();
             foreach ($modules as $module) {
                 $id_module_list[] = $module['id_module'];
             }

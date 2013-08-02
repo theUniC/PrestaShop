@@ -2,6 +2,7 @@
 
 namespace Prestashop\Tax;
 
+use Prestashop\ObjectModel;
 use Prestashop\Tools;
 use Prestashop\Db\Db;
 /*

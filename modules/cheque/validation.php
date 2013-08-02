@@ -1,4 +1,13 @@
 <?php
+
+use Prestashop\Tools;
+use Prestashop\Context;
+use \Cheque;
+use Prestashop\Module\Module;
+use Prestashop\Customer;
+use Prestashop\Validate;
+use Prestashop\Cart;
+use Prestashop\Configuration;
 /*
 * 2007-2013 PrestaShop
 *
@@ -23,45 +32,35 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 /**
  * @deprecated 1.5.0 This file is deprecated, use moduleFrontController instead
  */
-
-include(dirname(__FILE__).'/../../config/config.inc.php');
+include dirname(__FILE__) . '/../../config/config.inc.php';
 Tools::displayFileAsDeprecated();
-
-include(dirname(__FILE__).'/../../header.php');
-include(dirname(__FILE__).'/cheque.php');
-
+include dirname(__FILE__) . '/../../header.php';
+include dirname(__FILE__) . '/cheque.php';
 $context = Context::getContext();
 $cart = $context->cart;
 $cheque = new Cheque();
-
-if ($cart->id_customer == 0 OR $cart->id_address_delivery == 0 OR $cart->id_address_invoice == 0 OR !$cheque->active)
-	Tools::redirect('index.php?controller=order&step=1');
-
+if ($cart->id_customer == 0 or $cart->id_address_delivery == 0 or $cart->id_address_invoice == 0 or !$cheque->active) {
+    Tools::redirect('index.php?controller=order&step=1');
+}
 // Check that this payment option is still available in case the customer changed his address just before the end of the checkout process
 $authorized = false;
-foreach (Module::getPaymentModules() as $module)
-	if ($module['name'] == 'cheque')
-	{
-		$authorized = true;
-		break;
-	}
-if (!$authorized)
-	die($cheque->l('This payment method is not available.', 'validation'));
-
+foreach (Module::getPaymentModules() as $module) {
+    if ($module['name'] == 'cheque') {
+        $authorized = true;
+        break;
+    }
+}
+if (!$authorized) {
+    die($cheque->l('This payment method is not available.', 'validation'));
+}
 $customer = new Customer($cart->id_customer);
-
-if (!Validate::isLoadedObject($customer))
-	Tools::redirect('index.php?controller=order&step=1');
-
+if (!Validate::isLoadedObject($customer)) {
+    Tools::redirect('index.php?controller=order&step=1');
+}
 $currency = $context->currency;
-$total = (float)$cart->getOrderTotal(true, Cart::BOTH);
-
-$cheque->validateOrder((int)$cart->id, Configuration::get('PS_OS_CHEQUE'), $total, $cheque->displayName, NULL, array(), (int)$currency->id, false, $customer->secure_key);
-
-Tools::redirect('index.php?controller=order-confirmation&id_cart='.(int)($cart->id).'&id_module='.(int)($cheque->id).'&id_order='.$cheque->currentOrder.'&key='.$customer->secure_key);
-
-
+$total = (double) $cart->getOrderTotal(true, Cart::BOTH);
+$cheque->validateOrder((int) $cart->id, Configuration::get('PS_OS_CHEQUE'), $total, $cheque->displayName, NULL, array(), (int) $currency->id, false, $customer->secure_key);
+Tools::redirect('index.php?controller=order-confirmation&id_cart=' . (int) $cart->id . '&id_module=' . (int) $cheque->id . '&id_order=' . $cheque->currentOrder . '&key=' . $customer->secure_key);

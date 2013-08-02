@@ -2,6 +2,7 @@
 
 namespace Prestashop\Range;
 
+use Prestashop\ObjectModel;
 use Prestashop\Validate;
 use Prestashop\Carrier;
 use Prestashop\Db\Db;

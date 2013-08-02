@@ -7,7 +7,7 @@ use Prestashop\Db\Db;
 use Prestashop\Combination;
 use Prestashop\Shop\Shop;
 use Prestashop\Tools;
-use \DB;
+
 /*
 * 2007-2013 PrestaShop
 *

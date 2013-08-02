@@ -5,6 +5,7 @@ namespace Prestashop\Shop;
 use Prestashop\Collection;
 use Prestashop\Db\Db;
 use Prestashop\Context;
+use Prestashop\ObjectModel;
 use Prestashop\Validate;
 /*
 * 2007-2013 PrestaShop

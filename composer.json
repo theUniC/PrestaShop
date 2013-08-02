@@ -20,6 +20,7 @@
     "autoload": {
         "psr-0": {
             "": "src/"
-        }
+        },
+        "files": ["config/alias.php", "config/config.inc.php"]
     }
 }

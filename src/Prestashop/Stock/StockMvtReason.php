@@ -4,6 +4,8 @@ namespace Prestashop\Stock;
 
 use Prestashop\Db\DbQuery;
 use Prestashop\Db\Db;
+use Prestashop\ObjectModel;
+
 /*
 * 2007-2013 PrestaShop
 *

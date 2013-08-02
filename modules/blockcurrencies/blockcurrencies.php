@@ -1,4 +1,8 @@
 <?php
+
+use Prestashop\Configuration;
+use Prestashop\Currency;
+use Prestashop\Module\Module;
 /*
 * 2007-2013 PrestaShop
 *
@@ -23,62 +27,54 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
-if (!defined('_PS_VERSION_'))
-	exit;
-
+if (!defined('_PS_VERSION_')) {
+    die;
+}
 class BlockCurrencies extends Module
 {
-	public function __construct()
-	{
-		$this->name = 'blockcurrencies';
-		$this->tab = 'front_office_features';
-		$this->version = 0.1;
-		$this->author = 'PrestaShop';
-		$this->need_instance = 0;
-
-		parent::__construct();
-
-		$this->displayName = $this->l('Currency block');
-		$this->description = $this->l('Adds a block allowing customers to choose their preferred shopping currency.');
-	}
-
-	public function install()
-	{
-		return parent::install() && $this->registerHook('top') && $this->registerHook('header');
-	}
-
-	private function _prepareHook($params)
-	{
-		if (Configuration::get('PS_CATALOG_MODE'))
-			return false;
-
-		if (!count(Currency::getCurrencies()))
-			return false;
-
-		$this->smarty->assign('blockcurrencies_sign', $this->context->currency->sign);
-	
-		return true;
-	}
-
-	/**
-	* Returns module content for header
-	*
-	* @param array $params Parameters
-	* @return string Content
-	*/
-	public function hookTop($params)
-	{
-		if ($this->_prepareHook($params))
-			return $this->display(__FILE__, 'blockcurrencies.tpl');
-	}
-
-	public function hookHeader($params)
-	{
-		if (Configuration::get('PS_CATALOG_MODE'))
-			return;
-		$this->context->controller->addCSS(($this->_path).'blockcurrencies.css', 'all');
-	}
+    public function __construct()
+    {
+        $this->name = 'blockcurrencies';
+        $this->tab = 'front_office_features';
+        $this->version = 0.1;
+        $this->author = 'PrestaShop';
+        $this->need_instance = 0;
+        parent::__construct();
+        $this->displayName = $this->l('Currency block');
+        $this->description = $this->l('Adds a block allowing customers to choose their preferred shopping currency.');
+    }
+    public function install()
+    {
+        return parent::install() && $this->registerHook('top') && $this->registerHook('header');
+    }
+    private function _prepareHook($params)
+    {
+        if (Configuration::get('PS_CATALOG_MODE')) {
+            return false;
+        }
+        if (!count(Currency::getCurrencies())) {
+            return false;
+        }
+        $this->smarty->assign('blockcurrencies_sign', $this->context->currency->sign);
+        return true;
+    }
+    /**
+     * Returns module content for header
+     *
+     * @param array $params Parameters
+     * @return string Content
+     */
+    public function hookTop($params)
+    {
+        if ($this->_prepareHook($params)) {
+            return $this->display(__FILE__, 'blockcurrencies.tpl');
+        }
+    }
+    public function hookHeader($params)
+    {
+        if (Configuration::get('PS_CATALOG_MODE')) {
+            return;
+        }
+        $this->context->controller->addCSS($this->_path . 'blockcurrencies.css', 'all');
+    }
 }
-
-

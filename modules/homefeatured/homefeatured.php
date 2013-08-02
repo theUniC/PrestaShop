@@ -1,4 +1,13 @@
 <?php
+
+use Prestashop\Configuration;
+use Prestashop\Tools;
+use Prestashop\Validate;
+use Prestashop\Context;
+use Prestashop\Category;
+use Prestashop\ImageType;
+use Prestashop\Image;
+use Prestashop\Module\Module;
 /*
 * 2007-2013 PrestaShop
 *
@@ -23,126 +32,101 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
-if (!defined('_PS_VERSION_'))
-	exit;
-
+if (!defined('_PS_VERSION_')) {
+    die;
+}
 class HomeFeatured extends Module
 {
-	private $_html = '';
-	private $_postErrors = array();
-
-	function __construct()
-	{
-		$this->name = 'homefeatured';
-		$this->tab = 'front_office_features';
-		$this->version = '1.1';
-		$this->author = 'PrestaShop';
-		$this->need_instance = 0;
-
-		parent::__construct();
-
-		$this->displayName = $this->l('Featured products on the homepage.');
-		$this->description = $this->l('Displays featured products in the middle of your homepage.');
-	}
-
-	function install()
-	{
-		$this->_clearCache('homefeatured.tpl');
-		Configuration::updateValue('HOME_FEATURED_NBR', 8);
-
-		if (!parent::install()
-			|| !$this->registerHook('displayHome')
-			|| !$this->registerHook('header')
-			|| !$this->registerHook('addproduct')
-			|| !$this->registerHook('updateproduct')
-			|| !$this->registerHook('deleteproduct')
-		)
-			return false;
-		return true;
-	}
-	
-	public function uninstall()
-	{
-		$this->_clearCache('homefeatured.tpl');
-		return parent::uninstall();
-	}
-
-	public function getContent()
-	{
-		$output = '<h2>'.$this->displayName.'</h2>';
-		if (Tools::isSubmit('submitHomeFeatured'))
-		{
-			$nbr = (int)Tools::getValue('nbr');
-			if (!$nbr OR $nbr <= 0 OR !Validate::isInt($nbr))
-				$errors[] = $this->l('An invalid number of products has been specified.');
-			else
-				Configuration::updateValue('HOME_FEATURED_NBR', (int)($nbr));
-			if (isset($errors) AND sizeof($errors))
-				$output .= $this->displayError(implode('<br />', $errors));
-			else
-				$output .= $this->displayConfirmation($this->l('Your settings have been updated.'));
-		}
-		return $output.$this->displayForm();
-	}
-
-	public function displayForm()
-	{
-		$output = '
-		<form action="'.Tools::safeOutput($_SERVER['REQUEST_URI']).'" method="post">
-			<fieldset><legend><img src="'.$this->_path.'logo.gif" alt="" title="" />'.$this->l('Settings').'</legend>
-				<p>'.$this->l('To add products to your homepage, simply add them to the "home" category.').'</p><br />
-				<label>'.$this->l('Define the number of products to be displayed.').'</label>
+    private $_html = '';
+    private $_postErrors = array();
+    public function __construct()
+    {
+        $this->name = 'homefeatured';
+        $this->tab = 'front_office_features';
+        $this->version = '1.1';
+        $this->author = 'PrestaShop';
+        $this->need_instance = 0;
+        parent::__construct();
+        $this->displayName = $this->l('Featured products on the homepage.');
+        $this->description = $this->l('Displays featured products in the middle of your homepage.');
+    }
+    public function install()
+    {
+        $this->_clearCache('homefeatured.tpl');
+        Configuration::updateValue('HOME_FEATURED_NBR', 8);
+        if (!parent::install() || !$this->registerHook('displayHome') || !$this->registerHook('header') || !$this->registerHook('addproduct') || !$this->registerHook('updateproduct') || !$this->registerHook('deleteproduct')) {
+            return false;
+        }
+        return true;
+    }
+    public function uninstall()
+    {
+        $this->_clearCache('homefeatured.tpl');
+        return parent::uninstall();
+    }
+    public function getContent()
+    {
+        $output = '<h2>' . $this->displayName . '</h2>';
+        if (Tools::isSubmit('submitHomeFeatured')) {
+            $nbr = (int) Tools::getValue('nbr');
+            if (!$nbr or $nbr <= 0 or !Validate::isInt($nbr)) {
+                $errors[] = $this->l('An invalid number of products has been specified.');
+            } else {
+                Configuration::updateValue('HOME_FEATURED_NBR', (int) $nbr);
+            }
+            if (isset($errors) and sizeof($errors)) {
+                $output .= $this->displayError(implode('<br />', $errors));
+            } else {
+                $output .= $this->displayConfirmation($this->l('Your settings have been updated.'));
+            }
+        }
+        return $output . $this->displayForm();
+    }
+    public function displayForm()
+    {
+        $output = '
+		<form action="' . Tools::safeOutput($_SERVER['REQUEST_URI']) . '" method="post">
+			<fieldset><legend><img src="' . $this->_path . 'logo.gif" alt="" title="" />' . $this->l('Settings') . '</legend>
+				<p>' . $this->l('To add products to your homepage, simply add them to the "home" category.') . '</p><br />
+				<label>' . $this->l('Define the number of products to be displayed.') . '</label>
 				<div class="margin-form">
-					<input type="text" size="5" name="nbr" value="'.Tools::safeOutput(Tools::getValue('nbr', (int)(Configuration::get('HOME_FEATURED_NBR')))).'" />
-					<p class="clear">'.$this->l('Define the number of products that you would like to display on homepage (default: 8).').'</p>
+					<input type="text" size="5" name="nbr" value="' . Tools::safeOutput(Tools::getValue('nbr', (int) Configuration::get('HOME_FEATURED_NBR'))) . '" />
+					<p class="clear">' . $this->l('Define the number of products that you would like to display on homepage (default: 8).') . '</p>
 
 				</div>
-				<center><input type="submit" name="submitHomeFeatured" value="'.$this->l('Save').'" class="button" /></center>
+				<center><input type="submit" name="submitHomeFeatured" value="' . $this->l('Save') . '" class="button" /></center>
 			</fieldset>
 		</form>';
-		return $output;
-	}
-
-	public function hookDisplayHeader($params)
-	{
-		$this->hookHeader($params);
-	}
-
-	public function hookHeader($params)
-	{
-		$this->context->controller->addCSS(($this->_path).'homefeatured.css', 'all');
-	}
-
-	public function hookDisplayHome($params)
-	{
-		if (!$this->isCached('homefeatured.tpl', $this->getCacheId('homefeatured')))
-		{
-			$category = new Category(Context::getContext()->shop->getCategory(), (int)Context::getContext()->language->id);
-			$nb = (int)Configuration::get('HOME_FEATURED_NBR');
-			$products = $category->getProducts((int)Context::getContext()->language->id, 1, ($nb ? $nb : 10));
-
-			$this->smarty->assign(array(
-				'products' => $products,
-				'add_prod_display' => Configuration::get('PS_ATTRIBUTE_CATEGORY_DISPLAY'),
-				'homeSize' => Image::getSize(ImageType::getFormatedName('home')),
-			));
-		}
-		return $this->display(__FILE__, 'homefeatured.tpl', $this->getCacheId('homefeatured'));
-	}
-
-	public function hookAddProduct($params)
-	{
-		$this->_clearCache('homefeatured.tpl');
-	}
-
-	public function hookUpdateProduct($params)
-	{
-		$this->_clearCache('homefeatured.tpl');
-	}
-
-	public function hookDeleteProduct($params)
-	{
-		$this->_clearCache('homefeatured.tpl');
-	}
+        return $output;
+    }
+    public function hookDisplayHeader($params)
+    {
+        $this->hookHeader($params);
+    }
+    public function hookHeader($params)
+    {
+        $this->context->controller->addCSS($this->_path . 'homefeatured.css', 'all');
+    }
+    public function hookDisplayHome($params)
+    {
+        if (!$this->isCached('homefeatured.tpl', $this->getCacheId('homefeatured'))) {
+            $category = new Category(Context::getContext()->shop->getCategory(), (int) Context::getContext()->language->id);
+            $nb = (int) Configuration::get('HOME_FEATURED_NBR');
+            $products = $category->getProducts((int) Context::getContext()->language->id, 1, $nb ? $nb : 10);
+            $this->smarty->assign(array('products' => $products, 'add_prod_display' => Configuration::get('PS_ATTRIBUTE_CATEGORY_DISPLAY'), 'homeSize' => Image::getSize(ImageType::getFormatedName('home'))));
+        }
+        return $this->display(__FILE__, 'homefeatured.tpl', $this->getCacheId('homefeatured'));
+    }
+    public function hookAddProduct($params)
+    {
+        $this->_clearCache('homefeatured.tpl');
+    }
+    public function hookUpdateProduct($params)
+    {
+        $this->_clearCache('homefeatured.tpl');
+    }
+    public function hookDeleteProduct($params)
+    {
+        $this->_clearCache('homefeatured.tpl');
+    }
 }

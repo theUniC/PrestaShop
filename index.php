@@ -24,8 +24,9 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
+require __DIR__ . '/vendor/autoload.php';
+
 use Prestashop\Dispatcher;
 
-require(dirname(__FILE__).'/config/config.inc.php');
 Dispatcher::getInstance()->dispatch();
 

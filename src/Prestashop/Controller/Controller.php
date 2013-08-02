@@ -5,6 +5,7 @@ namespace Prestashop\Controller;
 use Prestashop\Tools;
 use Prestashop\Context;
 use Prestashop\Media;
+
 /*
 * 2007-2013 PrestaShop
 *

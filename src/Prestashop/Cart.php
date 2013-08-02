@@ -21,7 +21,6 @@ use Prestashop\Customization;
 use Prestashop\Combination;
 use Prestashop\Attribute;
 use Prestashop\Pack;
-use \CART;
 use Prestashop\Currency;
 use Prestashop\Tax\TaxManagerFactory;
 use Prestashop\Stock\Warehouse;
@@ -33,6 +32,7 @@ use Prestashop\Module\Module;
 use Prestashop\AddressFormat;
 use Prestashop\State;
 use Prestashop\ProductDownload;
+
 /*
 * 2007-2013 PrestaShop
 *
@@ -1647,7 +1647,7 @@ class Cart extends ObjectModel
         }
         // Sort delivery option list
         foreach ($delivery_option_list as &$array) {
-            uasort($array, array('Cart', 'sortDeliveryOptionList'));
+            uasort($array, array('Prestashop\Cart', 'sortDeliveryOptionList'));
         }
         $cache = $delivery_option_list;
 
@@ -2458,7 +2458,8 @@ class Cart extends ObjectModel
     public function addTextFieldToProduct($id_product, $index, $type, $text_value)
     {
         $text_value = str_replace(array('
-', ''), '', nl2br($text_value));
+', '
+'), '', nl2br($text_value));
         $text_value = str_replace('\\', '\\\\', $text_value);
         $text_value = str_replace('\'', '\\\'', $text_value);
 

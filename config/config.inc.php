@@ -37,8 +37,6 @@ use Prestashop\Shop\Shop;
 use Prestashop\Tools;
 use Prestashop\Validate;
 
-require __DIR__ . '/../vendor/autoload.php';
-
 require_once(dirname(__FILE__).'/defines.inc.php');
 $start_time = microtime(true);
 

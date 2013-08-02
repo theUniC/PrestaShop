@@ -2,6 +2,9 @@
 
 namespace Prestashop;
 
+use ArrayAccess;
+use Countable;
+use Iterator;
 use Prestashop\ObjectModel;
 use Prestashop\Exception\PrestaShopException;
 use Prestashop\Db\DbQuery;

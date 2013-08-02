@@ -4,6 +4,7 @@ namespace Prestashop\Stock;
 
 use Prestashop\Context;
 use Prestashop\Db\DbQuery;
+use Prestashop\ObjectModel;
 use Prestashop\Validate;
 use Prestashop\Db\Db;
 /*

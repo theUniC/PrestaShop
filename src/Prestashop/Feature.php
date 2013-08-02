@@ -9,7 +9,7 @@ use Prestashop\Tools;
 use Prestashop\Validate;
 use Prestashop\Language;
 use Prestashop\Configuration;
-use \DB;
+
 /*
 * 2007-2013 PrestaShop
 *

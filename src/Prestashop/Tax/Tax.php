@@ -2,6 +2,7 @@
 
 namespace Prestashop\Tax;
 
+use Prestashop\ObjectModel;
 use Prestashop\Tax\TaxRule;
 use Prestashop\Db\Db;
 use Prestashop\Db\DbQuery;

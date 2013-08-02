@@ -8,7 +8,7 @@ use Prestashop\Validate;
 use Prestashop\Shop\Shop;
 use Prestashop\ImageType;
 use Prestashop\Configuration;
-use \DB;
+
 /*
 * 2007-2013 PrestaShop
 *

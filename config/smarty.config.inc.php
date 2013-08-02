@@ -26,6 +26,7 @@
 
 use Prestashop\Configuration;
 use Prestashop\Context;
+use Prestashop\Hook;
 use Prestashop\Media;
 use Prestashop\Module\Module;
 use Prestashop\Tools;
@@ -46,8 +47,8 @@ $smarty->force_compile = (Configuration::get('PS_SMARTY_FORCE_COMPILE') == _PS_S
 $smarty->compile_check = (Configuration::get('PS_SMARTY_FORCE_COMPILE') <= _PS_SMARTY_CHECK_COMPILE_) ? true : false;
 
 // Production mode
-$smarty->debugging = false;
-$smarty->debugging_ctrl = 'NONE';
+$smarty->debugging = true;
+$smarty->debugging_ctrl = 'URL';
 
 if (Configuration::get('PS_SMARTY_CONSOLE') == _PS_SMARTY_CONSOLE_OPEN_BY_URL_)
 	$smarty->debugging_ctrl = 'URL';
@@ -64,7 +65,7 @@ else
 	require_once (dirname(__FILE__).'/smartyfront.config.inc.php');
 
 smartyRegisterFunction($smarty, 'modifier', 'truncate', 'smarty_modifier_truncate');
-smartyRegisterFunction($smarty, 'modifier', 'secureReferrer', array('Tools', 'secureReferrer'));
+smartyRegisterFunction($smarty, 'modifier', 'secureReferrer', array('\Prestashop\Tools', 'secureReferrer'));
 
 smartyRegisterFunction($smarty, 'function', 't', 'smartyTruncate'); // unused
 smartyRegisterFunction($smarty, 'function', 'm', 'smartyMaxWords'); // unused
@@ -74,17 +75,17 @@ smartyRegisterFunction($smarty, 'function', 'l', 'smartyTranslate', false);
 smartyRegisterFunction($smarty, 'function', 'hook', 'smartyHook');
 smartyRegisterFunction($smarty, 'function', 'toolsConvertPrice', 'toolsConvertPrice');
 
-smartyRegisterFunction($smarty, 'function', 'dateFormat', array('Tools', 'dateFormat'));
-smartyRegisterFunction($smarty, 'function', 'convertPrice', array('Product', 'convertPrice'));
-smartyRegisterFunction($smarty, 'function', 'convertPriceWithCurrency', array('Product', 'convertPriceWithCurrency'));
-smartyRegisterFunction($smarty, 'function', 'displayWtPrice', array('Product', 'displayWtPrice'));
-smartyRegisterFunction($smarty, 'function', 'displayWtPriceWithCurrency', array('Product', 'displayWtPriceWithCurrency'));
-smartyRegisterFunction($smarty, 'function', 'displayPrice', array('Tools', 'displayPriceSmarty'));
-smartyRegisterFunction($smarty, 'modifier', 'convertAndFormatPrice', array('Product', 'convertAndFormatPrice')); // used twice
-smartyRegisterFunction($smarty, 'function', 'getAdminToken', array('Tools', 'getAdminTokenLiteSmarty'));
-smartyRegisterFunction($smarty, 'function', 'displayAddressDetail', array('AddressFormat', 'generateAddressSmarty'));
-smartyRegisterFunction($smarty, 'function', 'getWidthSize', array('Image', 'getWidth'));
-smartyRegisterFunction($smarty, 'function', 'getHeightSize', array('Image', 'getHeight'));
+smartyRegisterFunction($smarty, 'function', 'dateFormat', array('\Prestashop\Tools', 'dateFormat'));
+smartyRegisterFunction($smarty, 'function', 'convertPrice', array('\Prestashop\Product', 'convertPrice'));
+smartyRegisterFunction($smarty, 'function', 'convertPriceWithCurrency', array('\Prestashop\Product', 'convertPriceWithCurrency'));
+smartyRegisterFunction($smarty, 'function', 'displayWtPrice', array('\Prestashop\Product', 'displayWtPrice'));
+smartyRegisterFunction($smarty, 'function', 'displayWtPriceWithCurrency', array('\Prestashop\Product', 'displayWtPriceWithCurrency'));
+smartyRegisterFunction($smarty, 'function', 'displayPrice', array('\Prestashop\Tools', 'displayPriceSmarty'));
+smartyRegisterFunction($smarty, 'modifier', 'convertAndFormatPrice', array('\Prestashop\Product', 'convertAndFormatPrice')); // used twice
+smartyRegisterFunction($smarty, 'function', 'getAdminToken', array('\Prestashop\Tools', 'getAdminTokenLiteSmarty'));
+smartyRegisterFunction($smarty, 'function', 'displayAddressDetail', array('\Prestashop\AddressFormat', 'generateAddressSmarty'));
+smartyRegisterFunction($smarty, 'function', 'getWidthSize', array('Prestashop\Image', 'getWidth'));
+smartyRegisterFunction($smarty, 'function', 'getHeightSize', array('Prestashop\Image', 'getHeight'));
 
 
 function smartyDieObject($params, &$smarty)
@@ -232,7 +233,7 @@ class SmartyLazyRegister
 
 		// case 1: call to static method - case 2 : call to static function
 		if (is_array($item[1]))
-			return call_user_func_array($item[1].'::'.$item[0], array($arguments[0], &$arguments[1]));
+			return call_user_func_array('\Prestashop\\' . $item[1].'::'.$item[0], array($arguments[0], &$arguments[1]));
 		else
 		{
 			$args = array();

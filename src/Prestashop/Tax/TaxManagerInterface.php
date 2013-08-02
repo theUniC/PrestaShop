@@ -26,6 +26,7 @@ namespace Prestashop\Tax;
 *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
+use Prestashop\Address;
 
 /**
 * A TaxManager define a way to retrieve tax.

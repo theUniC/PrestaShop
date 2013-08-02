@@ -137,8 +137,9 @@ namespace ' . $namespace . ';
             $finder = Finder::create();
             $finder
                 ->files()
-                ->in(__DIR__ . DIRECTORY_SEPARATOR . 'src')
+                ->in(__DIR__ . DIRECTORY_SEPARATOR . 'modules')
                 ->name('*.php')
+                ->notName('index.php')
             ;
 
             $parser = new PHPParser_Parser(new PHPParser_Lexer());
@@ -191,10 +192,9 @@ namespace ' . $namespace . ';
                         );
                     }
 
-                    $nodes[0]->stmts = array_merge($uses, $nodes[0]->stmts);
                     file_put_contents($file->getRealPath(), '<?php
 
-' . $printer->prettyPrint($nodes));
+' . $printer->prettyPrint(array_merge($uses, $nodes)));
                 }
             }
         });
@@ -222,6 +222,10 @@ class ClassReferenceVisitor extends PHPParser_NodeVisitorAbstract
             if (!in_array($className = $node->class->toString(), array('static', 'self', 'parent'))) {
                 $this->uses[] = $className;
             }
+        }
+
+        if ($node instanceof PHPParser_Node_Stmt_Class && null !== $node->extends) {
+            $this->uses[] = $node->extends->toString();
         }
     }
 

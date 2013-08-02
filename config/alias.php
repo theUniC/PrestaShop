@@ -24,6 +24,9 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
+use Prestashop\Db\Db;
+use Prestashop\Tools;
+
 function fd($var)
 {
 	return (Tools::fd($var));

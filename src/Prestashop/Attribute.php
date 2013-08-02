@@ -10,7 +10,7 @@ use Prestashop\Hook;
 use Prestashop\Context;
 use Prestashop\Stock\StockAvailable;
 use Prestashop\Tools;
-use \DB;
+
 /*
 * 2007-2013 PrestaShop
 *

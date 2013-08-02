@@ -2,6 +2,7 @@
 
 namespace Prestashop\Tax;
 
+use Prestashop\Module\Module;
 use Prestashop\Tools;
 /*
 * 2007-2013 PrestaShop

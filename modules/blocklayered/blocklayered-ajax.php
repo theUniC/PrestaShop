@@ -1,4 +1,6 @@
 <?php
+
+use \BlockLayered;
 /*
 * 2007-2013 PrestaShop
 *
@@ -23,10 +25,8 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registred Trademark & Property of PrestaShop SA
 */
-
-include(dirname(__FILE__).'/../../config/config.inc.php');
-include(dirname(__FILE__).'/../../init.php');
-include(dirname(__FILE__).'/blocklayered.php');
-
+include dirname(__FILE__) . '/../../config/config.inc.php';
+include dirname(__FILE__) . '/../../init.php';
+include dirname(__FILE__) . '/blocklayered.php';
 $blockLayered = new BlockLayered();
 echo $blockLayered->ajaxCall();

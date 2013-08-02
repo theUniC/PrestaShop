@@ -1,4 +1,8 @@
 <?php
+
+use Prestashop\Tools;
+use Prestashop\Controller\FrontController;
+use Prestashop\Context;
 /*
 * 2007-2013 PrestaShop
 *
@@ -23,19 +27,14 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 /**
  * @deprecated 1.5.0 This file is deprecated, use moduleFrontController instead
  */
-
 /* SSL Management */
 $useSSL = true;
-
-require('../../config/config.inc.php');
+require '../../config/config.inc.php';
 Tools::displayFileAsDeprecated();
-
 // init front controller in order to use Tools::redirect
 $controller = new FrontController();
 $controller->init();
-
 Tools::redirect(Context::getContext()->link->getModuleLink('favoriteproducts', 'account'));

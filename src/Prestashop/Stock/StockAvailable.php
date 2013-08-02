@@ -2,6 +2,7 @@
 
 namespace Prestashop\Stock;
 
+use Prestashop\ObjectModel;
 use Prestashop\Webservice\WebserviceRequest;
 use Prestashop\Tools;
 use Prestashop\Validate;
@@ -10,14 +11,13 @@ use Prestashop\Db\Db;
 use Prestashop\Stock\Warehouse;
 use Prestashop\Product;
 use Prestashop\Stock\StockManagerFactory;
-use \WareHouse;
 use Prestashop\Hook;
 use Prestashop\Context;
 use Prestashop\Shop\Shop;
 use Prestashop\Configuration;
 use Prestashop\Pack;
 use Prestashop\Shop\ShopGroup;
-use \SHOP;
+
 /*
 * 2007-2013 PrestaShop
 *
