@@ -28,5 +28,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 use Prestashop\Dispatcher;
 
+require __DIR__ . '/config/config.inc.php';
+
 Dispatcher::getInstance()->dispatch();
 

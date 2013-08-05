@@ -216,9 +216,12 @@ class Shop extends ObjectModel
 
         return $has_dependency;
     }
+
     /**
      * Find the shop from current domain / uri and get an instance of this shop
      * if INSTALL_VERSION is defined, will return an empty shop object
+     *
+     * @throws \Prestashop\Exception\PrestaShopException
      *
      * @return Shop
      */
@@ -234,10 +237,12 @@ class Shop extends ObjectModel
                         AND s.active = 1
                         AND s.deleted = 0
                     ORDER BY LENGTH(CONCAT(su.physical_uri, su.virtual_uri)) DESC';
+
             $id_shop = '';
             $found_uri = '';
             $request_uri = rawurldecode($_SERVER['REQUEST_URI']);
             $is_main_uri = false;
+
             if ($results = Db::getInstance()->executeS($sql)) {
                 foreach ($results as $row) {
                     // An URL matching current shop was found
@@ -251,6 +256,7 @@ class Shop extends ObjectModel
                     }
                 }
             }
+
             // If an URL was found but is not the main URL, redirect to main URL
             if ($id_shop && !$is_main_uri) {
                 foreach ($results as $row) {
@@ -265,7 +271,9 @@ class Shop extends ObjectModel
                     }
                 }
             }
+
         }
+
         if (!$id_shop && defined('_PS_ADMIN_DIR_') || Tools::isPHPCLI()) {
             // If in admin, we can access to the shop without right URL
             if (!$id_shop && Tools::isPHPCLI() || defined('_PS_ADMIN_DIR_')) {

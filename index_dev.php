@@ -30,6 +30,7 @@ if (php_sapi_name() === 'cli-server' && is_file($filename)) {
 }
 
 require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/config/config.inc.php';
 
 use Prestashop\Dispatcher;
 use Symfony\Component\Debug\Debug;

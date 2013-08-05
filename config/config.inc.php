@@ -50,45 +50,20 @@ ini_set('magic_quotes_runtime', 0);
 
 /* correct Apache charset (except if it's too late */
 if (!headers_sent())
-	header('Content-Type: text/html; charset=utf-8');
+    header('Content-Type: text/html; charset=utf-8');
 
 /* No settings file? goto installer... */
 if (!file_exists(dirname(__FILE__).'/settings.inc.php'))
 {
-	$dir = ((substr($_SERVER['REQUEST_URI'], -1) == '/' || is_dir($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : dirname($_SERVER['REQUEST_URI']).'/');
-	if (!file_exists(dirname(__FILE__).'/../install'))
-		die('Error: "install" directory is missing');
-	header('Location: install/');
-	exit;
+    $dir = ((substr($_SERVER['REQUEST_URI'], -1) == '/' || is_dir($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : dirname($_SERVER['REQUEST_URI']).'/');
+    if (!file_exists(dirname(__FILE__).'/../install'))
+        die('Error: "install" directory is missing');
+    header('Location: install/');
+    exit;
 }
 
 require_once(dirname(__FILE__).'/settings.inc.php');
 
-if (Tools::isPHPCLI())
-	Tools::argvToGET($argc, $argv);
-
-/* Redefine REQUEST_URI if empty (on some webservers...) */
-if (!isset($_SERVER['REQUEST_URI']) || empty($_SERVER['REQUEST_URI']))
-{
-	if (!isset($_SERVER['SCRIPT_NAME']) && isset($_SERVER['SCRIPT_FILENAME']))
-		$_SERVER['SCRIPT_NAME'] = $_SERVER['SCRIPT_FILENAME'];
-	if (isset($_SERVER['SCRIPT_NAME']))
-	{
-		if (basename($_SERVER['SCRIPT_NAME']) == 'index.php' && empty($_SERVER['QUERY_STRING']))
-			$_SERVER['REQUEST_URI'] = dirname($_SERVER['SCRIPT_NAME']).'/';
-		else
-		{
-			$_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'];
-			if (isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']))
-				$_SERVER['REQUEST_URI'] .= '?'.$_SERVER['QUERY_STRING'];
-		}
-	}
-}
-
-/* Trying to redefine HTTP_HOST if empty (on some webservers...) */
-if (!isset($_SERVER['HTTP_HOST']) || empty($_SERVER['HTTP_HOST']))
-	$_SERVER['HTTP_HOST'] = @getenv('HTTP_HOST');
-	
 $context = Context::getContext();
 
 /* Initialize the current Shop */
@@ -129,19 +104,19 @@ $cookie_lifetime = (int)(defined('_PS_ADMIN_DIR_') ? Configuration::get('PS_COOK
 $cookie_lifetime = time() + (max($cookie_lifetime, 1) * 3600);
 
 if (defined('_PS_ADMIN_DIR_'))
-	$cookie = new Cookie('psAdmin', '', $cookie_lifetime);
+    $cookie = new Cookie('psAdmin', '', $cookie_lifetime);
 else
 {
-	if ($context->shop->getGroup()->share_order)
-		$cookie = new Cookie('ps-sg'.$context->shop->getGroup()->id, '', $cookie_lifetime, $context->shop->getUrlsSharedCart());
-	else
-	{
-		$domains = null;
-		if ($context->shop->domain != $context->shop->domain_ssl)
-		  $domains = array($context->shop->domain_ssl, $context->shop->domain);
-		
-		$cookie = new Cookie('ps-s'.$context->shop->id, '', $cookie_lifetime, $domains);
-	}
+    if ($context->shop->getGroup()->share_order)
+        $cookie = new Cookie('ps-sg'.$context->shop->getGroup()->id, '', $cookie_lifetime, $context->shop->getUrlsSharedCart());
+    else
+    {
+        $domains = null;
+        if ($context->shop->domain != $context->shop->domain_ssl)
+          $domains = array($context->shop->domain_ssl, $context->shop->domain);
+
+        $cookie = new Cookie('ps-s'.$context->shop->id, '', $cookie_lifetime, $domains);
+    }
 }
 
 $context->cookie = $cookie;
@@ -149,52 +124,52 @@ $context->cookie = $cookie;
 /* Create employee if in BO, customer else */
 if (defined('_PS_ADMIN_DIR_'))
 {
-	$employee = new Employee($cookie->id_employee);
-	$context->employee = $employee;
+    $employee = new Employee($cookie->id_employee);
+    $context->employee = $employee;
 
-	/* Auth on shops are recached after employee assignation */
-	if ($employee->id_profile != _PS_ADMIN_PROFILE_)
-		Shop::cacheShops(true);
+    /* Auth on shops are recached after employee assignation */
+    if ($employee->id_profile != _PS_ADMIN_PROFILE_)
+        Shop::cacheShops(true);
 
-	$cookie->id_lang = (int)$employee->id_lang;
+    $cookie->id_lang = (int)$employee->id_lang;
 }
 
 /* if the language stored in the cookie is not available language, use default language */
 if (isset($cookie->id_lang) && $cookie->id_lang)
-	$language = new Language($cookie->id_lang);
+    $language = new Language($cookie->id_lang);
 if (!isset($language) || !Validate::isLoadedObject($language))
-	$language = new Language(Configuration::get('PS_LANG_DEFAULT'));
+    $language = new Language(Configuration::get('PS_LANG_DEFAULT'));
 $context->language = $language;
 
 if (!defined('_PS_ADMIN_DIR_'))
 {
-	if (isset($cookie->id_customer) && (int)$cookie->id_customer)
-	{
-		$customer = new Customer($cookie->id_customer);
-		if(!Validate::isLoadedObject($customer))
-			$customer->logout();
-		else
-		{
-			$customer->logged = $cookie->logged;
+    if (isset($cookie->id_customer) && (int)$cookie->id_customer)
+    {
+        $customer = new Customer($cookie->id_customer);
+        if(!Validate::isLoadedObject($customer))
+            $customer->logout();
+        else
+        {
+            $customer->logged = $cookie->logged;
 
-			if ($customer->id_lang != $context->language->id)
-			{
-				$customer->id_lang = $context->language->id;
-				$customer->update();
-			}
-		}
-	}
+            if ($customer->id_lang != $context->language->id)
+            {
+                $customer->id_lang = $context->language->id;
+                $customer->update();
+            }
+        }
+    }
 
-	if (!isset($customer) || !Validate::isLoadedObject($customer))
-	{
-		$customer = new Customer();
-		
-		// Change the default group
-		if (Group::isFeatureActive())
-			$customer->id_default_group = Configuration::get('PS_UNIDENTIFIED_GROUP');
-	}
-	$customer->id_guest = $cookie->id_guest;
-	$context->customer = $customer;
+    if (!isset($customer) || !Validate::isLoadedObject($customer))
+    {
+        $customer = new Customer();
+
+        // Change the default group
+        if (Group::isFeatureActive())
+            $customer->id_default_group = Configuration::get('PS_UNIDENTIFIED_GROUP');
+    }
+    $customer->id_guest = $cookie->id_guest;
+    $context->customer = $customer;
 }
 
 /* Link should also be initialized in the context here for retrocompatibility */

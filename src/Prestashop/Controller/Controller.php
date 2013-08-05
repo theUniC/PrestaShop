@@ -39,46 +39,60 @@ abstract class Controller
      * @var Context
      */
     protected $context;
+
     /**
      * @var array list of css files
      */
     public $css_files = array();
+
     /**
      * @var array list of javascript files
      */
     public $js_files = array();
+
     /**
      * @var bool check if header will be displayed
      */
     protected $display_header;
+
     /**
      * @var string template name for page content
      */
     protected $template;
+
     /**
      * @var string check if footer will be displayed
      */
     protected $display_footer;
+
     /**
      * @var string check if only content will be displayed
      */
     protected $content_only = false;
+
     /**
      * @var bool If ajax parameter is detected in request, set this flag to true
      */
     public $ajax = false;
+
     protected $json = false;
+
     protected $status = '';
+
     protected $redirect_after = null;
+
     public $controller_type;
+
     /**
      * check that the controller is available for the current user/visitor
      */
     abstract public function checkAccess();
+
     /**
      * check that the current user/visitor has valid view permissions
      */
     abstract public function viewAccess();
+
     /**
      * Initialize the page
      */
@@ -91,22 +105,27 @@ abstract class Controller
             define('_PS_BASE_URL_SSL_', Tools::getShopDomainSsl(true));
         }
     }
+
     /**
      * Do the page treatment : post process, ajax process, etc.
      */
     abstract public function postProcess();
+
     /**
      * Display page view
      */
     abstract public function display();
+
     /**
      * Redirect after process if no error
      */
     abstract protected function redirect();
+
     /**
      * Set default media list for controller
      */
     abstract public function setMedia();
+
     /**
      * Get an instance of a controller
      *
@@ -118,6 +137,7 @@ abstract class Controller
     {
         return new $class_name($auth, $ssl);
     }
+
     public function __construct()
     {
         if (is_null($this->display_header)) {
@@ -131,6 +151,7 @@ abstract class Controller
         // Usage of ajax parameter is deprecated
         $this->ajax = Tools::getValue('ajax') || Tools::isSubmit('ajax');
     }
+
     /**
      * Start controller process (this method shouldn't be overriden !)
      */
@@ -142,22 +163,28 @@ abstract class Controller
             if (!$this->content_only && ($this->display_header || isset($this->className) && $this->className)) {
                 $this->setMedia();
             }
+
             // postProcess handles ajaxProcess
             $this->postProcess();
+
             if (!empty($this->redirect_after)) {
                 $this->redirect();
             }
+
             if (!$this->content_only && ($this->display_header || isset($this->className) && $this->className)) {
                 $this->initHeader();
             }
+
             if ($this->viewAccess()) {
                 $this->initContent();
             } else {
                 $this->errors[] = Tools::displayError('Access denied.');
             }
+
             if (!$this->content_only && ($this->display_footer || isset($this->className) && $this->className)) {
                 $this->initFooter();
             }
+
             // default behavior for ajax process is to use $_POST[action] or $_GET[action]
             // then using displayAjax[action]
             if ($this->ajax) {
@@ -175,34 +202,42 @@ abstract class Controller
             $this->smartyOutputContent($this->layout);
         }
     }
+
     public function displayHeader($display = true)
     {
         $this->display_header = $display;
     }
+
     public function displayFooter($display = true)
     {
         $this->display_footer = $display;
     }
+
     public function setTemplate($template)
     {
         $this->template = $template;
     }
+
     /**
      * Assign smarty variables for the page header
      */
     abstract public function initHeader();
+
     /**
      * Assign smarty variables for the page main content
      */
     abstract public function initContent();
+
     /**
      * Assign smarty variables when access is forbidden
      */
     abstract public function initCursedPage();
+
     /**
      * Assign smarty variables for the page footer
      */
     abstract public function initFooter();
+
     /**
      * Add a new stylesheet in page header.
      *
@@ -235,6 +270,7 @@ abstract class Controller
             }
         }
     }
+
     /**
      * Add a new javascript file in page header.
      *
@@ -257,6 +293,7 @@ abstract class Controller
             }
         }
     }
+
     /**
      * Add a new javascript file in page header.
      *
@@ -267,6 +304,7 @@ abstract class Controller
     {
         $this->addJS(Media::getJqueryPath($version, $folder, $minifier));
     }
+
     /**
      * Add a new javascript file in page header.
      *
@@ -285,6 +323,7 @@ abstract class Controller
             $this->addJS($ui_path['js']);
         }
     }
+
     /**
      * Add a new javascript file in page header.
      *
@@ -314,6 +353,7 @@ abstract class Controller
             $this->addJS($plugin_path['js']);
         }
     }
+
     /**
      * @since 1.5
      * @return bool return true if Controller is called from XmlHttpRequest
@@ -322,6 +362,7 @@ abstract class Controller
     {
         return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
     }
+
     protected function smartyOutputContent($content)
     {
         $this->context->cookie->write();
