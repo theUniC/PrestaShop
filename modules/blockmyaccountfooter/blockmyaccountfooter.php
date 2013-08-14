@@ -5,6 +5,7 @@ use Prestashop\Configuration;
 use Prestashop\Hook;
 use Prestashop\Db\Db;
 use Prestashop\Module\Module;
+use Prestashop\Context;
 /*
 * 2007-2013 PrestaShop
 *
@@ -93,7 +94,7 @@ class Blockmyaccountfooter extends Module
     }
     public function hookFooter($params)
     {
-        global $smarty;
+        $smarty = Context::getContext()->smarty;
         if (!$this->isCached('blockmyaccountfooter.tpl', $this->getCacheId())) {
             $smarty->assign(array('voucherAllowed' => CartRule::isFeatureActive(), 'returnAllowed' => (int) Configuration::get('PS_ORDER_RETURN'), 'HOOK_BLOCK_MY_ACCOUNT' => Hook::exec('displayMyAccountBlockfooter')));
         }

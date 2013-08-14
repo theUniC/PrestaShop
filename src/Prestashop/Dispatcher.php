@@ -38,6 +38,7 @@ use Prestashop\Hook;
 use Prestashop\Context;
 use Prestashop\Shop\Shop;
 use Prestashop\Db\Db;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @since 1.5.0
@@ -118,7 +119,7 @@ class Dispatcher
     }
 
     /**
-     * Need to be instancied from getInstance() method
+     * Class constructor
      */
     protected function __construct()
     {
@@ -155,6 +156,8 @@ class Dispatcher
 
     /**
      * Find the controller and instantiate it
+     *
+     * @return Response
      */
     public function dispatch()
     {
@@ -162,6 +165,7 @@ class Dispatcher
 
         // Get current controller
         $this->getController();
+
         if (!$this->controller) {
             $this->controller = $this->default_controller;
         }
@@ -246,14 +250,16 @@ class Dispatcher
 
         // Instantiate controller
         try {
-            // Loading controller
             $controller = Controller::getController($controller_class);
+
             // Execute hook dispatcher
             if (isset($params_hook_action_dispatcher)) {
                 Hook::exec('actionDispatcher', $params_hook_action_dispatcher);
             }
+
             // Running controller
-            $controller->run();
+            $response = $controller->run();
+            return $response;
         } catch (PrestaShopException $e) {
             $e->displayMessage();
         }

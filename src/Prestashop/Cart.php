@@ -107,7 +107,30 @@ class Cart extends ObjectModel
     /**
      * @see ObjectModel::$definition
      */
-    public static $definition = array('table' => 'cart', 'primary' => 'id_cart', 'fields' => array('id_shop_group' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId'), 'id_shop' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId'), 'id_address_delivery' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId'), 'id_address_invoice' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId'), 'id_carrier' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId'), 'id_currency' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId', 'required' => true), 'id_customer' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId'), 'id_guest' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId'), 'id_lang' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId', 'required' => true), 'recyclable' => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'), 'gift' => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'), 'gift_message' => array('type' => self::TYPE_STRING, 'validate' => 'isMessage'), 'mobile_theme' => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'), 'delivery_option' => array('type' => self::TYPE_STRING), 'secure_key' => array('type' => self::TYPE_STRING, 'size' => 32), 'allow_seperated_package' => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'), 'date_add' => array('type' => self::TYPE_DATE, 'validate' => 'isDateFormat'), 'date_upd' => array('type' => self::TYPE_DATE, 'validate' => 'isDateFormat')));
+    public static $definition = array(
+        'table' => 'cart',
+        'primary' => 'id_cart',
+        'fields' => array(
+            'id_shop_group' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId'),
+            'id_shop' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId'),
+            'id_address_delivery' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId'),
+            'id_address_invoice' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId'),
+            'id_carrier' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId'),
+            'id_currency' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId', 'required' => true),
+            'id_customer' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId'),
+            'id_guest' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId'),
+            'id_lang' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId', 'required' => true),
+            'recyclable' => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),
+            'gift' => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),
+            'gift_message' => array('type' => self::TYPE_STRING, 'validate' => 'isMessage'),
+            'mobile_theme' => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),
+            'delivery_option' => array('type' => self::TYPE_STRING),
+            'secure_key' => array('type' => self::TYPE_STRING, 'size' => 32),
+            'allow_seperated_package' => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),
+            'date_add' => array('type' => self::TYPE_DATE, 'validate' => 'isDateFormat'),
+            'date_upd' => array('type' => self::TYPE_DATE, 'validate' => 'isDateFormat')
+        )
+    );
     protected $webserviceParameters = array('fields' => array('id_address_delivery' => array('xlink_resource' => 'addresses'), 'id_address_invoice' => array('xlink_resource' => 'addresses'), 'id_currency' => array('xlink_resource' => 'currencies'), 'id_customer' => array('xlink_resource' => 'customers'), 'id_guest' => array('xlink_resource' => 'guests'), 'id_lang' => array('xlink_resource' => 'languages')), 'associations' => array('cart_rows' => array('resource' => 'cart_row', 'virtual_entity' => true, 'fields' => array('id_product' => array('required' => true, 'xlink_resource' => 'products'), 'id_product_attribute' => array('required' => true, 'xlink_resource' => 'combinations'), 'quantity' => array('required' => true)))));
     const ONLY_PRODUCTS = 1;
     const ONLY_DISCOUNTS = 2;

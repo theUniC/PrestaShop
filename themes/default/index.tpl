@@ -22,5 +22,5 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
-
+<!-- This is the index page, a comment that will be only printed in the index page -->
 {$HOOK_HOME}

@@ -5,6 +5,7 @@ namespace Prestashop\Controller;
 use Prestashop\Tools;
 use Prestashop\Context;
 use Prestashop\Media;
+use Symfony\Component\HttpFoundation\Response;
 
 /*
 * 2007-2013 PrestaShop
@@ -113,6 +114,8 @@ abstract class Controller
 
     /**
      * Display page view
+     *
+     * @return string
      */
     abstract public function display();
 
@@ -143,21 +146,29 @@ abstract class Controller
         if (is_null($this->display_header)) {
             $this->display_header = true;
         }
+
         if (is_null($this->display_footer)) {
             $this->display_footer = true;
         }
+
         $this->context = Context::getContext();
         $this->context->controller = $this;
+
         // Usage of ajax parameter is deprecated
         $this->ajax = Tools::getValue('ajax') || Tools::isSubmit('ajax');
     }
 
     /**
      * Start controller process (this method shouldn't be overriden !)
+     *
+     * @return Response
      */
     public function run()
     {
+        $response = Response::create();
+
         $this->init();
+
         if ($this->checkAccess()) {
             // setMedia MUST be called before postProcess
             if (!$this->content_only && ($this->display_header || isset($this->className) && $this->className)) {
@@ -168,11 +179,11 @@ abstract class Controller
             $this->postProcess();
 
             if (!empty($this->redirect_after)) {
-                $this->redirect();
+                return $this->redirect();
             }
 
             if (!$this->content_only && ($this->display_header || isset($this->className) && $this->className)) {
-                $this->initHeader();
+                $this->initHeader($response);
             }
 
             if ($this->viewAccess()) {
@@ -195,12 +206,14 @@ abstract class Controller
                     $this->displayAjax();
                 }
             } else {
-                $this->display();
+                $response->setContent($this->display());
             }
         } else {
             $this->initCursedPage();
-            $this->smartyOutputContent($this->layout);
+            $response->setContent($this->smartyOutputContent($this->layout));
         }
+
+        return $response;
     }
 
     public function displayHeader($display = true)
@@ -221,7 +234,7 @@ abstract class Controller
     /**
      * Assign smarty variables for the page header
      */
-    abstract public function initHeader();
+    abstract public function initHeader(Response $response);
 
     /**
      * Assign smarty variables for the page main content
@@ -366,6 +379,6 @@ abstract class Controller
     protected function smartyOutputContent($content)
     {
         $this->context->cookie->write();
-        $this->context->smarty->display($content);
+        return $this->context->smarty->fetch($content);
     }
 }

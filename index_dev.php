@@ -36,5 +36,5 @@ use Prestashop\Dispatcher;
 use Symfony\Component\Debug\Debug;
 
 Debug::enable();
-Dispatcher::getInstance()->dispatch();
-
+$response = Dispatcher::getInstance()->dispatch();
+$response->send();

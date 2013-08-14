@@ -1,6 +1,7 @@
 <?php
 
 use Prestashop\Configuration;
+use Prestashop\Context;
 use Prestashop\Tools;
 use Prestashop\Module\Module;
 /*
@@ -83,7 +84,7 @@ class Blockcontact extends Module
     }
     public function hookDisplayRightColumn()
     {
-        global $smarty;
+        $smarty = Context::getContext()->smarty;
         if (!$this->isCached('blockcontact.tpl', $this->getCacheId())) {
             $smarty->assign(array('telnumber' => Configuration::get('blockcontact_telnumber'), 'email' => Configuration::get('blockcontact_email')));
         }

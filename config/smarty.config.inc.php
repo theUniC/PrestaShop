@@ -31,24 +31,21 @@ use Prestashop\Media;
 use Prestashop\Module\Module;
 use Prestashop\Tools;
 
-define('_PS_SMARTY_DIR_', _PS_TOOL_DIR_.'smarty/');
-
-require_once(_PS_SMARTY_DIR_.'Smarty.class.php');
-
 global $smarty;
+
 $smarty = new Smarty();
 $smarty->setCompileDir(_PS_CACHE_DIR_.'smarty/compile');
 $smarty->setCacheDir(_PS_CACHE_DIR_.'smarty/cache');
 if (!Tools::getSafeModeStatus())
 	$smarty->use_sub_dirs = true;
-$smarty->setConfigDir(_PS_SMARTY_DIR_.'configs');
+
 $smarty->caching = false;
 $smarty->force_compile = (Configuration::get('PS_SMARTY_FORCE_COMPILE') == _PS_SMARTY_FORCE_COMPILE_) ? true : false;
 $smarty->compile_check = (Configuration::get('PS_SMARTY_FORCE_COMPILE') <= _PS_SMARTY_CHECK_COMPILE_) ? true : false;
 
 // Production mode
-$smarty->debugging = true;
-$smarty->debugging_ctrl = 'URL';
+$smarty->debugging = false;
+$smarty->debugging_ctrl = 'NONE';
 
 if (Configuration::get('PS_SMARTY_CONSOLE') == _PS_SMARTY_CONSOLE_OPEN_BY_URL_)
 	$smarty->debugging_ctrl = 'URL';
