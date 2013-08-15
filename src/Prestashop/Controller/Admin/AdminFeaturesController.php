@@ -11,9 +11,9 @@ use Prestashop\Shop\Shop;
 use Prestashop\FeatureValue;
 use Prestashop\Helper\HelperForm;
 use Prestashop\Hook;
-use DB;
 use Prestashop\Db\DbQuery;
 use Prestashop\Db\Db;
+
 /*
 * 2007-2013 PrestaShop
 *

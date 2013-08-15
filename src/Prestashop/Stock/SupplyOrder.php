@@ -6,6 +6,7 @@ use Prestashop\Context;
 use Prestashop\Db\DbQuery;
 use Prestashop\Db\Db;
 use Prestashop\Collection;
+use Prestashop\ObjectModel;
 use Prestashop\Stock\SupplyOrderHistory;
 use Prestashop\Tools;
 /*

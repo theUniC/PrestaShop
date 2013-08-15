@@ -29,7 +29,6 @@ use Prestashop\Logger;
 use Prestashop\Combination;
 use Prestashop\Feature;
 use Prestashop\SpecificPrice;
-use tools;
 use Prestashop\FileUploader;
 use Prestashop\Db\Db;
 use Prestashop\ImageManager;
@@ -57,7 +56,6 @@ use Prestashop\AttributeGroup;
 use Prestashop\Stock\StockMvtReason;
 use Prestashop\Helper\HelperList;
 use Prestashop\FeatureValue;
-use hook;
 use Prestashop\Tab;
 /*
 * 2007-2013 PrestaShop

@@ -27,6 +27,8 @@ namespace Prestashop\Order;
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
+use Prestashop\ObjectModel;
+
 class OrderCartRule extends ObjectModel
 {
     /** @var integer */

@@ -9,7 +9,6 @@ use Prestashop\Shop\Shop;
 use Prestashop\Webservice\WebserviceRequest;
 use Prestashop\Webservice\WebserviceKey;
 use Prestashop\Helper\HelperOptions;
-use configuration;
 use Prestashop\Module\Module;
 /*
 * 2007-2013 PrestaShop

@@ -2,6 +2,7 @@
 
 namespace Prestashop\Webservice;
 
+use Exception;
 use Prestashop\Validate;
 /*
 * 2007-2013 PrestaShop

@@ -5,7 +5,6 @@ namespace Prestashop\Controller\Admin;
 use Prestashop\Controller\AdminController;
 use Prestashop\Context;
 use Prestashop\Module\Module;
-use DB;
 use Prestashop\Tools;
 use Prestashop\Db\Db;
 use Prestashop\Shop\Shop;

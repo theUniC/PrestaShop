@@ -3,6 +3,7 @@
 namespace Prestashop\Webservice;
 
 use Prestashop\Db\Db;
+use Prestashop\ObjectModel;
 use Prestashop\Webservice\WebserviceRequest;
 /*
 * 2007-2013 PrestaShop

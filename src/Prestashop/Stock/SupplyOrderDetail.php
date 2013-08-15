@@ -2,6 +2,7 @@
 
 namespace Prestashop\Stock;
 
+use Prestashop\ObjectModel;
 use Prestashop\Tools;
 use Prestashop\Validate;
 /*

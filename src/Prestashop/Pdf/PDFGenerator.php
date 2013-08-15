@@ -3,6 +3,8 @@
 namespace Prestashop\Pdf;
 
 use Prestashop\Exception\PrestaShopException;
+use TCPDF;
+
 /*
 * 2007-2013 PrestaShop
 *

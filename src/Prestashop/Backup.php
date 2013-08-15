@@ -5,7 +5,7 @@ namespace Prestashop;
 use Prestashop\Configuration;
 use Prestashop\Tools;
 use Prestashop\Db\Db;
-use \DB;
+
 /*
 * 2007-2013 PrestaShop
 *

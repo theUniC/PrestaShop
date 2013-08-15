@@ -27,6 +27,8 @@ use Prestashop\Translate;
 use Prestashop\Link;
 use Prestashop\Exception\PrestaShopException;
 use Prestashop\ImageManager;
+use Symfony\Component\HttpFoundation\Response;
+
 /*
 * 2007-2013 PrestaShop
 *
@@ -1086,7 +1088,7 @@ class AdminController extends Controller
     /**
      * Assign smarty variables for the header
      */
-    public function initHeader()
+    public function initHeader(Response $response)
     {
         // Multishop
         $is_multishop = Shop::isFeatureActive();

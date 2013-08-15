@@ -2,8 +2,6 @@
 
 namespace Prestashop;
 
-use \QqUploadedFileXhr;
-use \QqUploadedFileForm;
 use Prestashop\Tools;
 use Prestashop\Product;
 use Prestashop\Image;

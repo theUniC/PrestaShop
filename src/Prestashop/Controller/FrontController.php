@@ -402,12 +402,12 @@ class FrontController extends Controller
             return $response;
         }
 
-        if ($this->restrictedCountry) {
-            $this->displayRestrictedCountryPage();
+        if ($this->restrictedCountry && $response = $this->displayRestrictedCountryPage()) {
+            return $response;
         }
 
         if (Tools::isSubmit('live_edit') && !$this->checkLiveEditAccess()) {
-            Tools::redirect('index.php?controller=404');
+            return RedirectResponse::create('index.php?controller=404');
         }
 
         $this->iso = $iso;
@@ -584,10 +584,8 @@ class FrontController extends Controller
     /* Display a specific page if the user country is not allowed */
     protected function displayRestrictedCountryPage()
     {
-        header('HTTP/1.1 503 temporarily overloaded');
         $this->context->smarty->assign('favicon_url', _PS_IMG_ . Configuration::get('PS_FAVICON'));
-        $this->smartyOutputContent(_PS_THEME_DIR_ . 'restricted-country.tpl');
-        die;
+        return Response::create($this->smartyOutputContent(_PS_THEME_DIR_ . 'restricted-country.tpl'), 503);
     }
 
     protected function canonicalRedirection($canonical_url = '')

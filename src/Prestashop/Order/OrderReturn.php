@@ -3,6 +3,7 @@
 namespace Prestashop\Order;
 
 use Prestashop\Db\Db;
+use Prestashop\ObjectModel;
 use Prestashop\Order\Order;
 use Prestashop\Tools;
 use Prestashop\Validate;

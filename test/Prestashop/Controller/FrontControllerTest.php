@@ -10,6 +10,7 @@ use Prestashop\Configuration;
 use Prestashop\Context;
 use Prestashop\Cookie;
 use Prestashop\Db\Db;
+use ReflectionObject;
 use stdClass;
 
 /**
@@ -50,12 +51,13 @@ class FrontControllerTest extends PHPUnit_Framework_TestCase
 
         $context->cookie = $this->cookie;
 
-        FrontController::$initialized = false;
         $this->frontController = new FrontController();
     }
 
     protected function tearDown()
     {
+        Configuration::loadConfiguration();
+        FrontController::$initialized = false;
         $this->frontController = $this->cookie = null;
     }
 
@@ -207,5 +209,34 @@ class FrontControllerTest extends PHPUnit_Framework_TestCase
         $response = $this->frontController->init();
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
         $this->assertEquals(503, $response->getStatusCode());
+    }
+
+    /**
+     * @test
+     * @group init
+     */
+    public function it_should_display_restricted_country_page()
+    {
+        $reflectedFrontController = new ReflectionObject($this->frontController);
+        $prop = $reflectedFrontController->getProperty('restrictedCountry');
+        $prop->setAccessible(true);
+        $prop->setValue($this->frontController, true);
+
+        $response = $this->frontController->init();
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
+        $this->assertEquals(503, $response->getStatusCode());
+    }
+
+    /**
+     * @test
+     * @group init
+     * @group current
+     */
+    public function it_should_issue_a_404_when_liveedit_requested_but_the_user_dont_have_access()
+    {
+        $_GET['live_edit'] = true;
+
+        $response = $this->frontController->init();
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
     }
 }
