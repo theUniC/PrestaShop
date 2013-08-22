@@ -13,6 +13,7 @@ use Prestashop\Group;
 use Prestashop\Exception\PrestaShopException;
 use \ReflectionClass;
 use Prestashop\Translate;
+use Smarty_Data;
 use \stdClass;
 use Prestashop\Configuration;
 use Prestashop\Currency;
@@ -1479,14 +1480,20 @@ namespace Prestashop\\Module;
     }
     public function display($file, $template, $cacheId = null, $compileId = null)
     {
+        $smarty = Context::getContext()->smarty;
         if (($overloaded = Module::_isTemplateOverloadedStatic(basename($file, '.php'), $template)) === null) {
             return Tools::displayError('No template found for module') . ' ' . basename($file, '.php');
         } else {
-            $this->smarty->assign(array('module_dir' => __PS_BASE_URI__ . 'modules/' . basename($file, '.php') . '/', 'module_template_dir' => ($overloaded ? _THEME_DIR_ : __PS_BASE_URI__) . 'modules/' . basename($file, '.php') . '/'));
+            $this->smarty->assign(array(
+                'module_dir'            => __PS_BASE_URI__ . 'modules/' . basename($file, '.php') . '/',
+                'module_template_dir'   => ($overloaded ? _THEME_DIR_ : __PS_BASE_URI__) . 'modules/' . basename($file, '.php') . '/'
+            ));
+
             if ($cacheId !== null) {
                 Tools::enableCache();
             }
-            $smarty_subtemplate = $this->context->smarty->createTemplate($this->getTemplatePath($template), $cacheId, $compileId, $this->smarty);
+
+            $smarty_subtemplate = $smarty->createTemplate($this->getTemplatePath($template), $cacheId, $compileId, $this->smarty);
             $result = $smarty_subtemplate->fetch();
             if ($cacheId !== null) {
                 Tools::restoreCacheSettings();

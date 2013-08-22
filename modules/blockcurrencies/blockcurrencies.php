@@ -55,6 +55,9 @@ class BlockCurrencies extends Module
         if (!count(Currency::getCurrencies())) {
             return false;
         }
+        if (null === $this->context->currency) {
+            return false;
+        }
         $this->smarty->assign('blockcurrencies_sign', $this->context->currency->sign);
         return true;
     }

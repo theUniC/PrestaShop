@@ -1,6 +1,7 @@
 <?php
 
 use Prestashop\Configuration;
+use Prestashop\Context;
 use Prestashop\Tools;
 use Prestashop\Product;
 use Prestashop\ImageType;
@@ -99,14 +100,20 @@ class BlockSpecials extends Module
         if (Configuration::get('PS_CATALOG_MODE')) {
             return;
         }
+
         // We need to create multiple caches because the products are sorted randomly
         $random = date('Ymd') . '|' . round(rand(1, max(Configuration::get('BLOCKSPECIALS_NB_CACHES'), 1)));
         if (!Configuration::get('BLOCKSPECIALS_NB_CACHES') || !$this->isCached('blockspecials.tpl', $this->getCacheId('blockspecials|' . $random))) {
             if (!($special = Product::getRandomSpecial((int) $params['cookie']->id_lang)) && !Configuration::get('PS_BLOCK_SPECIALS_DISPLAY')) {
                 return;
             }
-            $this->smarty->assign(array('special' => $special, 'priceWithoutReduction_tax_excl' => Tools::ps_round($special['price_without_reduction'], 2), 'mediumSize' => Image::getSize(ImageType::getFormatedName('medium'))));
+            $this->smarty->assign(array(
+                'special' => $special,
+                'priceWithoutReduction_tax_excl' => Tools::ps_round($special['price_without_reduction'], 2),
+                'mediumSize' => Image::getSize(ImageType::getFormatedName('medium'))
+            ));
         }
+
         return $this->display(__FILE__, 'blockspecials.tpl', $this->getCacheId('blockspecials|' . $random));
     }
     public function hookLeftColumn($params)

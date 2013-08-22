@@ -1,6 +1,7 @@
 <?php
 
 use Prestashop\Configuration;
+use Prestashop\Context;
 use Prestashop\Tools;
 use Prestashop\Product;
 use Prestashop\ImageType;
@@ -87,7 +88,7 @@ class BlockNewProducts extends Module
 					</div>
 					<label>' . $this->l('Always display this block.') . '</label>
 					<div class="margin-form">
-						<input type="radio" name="always_display" id="display_on" value="1" ' . (Tools::getValue('always_display', Configuration::get('PS_BLOCK_NEWPRODUCTS_DISPLAY')) ? 'checked="checked" ' : '') . '/>
+ 						<input type="radio" name="always_display" id="display_on" value="1" ' . (Tools::getValue('always_display', Configuration::get('PS_BLOCK_NEWPRODUCTS_DISPLAY')) ? 'checked="checked" ' : '') . '/>
 						<label class="t" for="display_on"> <img src="../img/admin/enabled.gif" alt="' . $this->l('Enabled') . '" title="' . $this->l('Enabled') . '" /></label>
 						<input type="radio" name="always_display" id="display_off" value="0" ' . (!Tools::getValue('always_display', Configuration::get('PS_BLOCK_NEWPRODUCTS_DISPLAY')) ? 'checked="checked" ' : '') . '/>
 						<label class="t" for="display_off"> <img src="../img/admin/disabled.gif" alt="' . $this->l('Disabled') . '" title="' . $this->l('Disabled') . '" /></label>
@@ -100,11 +101,12 @@ class BlockNewProducts extends Module
     }
     public function hookRightColumn($params)
     {
+        $smarty = Context::getContext()->smarty;
         if (!$this->isCached('blocknewproducts.tpl', $this->getCacheId())) {
             if (!Configuration::get('PS_BLOCK_NEWPRODUCTS_DISPLAY') && !($newProducts = Product::getNewProducts((int) $params['cookie']->id_lang, 0, (int) Configuration::get('NEW_PRODUCTS_NBR')))) {
                 return;
             }
-            $this->smarty->assign(array('new_products' => $newProducts, 'mediumSize' => Image::getSize(ImageType::getFormatedName('medium'))));
+            $smarty->assign(array('new_products' => $newProducts, 'mediumSize' => Image::getSize(ImageType::getFormatedName('medium'))));
         }
         return $this->display(__FILE__, 'blocknewproducts.tpl', $this->getCacheId());
     }

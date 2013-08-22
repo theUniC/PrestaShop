@@ -720,13 +720,8 @@ class FrontController extends Controller
         Hook::exec('actionFrontControllerSetMedia', array());
     }
 
-    public function initHeader(Response $response)
+    public function initHeader()
     {
-        // P3P Policies (http://www.w3.org/TR/2002/REC-P3P-20020416/#compact_policies)
-        $response->headers->add(array(
-            'P3P' => 'CP="IDC DSP COR CURa ADMa OUR IND PHY ONL COM STA"'
-        ));
-
         /* Hooks are volontary out the initialize array (need those variables already assigned) */
         $this->context->smarty->assign(array('time' => time(), 'img_update_time' => Configuration::get('PS_IMG_UPDATE_TIME'), 'static_token' => Tools::getToken(false), 'token' => Tools::getToken(), 'priceDisplayPrecision' => _PS_PRICE_DISPLAY_PRECISION_, 'content_only' => (int) Tools::getValue('content_only')));
         $this->context->smarty->assign($this->initLogoAndFavicon());

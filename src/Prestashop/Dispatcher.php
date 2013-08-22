@@ -60,12 +60,191 @@ class Dispatcher
     /**
      * @var array List of default routes
      */
-    public $default_routes = array('category_rule' => array('controller' => 'category', 'rule' => '{id}-{rewrite}', 'keywords' => array('id' => array('regexp' => '[0-9]+', 'param' => 'id_category'), 'rewrite' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'), 'meta_keywords' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'), 'meta_title' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'))), 'supplier_rule' => array('controller' => 'supplier', 'rule' => '{id}__{rewrite}', 'keywords' => array('id' => array('regexp' => '[0-9]+', 'param' => 'id_supplier'), 'rewrite' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'), 'meta_keywords' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'), 'meta_title' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'))), 'manufacturer_rule' => array('controller' => 'manufacturer', 'rule' => '{id}_{rewrite}', 'keywords' => array('id' => array('regexp' => '[0-9]+', 'param' => 'id_manufacturer'), 'rewrite' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'), 'meta_keywords' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'), 'meta_title' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'))), 'cms_rule' => array('controller' => 'cms', 'rule' => 'content/{id}-{rewrite}', 'keywords' => array('id' => array('regexp' => '[0-9]+', 'param' => 'id_cms'), 'rewrite' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'), 'meta_keywords' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'), 'meta_title' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'))), 'cms_category_rule' => array('controller' => 'cms', 'rule' => 'content/category/{id}-{rewrite}', 'keywords' => array('id' => array('regexp' => '[0-9]+', 'param' => 'id_cms_category'), 'rewrite' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'), 'meta_keywords' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'), 'meta_title' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'))), 'module' => array('controller' => null, 'rule' => 'module/{module}{/:controller}', 'keywords' => array('module' => array('regexp' => '[_a-zA-Z0-9_-]+', 'param' => 'module'), 'controller' => array('regexp' => '[_a-zA-Z0-9_-]+', 'param' => 'controller')), 'params' => array('fc' => 'module')), 'product_rule' => array('controller' => 'product', 'rule' => '{category:/}{id}-{rewrite}{-:ean13}.html', 'keywords' => array('id' => array('regexp' => '[0-9]+', 'param' => 'id_product'), 'rewrite' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'), 'ean13' => array('regexp' => '[0-9\\pL]*'), 'category' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'), 'categories' => array('regexp' => '[/_a-zA-Z0-9-\\pL]*'), 'reference' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'), 'meta_keywords' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'), 'meta_title' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'), 'manufacturer' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'), 'supplier' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'), 'price' => array('regexp' => '[0-9\\.,]*'), 'tags' => array('regexp' => '[a-zA-Z0-9-\\pL]*'))), 'layered_rule' => array('controller' => 'category', 'rule' => '{id}-{rewrite}{/:selected_filters}', 'keywords' => array('id' => array('regexp' => '[0-9]+', 'param' => 'id_category'), 'selected_filters' => array('regexp' => '.*', 'param' => 'selected_filters'), 'rewrite' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'), 'meta_keywords' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'), 'meta_title' => array('regexp' => '[_a-zA-Z0-9-\\pL]*'))));
+    public $default_routes = array(
+        'category_rule' => array(
+            'controller' => 'category',
+            'rule' => '{id}-{rewrite}',
+            'keywords' => array(
+                'id' => array(
+                    'regexp' => '[0-9]+',
+                    'param' => 'id_category'
+                ),
+                'rewrite' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                ),
+                'meta_keywords' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                ),
+                'meta_title' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                )
+            )
+        ),
+        'supplier_rule' => array(
+            'controller' => 'supplier',
+            'rule' => '{id}__{rewrite}',
+            'keywords' => array(
+                'id' => array(
+                    'regexp' => '[0-9]+',
+                    'param' => 'id_supplier'
+                ),
+                'rewrite' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                ),
+                'meta_keywords' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                ),
+                'meta_title' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                )
+            )
+        ),
+        'manufacturer_rule' => array(
+            'controller' => 'manufacturer',
+            'rule' => '{id}_{rewrite}',
+            'keywords' => array(
+                'id' => array(
+                    'regexp' => '[0-9]+',
+                    'param' => 'id_manufacturer'
+                ),
+                'rewrite' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                ),
+                'meta_keywords' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                ),
+                'meta_title' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                )
+            )
+        ),
+        'cms_rule' => array(
+            'controller' => 'cms',
+            'rule' => 'content/{id}-{rewrite}',
+            'keywords' => array(
+                'id' => array(
+                    'regexp' => '[0-9]+',
+                    'param' => 'id_cms'
+                ),
+                'rewrite' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                ),
+                'meta_keywords' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                ),
+                'meta_title' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                )
+            )
+        ),
+        'cms_category_rule' => array(
+            'controller' => 'cms',
+            'rule' => 'content/category/{id}-{rewrite}',
+            'keywords' => array(
+                'id' => array(
+                    'regexp' => '[0-9]+',
+                    'param' => 'id_cms_category'
+                ),
+                'rewrite' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                ),
+                'meta_keywords' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                ),
+                'meta_title' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                )
+            )
+        ),
+        'module' => array(
+            'controller' => null,
+            'rule' => 'module/{module}{/:controller}',
+            'keywords' => array(
+                'module' => array(
+                    'regexp' => '[_a-zA-Z0-9_-]+',
+                    'param' => 'module'
+                ),
+                'controller' => array(
+                    'regexp' => '[_a-zA-Z0-9_-]+',
+                    'param' => 'controller'
+                )
+            ),
+            'params' => array(
+                'fc' => 'module'
+            )
+        ),
+        'product_rule' => array(
+            'controller' => 'product',
+            'rule' => '{category:/}{id}-{rewrite}{-:ean13}.html',
+            'keywords' => array(
+                'id' => array(
+                    'regexp' => '[0-9]+',
+                    'param' => 'id_product'
+                ),
+                'rewrite' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                ),
+                'ean13' => array(
+                    'regexp' => '[0-9\\pL]*'
+                ),
+                'category' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                ),
+                'categories' => array(
+                    'regexp' => '[/_a-zA-Z0-9-\\pL]*'
+                ),
+                'reference' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                ),
+                'meta_keywords' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                ),
+                'meta_title' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                ),
+                'manufacturer' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                ),
+                'supplier' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                ),
+                'price' => array(
+                    'regexp' => '[0-9\\.,]*'
+                ),
+                'tags' => array(
+                    'regexp' => '[a-zA-Z0-9-\\pL]*'
+                )
+            )
+        ),
+        'layered_rule' => array(
+            'controller' => 'category',
+            'rule' => '{id}-{rewrite}{/:selected_filters}',
+            'keywords' => array(
+                'id' => array(
+                    'regexp' => '[0-9]+',
+                    'param' => 'id_category'
+                ),
+                'selected_filters' => array(
+                    'regexp' => '.*',
+                    'param' => 'selected_filters'
+                ),
+                'rewrite' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                ),
+                'meta_keywords' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                ),
+                'meta_title' => array(
+                    'regexp' => '[_a-zA-Z0-9-\\pL]*'
+                )
+            )
+        )
+    );
 
     /**
      * @var bool If true, use routes to build URL (mod rewrite must be activated)
      */
-    protected $use_routes = false;
+    protected $use_routes = true;
 
     protected $multilang_activated = false;
 
@@ -157,6 +336,8 @@ class Dispatcher
     /**
      * Find the controller and instantiate it
      *
+     * @throws Exception\PrestaShopException
+     *
      * @return Response
      */
     public function dispatch()
@@ -174,21 +355,7 @@ class Dispatcher
         switch ($this->front_controller) {
             // Dispatch front office controller
             case self::FC_FRONT:
-                $controllers = Dispatcher::getControllers(array(_PS_FRONT_CONTROLLER_DIR_, _PS_OVERRIDE_DIR_ . 'controllers/front/'));
-                $controllers['index'] = 'IndexController';
-                if (isset($controllers['auth'])) {
-                    $controllers['authentication'] = $controllers['auth'];
-                }
-                if (isset($controllers['compare'])) {
-                    $controllers['productscomparison'] = $controllers['compare'];
-                }
-                if (isset($controllers['contact'])) {
-                    $controllers['contactform'] = $controllers['contact'];
-                }
-                if (!isset($controllers[strtolower($this->controller)])) {
-                    $this->controller = $this->controller_not_found;
-                }
-                $controller_class = 'Prestashop\Controller\Front\\' . $controllers[strtolower($this->controller)];
+                $controller_class = sprintf('Prestashop\Controller\Front\%sController', ucfirst(strtolower($this->controller)));
                 $params_hook_action_dispatcher = array('controller_type' => self::FC_FRONT, 'controller_class' => $controller_class, 'is_module' => 0);
                 break;
             // Dispatch module controller for front office
@@ -225,11 +392,7 @@ class Dispatcher
                     }
                     $params_hook_action_dispatcher = array('controller_type' => self::FC_ADMIN, 'controller_class' => $controller_class, 'is_module' => 1);
                 } else {
-                    $controllers = Dispatcher::getControllers(array(_PS_ADMIN_DIR_ . '/tabs/', _PS_ADMIN_CONTROLLER_DIR_, _PS_OVERRIDE_DIR_ . 'controllers/admin/'));
-                    if (!isset($controllers[strtolower($this->controller)])) {
-                        $this->controller = $this->controller_not_found;
-                    }
-                    $controller_class = $controllers[strtolower($this->controller)];
+                    $controller_class = sprintf('Prestashop\Controller\Admin\%sController', ucfirst(strtolower($this->controller)));
                     $params_hook_action_dispatcher = array('controller_type' => self::FC_ADMIN, 'controller_class' => $controller_class, 'is_module' => 0);
                     if (file_exists(_PS_ADMIN_DIR_ . '/tabs/' . $controller_class . '.php')) {
                         $retrocompatibility_admin_tab = _PS_ADMIN_DIR_ . '/tabs/' . $controller_class . '.php';
@@ -248,9 +411,8 @@ class Dispatcher
                 throw new PrestaShopException('Bad front controller chosen');
         }
 
-        // Instantiate controller
         try {
-            $controller = Controller::getController($controller_class);
+            $controller = new $controller_class();
 
             // Execute hook dispatcher
             if (isset($params_hook_action_dispatcher)) {
@@ -258,8 +420,7 @@ class Dispatcher
             }
 
             // Running controller
-            $response = $controller->run();
-            return $response;
+            return $controller->run();
         } catch (PrestaShopException $e) {
             $e->displayMessage();
         }
@@ -508,9 +669,8 @@ class Dispatcher
 
         if (!isset($this->routes[$id_shop][$id_lang][$route_id])) {
             $query = http_build_query($params, '', '&');
-            $index_link = $this->use_routes ? '' : 'index.php';
 
-            return $route_id == 'index' ? $index_link . ($query ? '?' . $query : '') : 'index.php?controller=' . $route_id . ($query ? '&' . $query : '') . $anchor;
+            return $route_id == 'index' ? ($query ? '?' . $query : '') : 'index.php?controller=' . $route_id . ($query ? '&' . $query : '') . $anchor;
         }
 
         $route = $this->routes[$id_shop][$id_lang][$route_id];
@@ -595,18 +755,7 @@ class Dispatcher
             $id_shop = (int) Context::getContext()->shop->id;
         }
 
-        $controller = Tools::getValue('controller');
-
-        if (isset($controller) && is_string($controller) && preg_match('/^([0-9a-z_-]+)\\?(.*)=(.*)$/Ui', $controller, $m)) {
-            $controller = $m[1];
-            if (isset($_GET['controller'])) {
-                $_GET[$m[2]] = $m[3];
-            } else {
-                if (isset($_POST['controller'])) {
-                    $_POST[$m[2]] = $m[3];
-                }
-            }
-        }
+        $controller = $this->extractEmbededControllerParameters(Tools::getValue('controller'));
 
         if (!Validate::isControllerName($controller)) {
             $controller = false;
@@ -716,5 +865,30 @@ class Dispatcher
         }
 
         return $controllers;
+    }
+
+    /**
+     * @param $controller
+     *
+     * @internal param $m
+     *
+     * @return string
+     */
+    private function extractEmbededControllerParameters($controller)
+    {
+        if (isset($controller) && is_string($controller) && preg_match('/^([0-9a-z_-]+)\\?(.*)=(.*)$/Ui', $controller, $m)) {
+            $controller = $m[1];
+            if (isset($_GET['controller'])) {
+                $_GET[$m[2]] = $m[3];
+                return array($m, $controller);
+            } else {
+                if (isset($_POST['controller'])) {
+                    $_POST[$m[2]] = $m[3];
+                    return array($m, $controller);
+                }
+            }
+        }
+
+        return $controller;
     }
 }

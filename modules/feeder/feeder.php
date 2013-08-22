@@ -1,5 +1,6 @@
 <?php
 
+use Prestashop\Context;
 use Prestashop\Tools;
 use Prestashop\Product;
 use Prestashop\Module\Module;
@@ -51,6 +52,7 @@ class Feeder extends Module
     }
     public function hookHeader($params)
     {
+        $smarty = Context::getContext()->smarty;
         if (!($id_category = (int) Tools::getValue('id_category'))) {
             if (isset($_SERVER['HTTP_REFERER']) && strstr($_SERVER['HTTP_REFERER'], Tools::getHttpHost()) && preg_match('!^(.*)\\/([0-9]+)\\-(.*[^\\.])|(.*)id_category=([0-9]+)(.*)$!', $_SERVER['HTTP_REFERER'], $regs)) {
                 if (isset($regs[2]) && is_numeric($regs[2])) {
@@ -65,7 +67,7 @@ class Feeder extends Module
         }
         $orderBy = Tools::getProductsOrder('by', Tools::getValue('orderby'));
         $orderWay = Tools::getProductsOrder('way', Tools::getValue('orderway'));
-        $this->smarty->assign(array('feedUrl' => Tools::getShopDomain(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/rss.php?id_category=' . $id_category . '&amp;orderby=' . $orderBy . '&amp;orderway=' . $orderWay));
+        $smarty->assign(array('feedUrl' => Tools::getShopDomain(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/rss.php?id_category=' . $id_category . '&amp;orderby=' . $orderBy . '&amp;orderway=' . $orderWay));
         return $this->display(__FILE__, 'feederHeader.tpl');
     }
 }

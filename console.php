@@ -2,6 +2,7 @@
 
 require 'vendor/autoload.php';
 
+use Prestashop\Tools;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -200,6 +201,50 @@ namespace ' . $namespace . ';
         });
 
         $commands[] = $fixClassReferences;
+
+        $clearCacheSmarty = new Command('smarty:clear:cache');
+        $clearCacheSmarty->setCode(function(InputInterface $input, OutputInterface $output) {
+            $_SERVER['HTTP_HOST'] = 'localhost';
+            $_SERVER['REQUEST_URI'] = '/console.php';
+
+            require __DIR__ . '/config/config.inc.php';
+
+            // That's a totally mess, I know
+            /** @var Smarty $smarty */
+            global $smarty;
+
+            $smarty->clearAllCache();
+        });
+
+        $commands[] = $clearCacheSmarty;
+
+        $clearCompiledSmarty = new Command('smarty:clear:compiled');
+        $clearCompiledSmarty->setCode(function(InputInterface $input, OutputInterface $output) {
+            $_SERVER['HTTP_HOST'] = 'localhost';
+            $_SERVER['REQUEST_URI'] = '/console.php';
+
+            require __DIR__ . '/config/config.inc.php';
+
+            // That's a totally mess, I know
+            /** @var Smarty $smarty */
+            global $smarty;
+
+            $smarty->clearCompiledTemplate();
+        });
+
+        $commands[] = $clearCompiledSmarty;
+
+        $htAccessCommand = new Command('prestashop:generate-htaccess');
+        $htAccessCommand->setCode(function(InputInterface $input, OutputInterface $output) {
+            $_SERVER['HTTP_HOST'] = 'localhost';
+            $_SERVER['REQUEST_URI'] = '/console.php';
+
+            require __DIR__ . '/config/config.inc.php';
+
+            Tools::generateHtaccess();
+        });
+
+        $commands[] = $htAccessCommand;
 
         return $commands;
     }

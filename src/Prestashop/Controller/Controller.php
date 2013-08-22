@@ -96,12 +96,15 @@ abstract class Controller
 
     /**
      * Initialize the page
+     *
+     * @return Response|null
      */
     public function init()
     {
         if (!defined('_PS_BASE_URL_')) {
             define('_PS_BASE_URL_', Tools::getShopDomain(true));
         }
+
         if (!defined('_PS_BASE_URL_SSL_')) {
             define('_PS_BASE_URL_SSL_', Tools::getShopDomainSsl(true));
         }
@@ -167,7 +170,9 @@ abstract class Controller
     {
         $response = Response::create();
 
-        $this->init();
+        if ($redirect = $this->init()) {
+            return $redirect;
+        }
 
         if ($this->checkAccess()) {
             // setMedia MUST be called before postProcess
@@ -176,14 +181,16 @@ abstract class Controller
             }
 
             // postProcess handles ajaxProcess
-            $this->postProcess();
+            if ($redirect = $this->postProcess()) {
+                return $redirect;
+            }
 
             if (!empty($this->redirect_after)) {
                 return $this->redirect();
             }
 
             if (!$this->content_only && ($this->display_header || isset($this->className) && $this->className)) {
-                $this->initHeader($response);
+                $this->initHeader();
             }
 
             if ($this->viewAccess()) {
@@ -234,7 +241,7 @@ abstract class Controller
     /**
      * Assign smarty variables for the page header
      */
-    abstract public function initHeader(Response $response);
+    abstract public function initHeader();
 
     /**
      * Assign smarty variables for the page main content

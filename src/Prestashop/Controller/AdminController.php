@@ -236,7 +236,7 @@ class AdminController extends Controller
         // Has to be remove for the next Prestashop version
         global $token;
         $this->controller_type = 'admin';
-        $this->controller_name = get_class($this);
+        $this->controller_name = basename(str_replace('\\', '/', get_class($this)));
         if (strpos($this->controller_name, 'Controller')) {
             $this->controller_name = substr($this->controller_name, 0, -10);
         }
@@ -1088,7 +1088,7 @@ class AdminController extends Controller
     /**
      * Assign smarty variables for the header
      */
-    public function initHeader(Response $response)
+    public function initHeader()
     {
         // Multishop
         $is_multishop = Shop::isFeatureActive();

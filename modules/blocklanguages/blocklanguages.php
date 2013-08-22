@@ -92,13 +92,13 @@ class BlockLanguages extends Module
      * @param array $params Parameters
      * @return string Content
      */
-    public function hookTop($params)
+    /*public function hookTop($params)
     {
         if (!$this->_prepareHook($params)) {
             return;
         }
         return $this->display(__FILE__, 'blocklanguages.tpl');
-    }
+    }*/
     public function hookHeader($params)
     {
         $this->context->controller->addCSS($this->_path . 'blocklanguages.css', 'all');

@@ -230,7 +230,6 @@ class FrontControllerTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      * @group init
-     * @group current
      */
     public function it_should_issue_a_404_when_liveedit_requested_but_the_user_dont_have_access()
     {
